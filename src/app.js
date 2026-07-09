@@ -1,55 +1,101 @@
 /**
- * Étape 0.1 - Initialisation du projet
- * Point d'entrée de l'application (Express + session + routes).
+ * src/app.js
+ * Configuration de l'application Express.
+ * - Création de l'application
+ * - Configuration des middlewares
+ * - Configuration des sessions
+ * - Configuration du moteur de vues EJS
+ * - Déclaration des routes
  */
-require('dotenv').config();
-const path = require('path');
-const express = require('express');
-const session = require('express-session');
 
-const authRoutes = require('./routes/authRoutes');
-const { isAuthenticated } = require('./middlewares/auth');
+const express = require("express");
+const session = require("express-session");
+const path = require("path");
+
+const authRoutes = require("./routes/authRoutes");
+// const fournisseurRoutes = require("./routes/fournisseurRoutes");
+// const appelOffreRoutes = require("./routes/appelOffreRoutes");
+// const marcheRoutes = require("./routes/marcheRoutes");
+
+const { isAuthenticated } = require("./middlewares/authMiddleware");
 
 const app = express();
 
+/* ======================================================
+   Configuration du moteur de vues (EJS)
+====================================================== */
+
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "../views"));
+
+/* ======================================================
+   Middlewares
+====================================================== */
+
+// Lecture des données JSON
 app.use(express.json());
+
+// Lecture des formulaires HTML
 app.use(express.urlencoded({ extended: true }));
 
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'change_this_secret_en_production',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    httpOnly: true,
-    maxAge: 1000 * 60 * 60 * 8 // 8 heures
-  }
-}));
+// Fichiers statiques (CSS, JS, images...)
+app.use(express.static(path.join(__dirname, "../public")));
 
-// Fichiers statiques (Bootstrap local si téléchargé, CSS/JS maison)
-app.use(express.static(path.join(__dirname, 'public')));
+/* ======================================================
+   Sessions
+====================================================== */
 
-// Routes d'authentification
-app.use('/auth', authRoutes);
+app.use(
+    session({
+        secret: process.env.SESSION_SECRET,
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+            httpOnly: true,
+            secure: false,          // Passer à true en HTTPS
+            maxAge: 1000 * 60 * 60 * 8 // 8 heures
+        }
+    })
+);
 
-// Page racine : redirige selon l'état de connexion
-app.get('/', (req, res) => {
-  if (req.session && req.session.user) {
-    return res.redirect('/dashboard.html');
-  }
-  return res.redirect('/login.html');
+/* ======================================================
+   Routes
+====================================================== */
+
+// Page d'accueil
+app.get("/", (req, res) => {
+    if (req.session.user) {
+        return res.redirect("/dashboard");
+    }
+
+    res.redirect("/login");
 });
 
-// Page de connexion (publique)
-app.get('/login.html', (req, res) => {
-  res.sendFile(path.join(__dirname, 'views', 'login.html'));
+// Authentification
+app.use("/", authRoutes);
+
+// Tableau de bord (protégé)
+app.get("/dashboard", isAuthenticated, (req, res) => {
+    res.render("dashboard/index", {
+        user: req.session.user,
+        title: "Tableau de bord"
+    });
 });
 
-// Page protégée de test : tableau de bord (accessible seulement si connecté)
-app.get('/dashboard.html', isAuthenticated, (req, res) => {
-  res.sendFile(path.join(__dirname, 'views', 'dashboard.html'));
+// Exemple pour plus tard
+// app.use("/fournisseurs", fournisseurRoutes);
+// app.use("/appels-offres", appelOffreRoutes);
+// app.use("/marches", marcheRoutes);
+
+/* ======================================================
+   Gestion des erreurs
+====================================================== */
+
+// Erreur 404
+app.use((req, res) => {
+    res.status(404).render("404", {
+        title: "Page non trouvée"
+    });
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Serveur ORMVA/SM démarré sur http://localhost:${PORT}`);
-});
+module.exports = app;
