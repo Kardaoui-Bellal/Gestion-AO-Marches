@@ -1,0 +1,22 @@
+{
+  "name": "ormvasm-ao-marches",
+  "version": "1.0.0",
+  "description": "Application de gestion des appels d'offres et marchés informatiques - ORMVA/SM Bureau Informatique",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "seed": "node database/seed.js"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "multer": "^1.4.5-lts.1",
+    "mysql2": "^3.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
