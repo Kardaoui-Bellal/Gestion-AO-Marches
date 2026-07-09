@@ -1,3 +1,8 @@
+/**
+ * Étape 0.3 - Page Connexion
+ * Insère 1 utilisateur administrateur de test avec mot de passe haché (bcrypt).
+ * Usage : npm run seed
+ */
 require('dotenv').config();
 const bcrypt = require('bcrypt');
 const pool = require('../config/db');
