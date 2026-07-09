@@ -11,7 +11,6 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
-// Vérification rapide de la connexion au démarrage
 pool.getConnection()
   .then((conn) => {
     console.log('Connexion MySQL établie avec succès.');
