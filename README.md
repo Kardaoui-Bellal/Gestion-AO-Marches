@@ -6,24 +6,103 @@ Base de données (MySQL) → Backend (Node.js/Express) → Frontend (Bootstrap 5
 ## Structure du projet
 
 ```
-ormvasm-ao-marches/
-├── package.json
-├── .env.example
+gestion-ao-marches/
+
+│
 ├── server.js
+├── package.json
+├── .env
+├── .gitignore
+│
 ├── config/
-│   └── db.js              # Connexion MySQL (pool mysql2)
-├── middlewares/
-│   └── auth.js            # isAuthenticated, isAdmin
+│   ├── db.js
+│   ├── multer.js
+│   └── auth.js
+│
 ├── controllers/
-│   └── authController.js  # login, logout, me
+│   ├── authController.js
+│   ├── dashboardController.js
+│   ├── fournisseurController.js
+│   ├── appelOffreController.js
+│   ├── marcheController.js
+│   ├── documentController.js
+│   ├── utilisateurController.js
+│   ├── referentielController.js
+│   ├── checklistController.js
+│   ├── historiqueController.js
+│   └── alerteController.js
+│
+├── models/
+│   ├── User.js
+│   ├── Fournisseur.js
+│   ├── AppelOffre.js
+│   ├── Marche.js
+│   ├── Document.js
+│   ├── Checklist.js
+│   ├── Historique.js
+│   └── Referentiel.js
+│
 ├── routes/
-│   └── authRoutes.js      # POST /auth/login, POST /auth/logout, GET /auth/me
+│   ├── authRoutes.js
+│   ├── dashboardRoutes.js
+│   ├── fournisseurRoutes.js
+│   ├── appelOffreRoutes.js
+│   ├── marcheRoutes.js
+│   ├── documentRoutes.js
+│   ├── utilisateurRoutes.js
+│   ├── referentielRoutes.js
+│   ├── checklistRoutes.js
+│   ├── historiqueRoutes.js
+│   └── alerteRoutes.js
+│
+├── middlewares/
+│   ├── authMiddleware.js
+│   ├── roleMiddleware.js
+│   ├── uploadMiddleware.js
+│   └── errorMiddleware.js
+│
+├── services/
+│   ├── dashboardService.js
+│   ├── alerteService.js
+│   ├── exportExcelService.js
+│   ├── uploadService.js
+│   └── historiqueService.js
+│
+├── uploads/
+│   ├── appels_offres/
+│   └── marches/
+│
+├── public/
+│   ├── css/
+│   ├── js/
+│   ├── images/
+│   └── bootstrap/
+│
+├── views/
+│   ├── layouts/
+│   ├── auth/
+│   ├── dashboard/
+│   ├── fournisseurs/
+│   ├── appels_offres/
+│   ├── marches/
+│   ├── documents/
+│   ├── utilisateurs/
+│   ├── referentiels/
+│   ├── checklist/
+│   ├── historique/
+│   └── erreurs/
+│
 ├── database/
-│   ├── schema.sql         # Schéma complet (Étape 0.2 - toutes les tables)
-│   └── seed.js            # Crée l'admin de test (mot de passe haché bcrypt)
-└── views/
-    ├── login.html          # Page de connexion (Bootstrap 5)
-    └── dashboard.html      # Page protégée de test après connexion
+│   ├── schema.sql
+│   ├── seed.sql
+│   └── backup/
+│
+├── tests/
+│
+└── docs/
+    ├── Guide_Utilisateur.pdf
+    ├── Guide_Technique.pdf
+    └── Installation.pdf
 ```
 
 ## Étapes exactes d'installation
