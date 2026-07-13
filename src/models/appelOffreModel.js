@@ -39,7 +39,7 @@ const AppelOffre = {
                    r_cat.code AS categorie_code,
                    r_etat.libelle AS etat_libelle,
                    r_etat.code AS etat_code,
-                   f.nom AS fournisseur_nom
+                   f.raison_sociale AS fournisseur_nom
             FROM appels_offres ao
             INNER JOIN referentiels r_cat ON ao.categorie_id = r_cat.id_ref
             INNER JOIN referentiels r_etat ON ao.etat_id = r_etat.id_ref
@@ -56,7 +56,7 @@ const AppelOffre = {
             SELECT ao.*,
                    r_cat.libelle AS categorie_libelle,
                    r_etat.libelle AS etat_libelle,
-                   f.nom AS fournisseur_nom
+                   f.raison_sociale AS fournisseur_nom
             FROM appels_offres ao
             INNER JOIN referentiels r_cat ON ao.categorie_id = r_cat.id_ref
             INNER JOIN referentiels r_etat ON ao.etat_id = r_etat.id_ref
@@ -65,6 +65,39 @@ const AppelOffre = {
         `;
 
         const [rows] = await pool.execute(query);
+        return rows;
+    },
+
+    async getByFilters(filters = {}) {
+        const { categorie_id, etat_id } = filters;
+
+        let query = `
+            SELECT ao.*,
+                   r_cat.libelle AS categorie_libelle,
+                   r_etat.libelle AS etat_libelle,
+                   f.raison_sociale AS fournisseur_nom
+            FROM appels_offres ao
+            INNER JOIN referentiels r_cat ON ao.categorie_id = r_cat.id_ref
+            INNER JOIN referentiels r_etat ON ao.etat_id = r_etat.id_ref
+            LEFT JOIN fournisseurs f ON ao.fournisseur_attributaire_id = f.id_fournisseur
+            WHERE 1=1
+        `;
+
+        const params = [];
+
+        if (categorie_id) {
+            query += ` AND ao.categorie_id = ?`;
+            params.push(categorie_id);
+        }
+
+        if (etat_id) {
+            query += ` AND ao.etat_id = ?`;
+            params.push(etat_id);
+        }
+
+        query += ` ORDER BY ao.date_creation DESC`;
+
+        const [rows] = await pool.execute(query, params);
         return rows;
     },
 
