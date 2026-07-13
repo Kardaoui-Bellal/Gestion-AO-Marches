@@ -1,39 +1,73 @@
-const pool = require('../config/db');
-const bcrypt = require('bcrypt');
+const pool = require('../../config/db.js');
 
-const userModel = {
-  // Recherche un utilisateur actif par email (utilisé lors du login)
-  async findByEmail(email) {
-    const [rows] = await pool.query(
-      'SELECT * FROM utilisateurs WHERE email = ? AND actif = 1',
-      [email]
-    );
-    return rows[0] || null;
-  },
+const Utilisateur = {
+    async create(userData) {
+        const { nom, email, mot_de_passe_hash, profil_id } = userData;
+        const query = `
+            INSERT INTO utilisateurs (nom, email, mot_de_passe_hash, profil_id, actif) 
+            VALUES (?, ?, ?, ?, 1)
+        `;
+        
+        const [result] = await pool.execute(query, [nom, email, mot_de_passe_hash, profil_id]);
+        return result.insertId; // Returns the generated id_utilisateur
+    },
 
-  // Recherche par id (utile pour recharger l'utilisateur en session si besoin)
-  async findById(id) {
-    const [rows] = await pool.query(
-      'SELECT id, nom_complet, email, role, actif FROM utilisateurs WHERE id = ?',
-      [id]
-    );
-    return rows[0] || null;
-  },
+    async findByEmail(email) {
+        const query = `
+            SELECT id_utilisateur, nom, email, mot_de_passe_hash, profil_id, actif 
+            FROM utilisateurs 
+            WHERE email = ? 
+            LIMIT 1
+        `;
+        
+        const [rows] = await pool.execute(query, [email]);
+        return rows[0] || null;
+    },
 
-  // Compare le mot de passe saisi avec le hash stocké
-  async verifierMotDePasse(motDePasseSaisi, hash) {
-    return bcrypt.compare(motDePasseSaisi, hash);
-  },
+    async findById(id_utilisateur) {
+        const query = `
+            SELECT id_utilisateur, nom, email, profil_id, actif, date_creation, date_modification 
+            FROM utilisateurs 
+            WHERE id_utilisateur = ?
+        `;
+        
+        const [rows] = await pool.execute(query, [id_utilisateur]);
+        return rows[0] || null;
+    },
 
-  // Crée un nouvel utilisateur avec mot de passe haché (utilisé par scripts/createUser.js)
-  async creerUtilisateur({ nomComplet, email, motDePasse, role = 'consultation' }) {
-    const hash = await bcrypt.hash(motDePasse, 10);
-    const [result] = await pool.query(
-      'INSERT INTO utilisateurs (nom_complet, email, mot_de_passe, role) VALUES (?, ?, ?, ?)',
-      [nomComplet, email, hash, role]
-    );
-    return result.insertId;
-  }
+    async getAll() {
+        const query = `
+            SELECT id_utilisateur, nom, email, profil_id, actif, date_creation 
+            FROM utilisateurs 
+            ORDER BY date_creation DESC
+        `;
+        
+        const [rows] = await pool.execute(query);
+        return rows;
+    },
+
+    async update(id_utilisateur, updateData) {
+        const { nom, profil_id, actif } = updateData;
+        const query = `
+            UPDATE utilisateurs 
+            SET nom = ?, profil_id = ?, actif = ?, date_modification = NOW() 
+            WHERE id_utilisateur = ?
+        `;
+        
+        const [result] = await pool.execute(query, [nom, profil_id, actif, id_utilisateur]);
+        return result.affectedRows > 0;
+    },
+
+    async updatePassword(id_utilisateur, hashedNewPassword) {
+        const query = `
+            UPDATE utilisateurs 
+            SET mot_de_passe_hash = ?, date_modification = NOW() 
+            WHERE id_utilisateur = ?
+        `;
+        
+        const [result] = await pool.execute(query, [hashedNewPassword, id_utilisateur]);
+        return result.affectedRows > 0;
+    }
 };
 
-module.exports = userModel;
+module.exports = Utilisateur;
