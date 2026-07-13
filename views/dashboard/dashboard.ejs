@@ -26,7 +26,6 @@
   </div>
 
   <script>
-    // Vérifie la session et affiche l'utilisateur connecté
     fetch('/auth/me')
       .then(res => {
         if (!res.ok) { window.location.href = '/login.html'; return; }
