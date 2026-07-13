@@ -1,60 +1,35 @@
- const form = document.getElementById('loginForm');
-    const alertBox = document.getElementById('alertBox');
-    const submitBtn = document.getElementById('submitBtn');
-    const submitText = document.getElementById('submitText');
-    const submitSpinner = document.getElementById('submitSpinner');
+// Gestion du formulaire de connexion
+document.querySelector(".login-form").addEventListener("submit", function (e) {
+  e.preventDefault();
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+  console.log("Nom d'utilisateur:", username);
+  console.log("Mot de passe:", password);
+  alert("Connexion en cours... (Ceci est un exemple)");
+});
 
-    function afficherErreur(message) {
-      alertBox.textContent = message;
-      alertBox.classList.remove('d-none');
-    }
+// Gestion du lien "Mot de passe oublié ?"
+const forgotPasswordLink = document.getElementById("forgot-password-link");
+const modal = document.getElementById("forgot-password-modal");
+const closeModalBtn = document.getElementById("close-modal-btn");
+const closeModalSpan = document.querySelector(".close-modal");
 
-    function masquerErreur() {
-      alertBox.classList.add('d-none');
-    }
+forgotPasswordLink.addEventListener("click", function (e) {
+  e.preventDefault();
+  modal.style.display = "flex";
+});
 
-    function setChargement(actif) {
-      submitBtn.disabled = actif;
-      submitSpinner.classList.toggle('d-none', !actif);
-      submitText.textContent = actif ? 'Connexion en cours...' : 'Se connecter';
-    }
+closeModalBtn.addEventListener("click", function () {
+  modal.style.display = "none";
+});
 
-    form.addEventListener('submit', async (event) => {
-      event.preventDefault();
-      masquerErreur();
+closeModalSpan.addEventListener("click", function () {
+  modal.style.display = "none";
+});
 
-      const login = document.getElementById('login').value.trim();
-      const mot_de_passe = document.getElementById('mot_de_passe').value;
-
-      if (!login || !mot_de_passe) {
-        afficherErreur('Veuillez saisir votre identifiant et votre mot de passe.');
-        return;
-      }
-
-      setChargement(true);
-
-      try {
-        const response = await fetch('/auth/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ login, mot_de_passe })
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          afficherErreur(data.message || 'Identifiants incorrects.');
-          setChargement(false);
-          return;
-        }
-
-        // Connexion réussie -> redirection (selon profil géré côté serveur)
-        window.location.href = data.redirect || '/dashboard.html';
-
-      } catch (error) {
-        console.error(error);
-        afficherErreur('Impossible de contacter le serveur. Veuillez réessayer.');
-        setChargement(false);
-      }
-    });
- 
+// Fermer la modale en cliquant en dehors de celle-ci
+window.addEventListener("click", function (e) {
+  if (e.target === modal) {
+    modal.style.display = "none";
+  }
+});
