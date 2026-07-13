@@ -19,18 +19,19 @@ gestion-ao-marches/
 │   ├── multer.js
 │   └── auth.js
 │
-├── controllers/
-│   ├── authController.js
-│   ├── dashboardController.js
-│   ├── fournisseurController.js
-│   ├── appelOffreController.js
-│   ├── marcheController.js
-│   ├── documentController.js
-│   ├── utilisateurController.js
-│   ├── referentielController.js
-│   ├── checklistController.js
-│   ├── historiqueController.js
-│   └── alerteController.js
+├── src
+|   |__controllers/
+│      ├── authController.js
+│      ├── dashboardController.js
+│      ├── fournisseurController.js
+│      ├── appelOffreController.js
+│      ├── marcheController.js
+│      ├── documentController.js
+│      ├── utilisateurController.js
+│      ├── referentielController.js
+│      ├── checklistController.js
+│      ├── historiqueController.js
+│      └── alerteController.js
 │
 ├── models/
 │   ├── User.js
