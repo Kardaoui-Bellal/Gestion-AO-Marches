@@ -22,7 +22,7 @@ const Offre = {
         const query = `
             SELECT o.*, 
                    ao.objet AS appel_offre_objet, 
-                   f.nom AS fournisseur_nom,
+                   f.raison_sociale AS fournisseur_nom,
                    r.libelle AS statut_libelle
             FROM offres o
             INNER JOIN appels_offres ao ON o.appel_offre_id = ao.id_appel_offre
@@ -38,7 +38,7 @@ const Offre = {
     async getByAppelOffre(appel_offre_id) {
         const query = `
             SELECT o.id_offre, o.montant_propose, o.date_soumission, o.date_creation,
-                   f.nom AS fournisseur_nom,
+                   f.raison_sociale AS fournisseur_nom,
                    r.libelle AS statut_libelle,
                    r.code AS statut_code
             FROM offres o

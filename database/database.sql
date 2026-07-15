@@ -112,17 +112,22 @@ CREATE TABLE marches(
 ) ENGINE=InnoDB;
 
 
-CREATE TABLE checklist(
-id_checklist INT AUTO_INCREMENT PRIMARY KEY,
-marche_id INT NOT NULL,
-etape_id INT NOT NULL,
-statut_id INT NOT NULL,
-date_validation DATE,
-observation TEXT,
-UNIQUE(marche_id, etape_id),
-FOREIGN KEY (marche_id) REFERENCES marches(id_marche),
-FOREIGN KEY (etape_id) REFERENCES referentiels(id_ref),
-FOREIGN KEY (statut_id) REFERENCES referentiels(id_ref)
+CREATE TABLE checklist (
+  id_checklist INT AUTO_INCREMENT PRIMARY KEY,
+  type_entite ENUM('AO','MARCHE') NOT NULL,
+  appel_offre_id INT DEFAULT NULL,
+  marche_id INT DEFAULT NULL,
+  etape_id INT NOT NULL,
+  statut_id INT NOT NULL,
+  date_validation DATE DEFAULT NULL,
+  observation TEXT,
+  UNIQUE KEY (marche_id, etape_id),
+  INDEX (etape_id),
+  INDEX (statut_id),
+  INDEX idx_checklist_entite (type_entite, appel_offre_id, marche_id),
+  CONSTRAINT checklist_ibfk_1 FOREIGN KEY (marche_id) REFERENCES marches(id_marche),
+  CONSTRAINT checklist_ibfk_2 FOREIGN KEY (etape_id) REFERENCES referentiels(id_ref),
+  CONSTRAINT checklist_ibfk_3 FOREIGN KEY (statut_id) REFERENCES referentiels(id_ref)
 ) ENGINE=InnoDB;
 
 CREATE TABLE documents (

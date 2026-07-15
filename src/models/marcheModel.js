@@ -30,7 +30,7 @@ const Marche = {
     async getById(id_marche) {
         const query = `
             SELECT m.*, 
-                   f.nom AS fournisseur_nom,
+                   f.raison_sociale AS fournisseur_nom,
                    r_type.libelle AS type_marche_libelle,
                    r_statut.libelle AS statut_libelle
             FROM marches m
@@ -47,7 +47,7 @@ const Marche = {
     async getAll() {
         const query = `
             SELECT m.id_marche, m.numero, m.objet, m.montant, m.date_debut, m.date_fin,
-                   f.nom AS fournisseur_nom,
+                   f.raison_sociale AS fournisseur_nom,
                    r_type.libelle AS type_marche_libelle,
                    r_statut.libelle AS statut_libelle
             FROM marches m
@@ -79,7 +79,7 @@ const Marche = {
         
         let query = `
             SELECT m.id_marche, m.numero, m.objet, m.montant, m.date_debut, m.date_fin,
-                   f.nom AS fournisseur_nom,
+                   f.raison_sociale AS fournisseur_nom,
                    r_type.libelle AS type_marche_libelle,
                    r_statut.libelle AS statut_libelle
             FROM marches m
