@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajouter un Fournisseur</title>
+    <link rel="stylesheet" href="public/css/fournisseurs.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Ajouter un Fournisseur</h1>
+        <form action="/fournisseurs/ajouter" method="POST">
+            <div class="form-group">
+                <label for="raisonSociale">Raison Sociale :</label>
+                <input type="text" id="raisonSociale" name="raisonSociale" required>
+            </div>
+            <div class="form-group">
+                <label for="ice">Numéro ICE :</label>
+                <input type="text" id="ice" name="ice" required>
+            </div>
+            <div class="form-group">
+                <label for="adresse">Adresse :</label>
+                <input type="text" id="adresse" name="adresse" required>
+            </div>
+            <div class="form-group">
+                <label for="telephone">Téléphone :</label>
+                <input type="tel" id="telephone" name="telephone" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Adresse Électronique :</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="domaineActivite">Domaine d'Activité :</label>
+                <input type="text" id="domaineActivite" name="domaineActivite" required>
+            </div>
+            <button type="submit" class="btn-submit">Ajouter</button>
+            <a href="/fournisseurs" class="btn-annuler">Annuler</a>
+        </form>
+    </div>
+</body>
+</html>

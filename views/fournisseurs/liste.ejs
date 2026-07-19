@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Fournisseurs</title>
+    <link rel="stylesheet" href="public/css/fournisseurs.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Liste des Fournisseurs</h1>
+        <a href="/fournisseurs/add" class="btn-ajouter">Ajouter un fournisseur</a>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Raison Sociale</th>
+                    <th>Numéro ICE</th>
+                    <th>Adresse</th>
+                    <th>Téléphone</th>
+                    <th>Email</th>
+                    <th>Domaine d'Activité</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% fournisseurs.forEach(fournisseur => { %>
+                    <tr>
+                        <td><%= fournisseur.raisonSociale %></td>
+                        <td><%= fournisseur.ice %></td>
+                        <td><%= fournisseur.adresse %></td>
+                        <td><%= fournisseur.telephone %></td>
+                        <td><%= fournisseur.email %></td>
+                        <td><%= fournisseur.domaineActivite %></td>
+                        <td>
+                            <a href="views/fournisseurs/detail.ejs/<%= fournisseur.id %>" class="btn-details">Détails</a>
+                            <a href="views/fournisseurs/modify.ejs/<%= fournisseur.id %>" class="btn-modifier">Modifier</a>
+                            <a href="/fournisseurs/supprimer/<%= fournisseur.id %>" class="btn-supprimer" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce fournisseur ?')">Supprimer</a>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+    <script src="public/js/fournisseurs.js"></script>
+</body>
+</html>
