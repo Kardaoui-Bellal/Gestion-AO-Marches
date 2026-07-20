@@ -1,78 +1,59 @@
-const bcrypt = require('bcrypt');
-const pool = require('../config/db');
+const bcrypt = require("bcrypt");
+const Utilisateur = require("../models/utilisateurModel");
+const Referentiel = require("../models/referentielModel");
+const Historique = require("../models/historiqueModel");
 
-async function login(req, res) {
-  try {
-    const { login, mot_de_passe } = req.body;
+const authController = {
+    showLogin(req, res) {
+        res.render("auth/login", { error: null });
+    },
 
-    if (!login || !mot_de_passe) {
-      return res.status(400).json({ message: 'Login et mot de passe requis.' });
-    }
+    async login(req, res) {
+        const { email, mot_de_passe } = req.body;
 
-    const [rows] = await pool.query(
-      'SELECT id_utilisateur, nom, login, mot_de_passe, profil, actif FROM utilisateurs WHERE login = ? LIMIT 1',
-      [login]
-    );
+        try {
+            const user = await Utilisateur.findByEmail(email);
 
-    if (rows.length === 0) {
-      return res.status(401).json({ message: 'Identifiants incorrects.' });
-    }
+            if (!user || !user.actif) {
+                return res.render("auth/login", { error: "Identifiants invalides." });
+            }
 
-    const utilisateur = rows[0];
+            const match = await bcrypt.compare(mot_de_passe, user.mot_de_passe_hash);
+            if (!match) {
+                return res.render("auth/login", { error: "Identifiants invalides." });
+            }
 
-    if (!utilisateur.actif) {
-      return res.status(403).json({ message: 'Ce compte a été désactivé. Contactez un administrateur.' });
-    }
+            const role = await Referentiel.getById(user.profil_id);
 
-    const motDePasseValide = await bcrypt.compare(mot_de_passe, utilisateur.mot_de_passe);
+            req.session.user = {
+                id_utilisateur: user.id_utilisateur,
+                nom: user.nom,
+                email: user.email,
+                role_code: role.code, // 'ADMIN' | 'GESTIONNAIRE' | 'CONSULTANT'
+                role_libelle: role.libelle,
+            };
 
-    if (!motDePasseValide) {
-      return res.status(401).json({ message: 'Identifiants incorrects.' });
-    }
+            await Historique.log({
+                utilisateur_id: user.id_utilisateur,
+                action: "INSERT",
+                entite_type: "SESSION",
+                entite_id: user.id_utilisateur,
+                details: "Connexion utilisateur",
+            });
 
-    // Régénère l'identifiant de session pour éviter la fixation de session
-    req.session.regenerate((err) => {
-      if (err) {
-        console.error('Erreur régénération session:', err);
-        return res.status(500).json({ message: 'Erreur serveur.' });
-      }
+            return res.redirect("/dashboard");
+        } catch (err) {
+            console.error(err);
+            return res.render("auth/login", { error: "Une erreur est survenue." });
+        }
+    },
 
-      req.session.user = {
-        id: utilisateur.id_utilisateur,
-        nom: utilisateur.nom,
-        login: utilisateur.login,
-        profil: utilisateur.profil
-      };
+    logout(req, res) {
+        req.session.destroy(() => {
+            res.clearCookie("ao_marches_sid");
+            res.redirect("/auth/login");
+        });
+    },
+};
 
-      // Redirection selon le profil (Admin / Consultation) -> même page d'accueil,
-      // les droits sont ensuite gérés par les middlewares sur chaque route.
-      return res.status(200).json({
-        message: 'Connexion réussie.',
-        redirect: '/dashboard.html',
-        user: req.session.user
-      });
-    });
-  } catch (error) {
-    console.error('Erreur login:', error);
-    return res.status(500).json({ message: 'Erreur serveur.' });
-  }
-}
-
-function logout(req, res) {
-  req.session.destroy((err) => {
-    if (err) {
-      return res.status(500).json({ message: 'Erreur lors de la déconnexion.' });
-    }
-    res.clearCookie('connect.sid');
-    return res.status(200).json({ message: 'Déconnexion réussie.', redirect: '/login.html' });
-  });
-}
-
-function me(req, res) {
-  if (req.session && req.session.user) {
-    return res.status(200).json({ user: req.session.user });
-  }
-  return res.status(401).json({ message: 'Non authentifié.' });
-}
-
-module.exports = { login, logout, me };
+module.exports = authController;
