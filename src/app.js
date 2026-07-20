@@ -37,6 +37,7 @@ app.use("/checklist", require("./routes/checklistRoutes"));
 app.use("/documents", require("./routes/documentRoutes"));
 app.use("/documents", require("./routes/documentRoutes"));
 app.use(require("./src/middlewares/errorHandler")); // or wherever this exports multerErrorHandler
+app.use("/historique", require("./routes/historiqueRoutes"));
 
 app.get("/dashboard", isAuthenticated, (req, res) => {
     res.render("dashboard/index", {
