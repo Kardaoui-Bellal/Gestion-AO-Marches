@@ -21,6 +21,13 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use((req, res, next) => {
+    res.locals.currentUser = req.session.user || null;
+    next();
+});
+
+app.use(require("./middlewares/historiqueMiddleware"));
+
 app.get("/", (req, res) => {
     if (req.session.user) {
         return res.redirect("/dashboard");
