@@ -1,0 +1,24 @@
+<!-- views/fournisseurs/details.ejs -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détails du Fournisseur</title>
+    <link rel="stylesheet" href="public/css/fournisseurs.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Détails du Fournisseur</h1>
+        <div class="details">
+            <p><strong>Raison Sociale :</strong> <%= fournisseur.raisonSociale %></p>
+            <p><strong>Numéro ICE :</strong> <%= fournisseur.ice %></p>
+            <p><strong>Adresse :</strong> <%= fournisseur.adresse %></p>
+            <p><strong>Téléphone :</strong> <%= fournisseur.telephone %></p>
+            <p><strong>Adresse Électronique :</strong> <%= fournisseur.email %></p>
+            <p><strong>Domaine d'Activité :</strong> <%= fournisseur.domaineActivite %></p>
+        </div>
+        <a href="/fournisseurs" class="btn-retour">Retour à la liste</a>
+    </div>
+</body>
+</html>

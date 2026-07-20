@@ -1,0 +1,43 @@
+<!-- views/fournisseurs/modifier.ejs -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier un Fournisseur</title>
+    <link rel="stylesheet" href="public/css/fournisseurs.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Modifier un Fournisseur</h1>
+        <form action="/fournisseurs/modifier/<%= fournisseur.id %>" method="POST">
+            <div class="form-group">
+                <label for="raisonSociale">Raison Sociale :</label>
+                <input type="text" id="raisonSociale" name="raisonSociale" value="<%= fournisseur.raisonSociale %>" required>
+            </div>
+            <div class="form-group">
+                <label for="ice">Numéro ICE :</label>
+                <input type="text" id="ice" name="ice" value="<%= fournisseur.ice %>" required>
+            </div>
+            <div class="form-group">
+                <label for="adresse">Adresse :</label>
+                <input type="text" id="adresse" name="adresse" value="<%= fournisseur.adresse %>" required>
+            </div>
+            <div class="form-group">
+                <label for="telephone">Téléphone :</label>
+                <input type="tel" id="telephone" name="telephone" value="<%= fournisseur.telephone %>" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Adresse Électronique :</label>
+                <input type="email" id="email" name="email" value="<%= fournisseur.email %>" required>
+            </div>
+            <div class="form-group">
+                <label for="domaineActivite">Domaine d'Activité :</label>
+                <input type="text" id="domaineActivite" name="domaineActivite" value="<%= fournisseur.domaineActivite %>" required>
+            </div>
+            <button type="submit" class="btn-submit">Modifier</button>
+            <a href="/fournisseurs" class="btn-annuler">Annuler</a>
+        </form>
+    </div>
+</body>
+</html>
