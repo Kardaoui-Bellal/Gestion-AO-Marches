@@ -30,6 +30,7 @@ app.get("/", (req, res) => {
 app.use("/auth", authRoutes);
 app.use("/referentiels", require("./routes/referentielRoutes"));
 app.use("/fournisseurs", require("./routes/fournisseurRoutes"));
+app.use("/appels-offres", require("./routes/appelOffreRoutes"));
 
 app.get("/dashboard", isAuthenticated, (req, res) => {
     res.render("dashboard/index", {
