@@ -28,6 +28,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/auth", authRoutes);
+app.use("/referentiels", require("./routes/referentielRoutes"));
+app.use("/fournisseurs", require("./routes/fournisseurRoutes"));
 
 app.get("/dashboard", isAuthenticated, (req, res) => {
     res.render("dashboard/index", {
