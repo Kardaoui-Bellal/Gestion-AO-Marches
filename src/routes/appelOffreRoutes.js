@@ -2,6 +2,11 @@ const express = require("express");
 const router = express.Router();
 const appelOffreController = require("../controllers/appelOffreController");
 const { requireRole } = require("../middlewares/roleMiddleware");
+const offreController = require("../controllers/offreController");
+
+// ...existing routes...
+router.get("/:aoId/offres/new", requireRole("ADMIN", "GESTIONNAIRE"), offreController.showCreateForm);
+router.post("/:aoId/offres", requireRole("ADMIN", "GESTIONNAIRE"), offreController.create);
 
 router.get("/", requireRole("ADMIN", "GESTIONNAIRE", "CONSULTANT"), appelOffreController.list);
 router.get("/new", requireRole("ADMIN", "GESTIONNAIRE"), appelOffreController.showCreateForm);
