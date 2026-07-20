@@ -1,93 +1,103 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %></title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="public/css/login.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= Connexion-GAOMI %></title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="public/css/login.css" />
+  </head>
+  <body>
     <div class="container">
-        <!-- Partie gauche : Informations -->
-        <div class="info-section">
-            <div class="logo-section">
-                <div class="logo">
-                    <img src="C:\Users\GAMETECH\Documents\ormvasm-ao-marches\public\img\LOGO_OMRVASM.png" alt="Logo ORMVA Souss-Massa">
-                </div>
-                <div class="logo-text">
-                    <h2>Office Régional de Mise en Valeur Agricole du Souss-Massa</h2>
-                    <p>Bureau Informatique</p>
-                </div>
-            </div>
-
-            <div class="info-content">
-                <h1>Gestion des Appels d'Offres et Marchés Informatique</h1>
-                <p>Application de gestion et de suivi des appels d'offres, marchés, fournisseurs, documents et échéances informatiques.</p>
-            </div>
+      <!-- Partie gauche : Informations -->
+      <div class="info-section">
+        <div class="logo-section">
+          <div class="logo">
+            <img
+              src="C:\Users\GAMETECH\Documents\ormvasm-ao-marches\public\img\LOGO_OMRVASM.png"
+              alt="Logo ORMVA Souss-Massa"
+            />
+          </div>
+          <div class="logo-text">
+            <h2>Office Régional de Mise en Valeur Agricole du Souss-Massa</h2>
+            <p>Bureau Informatique</p>
+          </div>
         </div>
-
-        <!-- Partie droite : Formulaire de connexion -->
-        <div class="login-section">
-            <form class="login-form">
-                <div class="login-header">
-                    <h2>Connexion</h2>
-                    <p>Bienvenue ! Veuillez vous connecter pour continuer.</p>
-                </div>
-
-                <div class="form-group">
-                    <label for="username">Nom d'utilisateur</label>
-                    <div class="input-wrapper">
-                        <i class="fas fa-user icon"></i>
-                        <input type="text" id="username" placeholder="Entrez votre nom d'utilisateur" required>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="password">Mot de passe</label>
-                    <div class="input-wrapper">
-                        <i class="fas fa-lock icon"></i>
-                        <input type="password" id="password" placeholder="Entrez votre mot de passe" required>
-                    </div>
-                </div>
-
-                <div class="forgot-password">
-                    <a href="#" id="forgot-password-link">Mot de passe oublié ?</a>
-                </div>
-
-                <button type="submit" class="login-btn">
-                    Se connecter
-                    <i class="fas fa-arrow-right"></i>
-                </button>
-
-                <div class="security-notice">
-                    <i class="fas fa-lock"></i>
-                    Accès réservé au personnel autorisé
-                </div>
-            </form>
+        <div class="info-content">
+          <h1>Gestion des Appels d'Offres et Marchés Informatique</h1>
+          <p>
+            Application de gestion et de suivi des appels d'offres, marchés,
+            fournisseurs, documents et échéances informatiques.
+          </p>
         </div>
+      </div>
+      <!-- Partie droite : Formulaire de connexion -->
+      <div class="login-section">
+        <form class="login-form">
+          <div class="login-header">
+            <h2>Connexion</h2>
+            <p>Bienvenue ! Veuillez vous connecter pour continuer.</p>
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <div class="input-wrapper">
+              <i class="fas fa-user icon"></i>
+              <input
+                type="email"
+                name="email"
+                placeholder="Votre adresse email"
+                required
+              />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="password">Mot de passe</label>
+            <div class="input-wrapper">
+              <i class="fas fa-lock icon"></i>
+              <input
+                type="password"
+                name="password"
+                placeholder="Votre mot de passe"
+                required
+              />
+            </div>
+          </div>
+          <div class="forgot-password">
+            <a href="#" id="forgot-password-link">Mot de passe oublié ?</a>
+          </div>
+          <button type="submit" class="login-btn">
+            Se connecter <i class="fas fa-arrow-right"></i>
+          </button>
+          <div class="security-notice">
+            <i class="fas fa-lock"></i> Accès réservé au personnel autorisé
+          </div>
+        </form>
+      </div>
     </div>
-
     <!-- Modale pour "Mot de passe oublié ?" -->
     <div id="forgot-password-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Mot de passe oublié ?</h2>
-                <span class="close-modal">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div class="msg-icon">
-                    <i class="fas fa-info-circle"></i>
-                </div>
-                <p>Veuillez consulter le bureau informatique pour obtenir un nouveau mot de passe.</p>
-            </div>
-            <div class="modal-footer">
-                <button class="msg-btn" id="close-modal-btn">
-                    Retour à la connexion
-                </button>
-            </div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Mot de passe oublié ?</h2>
+          <span class="close-modal">&times;</span>
         </div>
+        <div class="modal-body">
+          <div class="msg-icon"><i class="fas fa-info-circle"></i></div>
+          <p>
+            Veuillez consulter le bureau informatique pour obtenir un nouveau
+            mot de passe.
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button class="msg-btn" id="close-modal-btn">
+            Retour à la connexion
+          </button>
+        </div>
+      </div>
     </div>
     <script src="public/js/login.js"></script>
-</body>
+  </body>
 </html>
