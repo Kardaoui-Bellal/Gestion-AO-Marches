@@ -32,6 +32,7 @@ app.use("/referentiels", require("./routes/referentielRoutes"));
 app.use("/fournisseurs", require("./routes/fournisseurRoutes"));
 app.use("/appels-offres", require("./routes/appelOffreRoutes"));
 app.use("/offres", require("./routes/offreRoutes"));
+app.use("/marches", require("./routes/marcheRoutes"));
 
 app.get("/dashboard", isAuthenticated, (req, res) => {
     res.render("dashboard/index", {

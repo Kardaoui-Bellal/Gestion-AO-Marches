@@ -112,6 +112,25 @@ const Marche = {
         const [rows] = await pool.execute(query, params);
         return rows;
     },
+    
+    async getEcheancesProches(daysAhead) {
+    const query = `
+        SELECT m.id_marche, m.numero, m.objet, m.montant, m.date_prochaine_echeance,
+               f.raison_sociale AS fournisseur_nom,
+               r_type.libelle AS type_marche_libelle,
+               r_statut.libelle AS statut_libelle
+        FROM marches m
+        INNER JOIN fournisseurs f ON m.fournisseur_id = f.id_fournisseur
+        INNER JOIN referentiels r_type ON m.type_marche_id = r_type.id_ref
+        INNER JOIN referentiels r_statut ON m.statut_id = r_statut.id_ref
+        WHERE m.date_prochaine_echeance IS NOT NULL
+          AND m.date_prochaine_echeance BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL ? DAY)
+        ORDER BY m.date_prochaine_echeance ASC
+    `;
+
+    const [rows] = await pool.execute(query, [daysAhead]);
+    return rows;
+},
 
     async update(id_marche, updateData) {
         const {
