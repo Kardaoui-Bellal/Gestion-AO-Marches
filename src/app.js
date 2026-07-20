@@ -1,10 +1,8 @@
-
 const express = require("express");
-const session = require("express-session");
 const path = require("path");
 
+const sessionMiddleware = require("../config/session");
 const authRoutes = require("./routes/authRoutes");
-
 const { isAuthenticated } = require("./middlewares/authMiddleware");
 
 const app = express();
@@ -15,40 +13,32 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "../public")));
 
-app.use(
-    session({
-        secret: process.env.SESSION_SECRET,
-        resave: false,
-        saveUninitialized: false,
-        cookie: {
-            httpOnly: true,
-            secure: false,          
-            maxAge: 1000 * 60 * 60 * 8 
-        }
-    })
-);
+app.use(sessionMiddleware);
+
+app.use((req, res, next) => {
+    res.locals.currentUser = req.session.user || null;
+    next();
+});
 
 app.get("/", (req, res) => {
     if (req.session.user) {
         return res.redirect("/dashboard");
     }
-
-    res.redirect("/login");
+    res.redirect("/auth/login");
 });
 
-app.use("/", authRoutes);
+app.use("/auth", authRoutes);
 
 app.get("/dashboard", isAuthenticated, (req, res) => {
     res.render("dashboard/index", {
         user: req.session.user,
-        title: "Tableau de bord"
+        title: "Tableau de bord",
     });
 });
 
-
 app.use((req, res) => {
     res.status(404).render("404", {
-        title: "Page non trouvée"
+        title: "Page non trouvée",
     });
 });
 
