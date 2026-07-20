@@ -97,7 +97,7 @@ const exportController = {
 
       await Historique.log({
         utilisateur_id: req.session.user.id_utilisateur,
-        action: "UPLOAD", // no dedicated EXPORT action in the enum — see note below
+        action: "EXPORT", // no dedicated EXPORT action in the enum — see note below
         entite_type: "APPEL_OFFRE",
         entite_id: 0,
         details: `Export PDF de la liste des appels d'offres (${appelsOffres.length} lignes)`,
@@ -186,7 +186,7 @@ const exportController = {
 
       await Historique.log({
         utilisateur_id: req.session.user.id_utilisateur,
-        action: "UPLOAD",
+        action: "EXPORT",
         entite_type: "APPEL_OFFRE",
         entite_id: 0,
         details: `Export Excel de la liste des appels d'offres (${appelsOffres.length} lignes)`,
@@ -287,7 +287,7 @@ const exportController = {
 
       await Historique.log({
         utilisateur_id: req.session.user.id_utilisateur,
-        action: "UPLOAD",
+        action: "EXPORT",
         entite_type: "MARCHE",
         entite_id: 0,
         details: `Export PDF de la liste des marchés (${marches.length} lignes)`,
@@ -365,7 +365,7 @@ const exportController = {
 
       await Historique.log({
         utilisateur_id: req.session.user.id_utilisateur,
-        action: "UPLOAD",
+        action: "EXPORT",
         entite_type: "MARCHE",
         entite_id: 0,
         details: `Export Excel de la liste des marchés (${marches.length} lignes)`,
@@ -547,7 +547,7 @@ const exportController = {
 
       await Historique.log({
         utilisateur_id: req.session.user.id_utilisateur,
-        action: "UPLOAD", // see note about EXPORT enum from before
+        action: "EXPORT", // see note about EXPORT enum from before
         entite_type: "MARCHE",
         entite_id: id_marche,
         details: `Export de la fiche marché ${marche.numero}`,
