@@ -4,6 +4,7 @@ const path = require("path");
 const sessionMiddleware = require("../config/session");
 const authRoutes = require("./routes/authRoutes");
 const { isAuthenticated } = require("./middlewares/authMiddleware");
+const multerErrorHandler = require("./middlewares/errorHandler");
 
 const app = express();
 
@@ -28,18 +29,6 @@ app.get("/", (req, res) => {
 });
 
 app.use("/auth", authRoutes);
-app.use("/referentiels", require("./routes/referentielRoutes"));
-app.use("/fournisseurs", require("./routes/fournisseurRoutes"));
-app.use("/appels-offres", require("./routes/appelOffreRoutes"));
-app.use("/offres", require("./routes/offreRoutes"));
-app.use("/marches", require("./routes/marcheRoutes"));
-app.use("/checklist", require("./routes/checklistRoutes"));
-app.use("/documents", require("./routes/documentRoutes"));
-app.use("/documents", require("./routes/documentRoutes"));
-app.use(require("./src/middlewares/errorHandler")); // or wherever this exports multerErrorHandler
-app.use("/historique", require("./routes/historiqueRoutes"));
-app.use("/utilisateurs", require("./routes/utilisateurRoutes"));
-app.use("/export", require("./routes/exportRoutes"));
 
 app.get("/dashboard", isAuthenticated, (req, res) => {
     res.render("dashboard/index", {
@@ -48,10 +37,25 @@ app.get("/dashboard", isAuthenticated, (req, res) => {
     });
 });
 
+app.use("/referentiels", require("./routes/referentielRoutes"));
+app.use("/fournisseurs", require("./routes/fournisseurRoutes"));
+app.use("/appels-offres", require("./routes/appelOffreRoutes"));
+app.use("/offres", require("./routes/offreRoutes"));
+app.use("/marches", require("./routes/marcheRoutes"));
+app.use("/checklist", require("./routes/checklistRoutes"));
+app.use("/documents", require("./routes/documentRoutes"));
+app.use("/historique", require("./routes/historiqueRoutes"));
+app.use("/utilisateurs", require("./routes/utilisateurRoutes"));
+app.use("/export", require("./routes/exportRoutes"));
+
+// 404 — no route matched
 app.use((req, res) => {
     res.status(404).render("404", {
         title: "Page non trouvée",
     });
 });
+
+// error handler — MUST be last, MUST have 4 params
+app.use(multerErrorHandler);
 
 module.exports = app;
