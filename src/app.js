@@ -34,6 +34,9 @@ app.use("/appels-offres", require("./routes/appelOffreRoutes"));
 app.use("/offres", require("./routes/offreRoutes"));
 app.use("/marches", require("./routes/marcheRoutes"));
 app.use("/checklist", require("./routes/checklistRoutes"));
+app.use("/documents", require("./routes/documentRoutes"));
+app.use("/documents", require("./routes/documentRoutes"));
+app.use(require("./src/middlewares/errorHandler")); // or wherever this exports multerErrorHandler
 
 app.get("/dashboard", isAuthenticated, (req, res) => {
     res.render("dashboard/index", {
