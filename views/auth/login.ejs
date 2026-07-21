@@ -3,164 +3,154 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Connexion - ORMVA/SM Bureau Informatique</title>
-    <link rel="stylesheet" href="/css/style.css" />
-    <link rel="stylesheet" href="/css/login.css" />
+    <title>Connexion — ORMVA Souss Massa</title>
+    <link
+      rel="stylesheet"
+      href="C:\Users\GAMETECH\Documents\ormvasm-ao-marches\public\css\login.css"
+    />
   </head>
   <body>
-    <div class="container">
-      <!-- LEFT PANEL -->
-      <div class="left-panel">
-        <div class="brand">
-          <div class="logo">
-            <svg
-              viewBox="0 0 64 64"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M32 6C24 14 24 24 32 32C40 24 40 14 32 6Z"
-                fill="#4caf50"
-              />
-              <path
-                d="M6 32C14 24 24 24 32 32C24 40 14 40 6 32Z"
-                fill="#ff8c00"
-              />
-              <path
-                d="M58 32C50 24 40 24 32 32C40 40 50 40 58 32Z"
-                fill="#2c4f8c"
-              />
-              <circle cx="32" cy="32" r="5" fill="#1e3a6d" />
-            </svg>
-          </div>
-          <div class="brand-text">
-            <h1>Office Régional de Mise en Valeur Agricole du Souss-Massa</h1>
-            <p>Bureau Informatique</p>
-          </div>
+    <div class="card">
+      <!-- LEFT: brand panel -->
+      <div class="panel-left">
+        <svg class="network" viewBox="0 0 500 500" preserveAspectRatio="none">
+          <g stroke="#ffffff" stroke-width="1" opacity="0.5">
+            <line x1="20" y1="470" x2="180" y2="330" />
+            <line x1="180" y1="330" x2="330" y2="380" />
+            <line x1="330" y1="380" x2="470" y2="230" />
+            <line x1="180" y1="330" x2="120" y2="200" />
+            <line x1="330" y1="380" x2="250" y2="460" />
+          </g>
+          <g fill="#ffffff">
+            <circle cx="20" cy="470" r="5" />
+            <circle cx="180" cy="330" r="5" />
+            <circle cx="330" cy="380" r="5" />
+            <circle cx="470" cy="230" r="5" />
+            <circle cx="120" cy="200" r="5" />
+            <circle cx="250" cy="460" r="5" />
+          </g>
+        </svg>
+
+        <div class="logo-badge">
+          <img
+            src="C:\Users\GAMETECH\Documents\ormvasm-ao-marches\public\img\LOGO_OMRVASM.png"
+            alt="Logo ORMVA Souss Massa"
+            style="
+              width: 100%;
+              height: 100%;
+              object-fit: contain;
+              border-radius: 16px;
+            "
+          />
         </div>
 
-        <div class="hero">
-          <h2>Gestion des Appels d'Offres et Marchés Informatique</h2>
-          <p>
-            Application de gestion et de suivi des appels d'offres, marchés,
-            fournisseurs, documents et échéances informatiques.
-          </p>
+        <div class="eyebrow">ORMVA Souss Massa</div>
+        <br />
+        <h1>
+          Application de Gestion des Appels d'Offres<br />et des Marchés
+          Informatiques
+        </h1>
+        <br />
+
+        <div class="badges">
+          <span class="badge"> Accès sécurisé </span>
+          <span class="badge">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M12 2 2 7v2h20V7L12 2zM4 10v9H2v2h20v-2h-2v-9h-2v9h-3v-9h-2v9h-3v-9H6v9H4v-9H4z"
+              />
+            </svg>
+            Administration publique
+          </span>
         </div>
       </div>
 
-      <!-- RIGHT PANEL -->
-      <div class="right-panel">
-        <div class="right-inner">
-          <h2>Connexion</h2>
-          <p class="subtitle">
-            Bienvenue ! Veuillez vous connecter pour continuer.
-          </p>
+      <!-- RIGHT: login form -->
+      <div class="panel-right">
+        <div class="org-logo">
+          <img
+            src="C:\Users\GAMETECH\Documents\ormvasm-ao-marches\public\img\LOGO_OMRVASM.png"
+            alt="Logo ORMVA Souss Massa"
+            style="
+              width: 100%;
+              height: 100%;
+              object-fit: contain;
+              border-radius: 16px;
+            "
+          />
+        </div>
 
-          <div class="error-msg" id="errorMsg">
-            Email ou mot de passe incorrect.
+        <h2>Connexion</h2>
+        <p class="subtitle">
+          Veuillez vous authentifier pour accéder au système.
+        </p>
+
+        <div class="error-msg" id="errorMsg">
+          Nom d'utilisateur ou mot de passe incorrect.
+        </div>
+
+        <form id="loginForm" novalidate>
+          <label for="email">Email</label>
+          <div class="field">
+            <svg class="icon-left" viewBox="0 0 24 24">
+              <path
+                d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zM4 22a8 8 0 0 1 16 0"
+              />
+            </svg>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="admin@ormvasm.ma"
+              autocomplete="email"
+              required
+            />
           </div>
 
-          <form id="loginForm" novalidate>
-            <div class="field">
-              <label for="email">Email</label>
-              <div class="input-wrap">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <circle cx="12" cy="8" r="4" />
-                  <path d="M4 20c0-4 4-6 8-6s8 2 8 6" />
-                </svg>
-                <input
-                  type="email"
-                  id="email"
-                  placeholder="Votre email"
-                  required
-                  autocomplete="username"
-                />
-              </div>
-            </div>
-
-            <div class="field">
-              <label for="password">Mot de passe</label>
-              <div class="input-wrap">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <rect x="5" y="11" width="14" height="9" rx="2" />
-                  <path d="M8 11V7a4 4 0 0 1 8 0v4" />
-                </svg>
-                <input
-                  type="password"
-                  id="password"
-                  placeholder="Votre mot de passe"
-                  required
-                  autocomplete="current-password"
-                />
-                <button
-                  type="button"
-                  class="toggle-pass"
-                  id="togglePass"
-                  aria-label="Afficher le mot de passe"
-                >
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    width="18"
-                    height="18"
-                  >
-                    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" />
-                    <circle cx="12" cy="12" r="3" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-
-            <div class="row-between">
-              <a href="#" id="forgotLink">Mot de passe oublié ?</a>
-            </div>
-
-            <button type="submit" class="btn-login" id="loginBtn">
-              <span id="btnText">Se connecter</span>
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                width="18"
-                height="18"
-              >
-                <path d="M5 12h14M13 6l6 6-6 6" />
-              </svg>
-            </button>
-          </form>
-
-          <div class="footer-note">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              width="14"
-              height="14"
-            >
+          <label for="password">Mot de passe</label>
+          <div class="field">
+            <svg class="icon-left" viewBox="0 0 24 24">
               <rect x="5" y="11" width="14" height="9" rx="2" />
               <path d="M8 11V7a4 4 0 0 1 8 0v4" />
             </svg>
-            Accès réservé au personnel autorisé
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="••••••••"
+              autocomplete="current-password"
+              required
+            />
+            <button
+              type="button"
+              class="toggle-eye"
+              id="togglePass"
+              aria-label="Afficher le mot de passe"
+            >
+              <svg viewBox="0 0 24 24">
+                <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </button>
           </div>
-        </div>
+
+          <div class="row-between">
+            <a href="#" id="forgotLink">Mot de passe oublié ?</a>
+          </div>
+
+          <button type="submit" class="submit" id="loginBtn">
+            <span id="btnText">Se connecter</span>
+          </button>
+        </form>
+
+        <footer>© 2026 ORMVA Souss Massa<br /></footer>
       </div>
     </div>
 
-    <script src="/js/main.js"></script>
-    <script src="/js/login.js"></script>
+    <script
+      src="C:\Users\GAMETECH\Documents\ormvasm-ao-marches\public\js\login.js"
+    >
+     
+    </script>
   </body>
 </html>
