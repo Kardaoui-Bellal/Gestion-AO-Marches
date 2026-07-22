@@ -1,1328 +1,794 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>
-      <%= typeof title !== 'undefined' ? title : "Gestion des Appels d'Offres —
-      ORMVA/SM" %>
-    </title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      :root {
-        --bg: #f6f4ee;
-        --surface: #ffffff;
-        --surface-2: #fbfaf6;
-        --border: #e1ddd2;
-        --primary: #1f4b3f;
-        --primary-light: #2d6a5c;
-        --primary-dark: #153730;
-        --accent: #c08a2e;
-        --accent-light: #fbf1de;
-        --text: #1c231f;
-        --text-muted: #5b6b62;
-        --text-faint: #8b9188;
-        --rust: #a6432b;
-        --rust-bg: #f6e4df;
-        --radius: 10px;
-        --shadow:
-          0 1px 2px rgba(28, 35, 31, 0.06), 0 4px 16px rgba(28, 35, 31, 0.06);
-        --shadow-lg: 0 8px 32px rgba(28, 35, 31, 0.16);
-        font-family: "Inter", sans-serif;
-      }
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
-      body {
-        background: var(--bg);
-        color: var(--text);
-        min-height: 100vh;
-        line-height: 1.5;
-        -webkit-font-smoothing: antialiased;
-      }
-      .wrap {
-        max-width: 1280px;
-        margin: 0 auto;
-        padding: 28px 32px 80px;
-      }
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><%= typeof title !== 'undefined' ? title : "Gestion des Appels d'Offres — ORMVA/SM" %></title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f4ee;
+  --surface:#ffffff;
+  --surface-2:#fbfaf6;
+  --border:#e1ddd2;
+  --primary:#1f4b3f;
+  --primary-light:#2d6a5c;
+  --primary-dark:#153730;
+  --accent:#c08a2e;
+  --accent-light:#fbf1de;
+  --text:#1c231f;
+  --text-muted:#5b6b62;
+  --text-faint:#8b9188;
+  --rust:#a6432b;
+  --rust-bg:#f6e4df;
+  --radius:10px;
+  --shadow:0 1px 2px rgba(28,35,31,.06), 0 4px 16px rgba(28,35,31,.06);
+  --shadow-lg:0 8px 32px rgba(28,35,31,.16);
+  font-family:'Inter',sans-serif;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1280px; margin:0 auto; padding:28px 32px 80px;}
 
-      .topbar {
-        display: flex;
-        align-items: flex-end;
-        justify-content: space-between;
-        gap: 24px;
-        margin-bottom: 28px;
-        flex-wrap: wrap;
-      }
-      .brand {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-      }
-      .brand-mark {
-        width: 44px;
-        height: 44px;
-        border-radius: 9px;
-        background: linear-gradient(
-          155deg,
-          var(--primary) 0%,
-          var(--primary-light) 100%
-        );
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #fff;
-        font-family: "Fraunces", serif;
-        font-weight: 700;
-        font-size: 18px;
-        flex-shrink: 0;
-      }
-      .brand-text .eyebrow {
-        font-size: 11px;
-        letter-spacing: 0.09em;
-        text-transform: uppercase;
-        color: var(--text-muted);
-        font-weight: 600;
-        margin-bottom: 2px;
-      }
-      .brand-text h1 {
-        font-family: "Fraunces", serif;
-        font-weight: 600;
-        font-size: 26px;
-        color: var(--primary-dark);
-        letter-spacing: -0.01em;
-      }
-      .btn {
-        border: none;
-        border-radius: 8px;
-        font-family: "Inter", sans-serif;
-        font-weight: 600;
-        font-size: 14px;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        transition:
-          transform 0.12s ease,
-          box-shadow 0.12s ease,
-          background 0.15s ease;
-        white-space: nowrap;
-      }
-      .btn:active {
-        transform: translateY(1px);
-      }
-      .btn-primary {
-        background: var(--primary);
-        color: #fff;
-        padding: 11px 20px;
-        box-shadow: 0 1px 2px rgba(31, 75, 63, 0.15);
-      }
-      .btn-primary:hover {
-        background: var(--primary-dark);
-      }
-      .btn-ghost {
-        background: transparent;
-        color: var(--text-muted);
-        padding: 9px 14px;
-        border: 1px solid var(--border);
-      }
-      .btn-ghost:hover {
-        border-color: var(--primary-light);
-        color: var(--primary-dark);
-      }
-      .btn-danger {
-        background: var(--rust);
-        color: #fff;
-        padding: 10px 18px;
-      }
-      .btn-danger:hover {
-        background: #8a3623;
-      }
-      .btn-sm {
-        padding: 6px 10px;
-        font-size: 12.5px;
-        border-radius: 6px;
-      }
+.topbar{
+  display:flex; align-items:flex-end; justify-content:space-between;
+  gap:24px; margin-bottom:28px; flex-wrap:wrap;
+}
+.brand{display:flex; align-items:center; gap:14px;}
+.brand-mark{
+  width:44px; height:44px; border-radius:9px;
+  background:linear-gradient(155deg, var(--primary) 0%, var(--primary-light) 100%);
+  display:flex; align-items:center; justify-content:center;
+  color:#fff; font-family:'Fraunces',serif; font-weight:700; font-size:18px;
+  flex-shrink:0;
+}
+.brand-text .eyebrow{
+  font-size:11px; letter-spacing:.09em; text-transform:uppercase;
+  color:var(--text-muted); font-weight:600; margin-bottom:2px;
+}
+.brand-text h1{
+  font-family:'Fraunces',serif; font-weight:600; font-size:26px; color:var(--primary-dark);
+  letter-spacing:-.01em;
+}
+.btn{
+  border:none; border-radius:8px; font-family:'Inter',sans-serif; font-weight:600;
+  font-size:14px; cursor:pointer; display:inline-flex; align-items:center; gap:8px;
+  transition:transform .12s ease, box-shadow .12s ease, background .15s ease;
+  white-space:nowrap;
+}
+.btn:active{transform:translateY(1px);}
+.btn-primary{
+  background:var(--primary); color:#fff; padding:11px 20px;
+  box-shadow:0 1px 2px rgba(31,75,63,.15);
+}
+.btn-primary:hover{background:var(--primary-dark);}
+.btn-ghost{
+  background:transparent; color:var(--text-muted); padding:9px 14px; border:1px solid var(--border);
+}
+.btn-ghost:hover{border-color:var(--primary-light); color:var(--primary-dark);}
+.btn-danger{background:var(--rust); color:#fff; padding:10px 18px;}
+.btn-danger:hover{background:#8a3623;}
+.btn-sm{padding:6px 10px; font-size:12.5px; border-radius:6px;}
 
-      .stats {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 14px;
-        margin-bottom: 24px;
-      }
-      .stat-card {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        padding: 18px 20px;
-        box-shadow: var(--shadow);
-      }
-      .stat-card .num {
-        font-family: "JetBrains Mono", monospace;
-        font-size: 26px;
-        font-weight: 600;
-        color: var(--primary-dark);
-      }
-      .stat-card .label {
-        font-size: 12.5px;
-        color: var(--text-muted);
-        margin-top: 4px;
-        font-weight: 500;
-      }
-      .stat-card.accent .num {
-        color: var(--accent);
-      }
-      .stat-card.rust .num {
-        color: var(--rust);
-      }
+.stats{
+  display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:24px;
+}
+.stat-card{
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+  padding:18px 20px; box-shadow:var(--shadow);
+}
+.stat-card .num{
+  font-family:'JetBrains Mono',monospace; font-size:26px; font-weight:600; color:var(--primary-dark);
+}
+.stat-card .label{font-size:12.5px; color:var(--text-muted); margin-top:4px; font-weight:500;}
+.stat-card.accent .num{color:var(--accent);}
+.stat-card.rust .num{color:var(--rust);}
 
-      .toolbar {
-        display: flex;
-        gap: 10px;
-        align-items: center;
-        margin-bottom: 18px;
-        flex-wrap: wrap;
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        padding: 12px 14px;
-        box-shadow: var(--shadow);
-      }
-      .search-box {
-        position: relative;
-        flex: 1 1 240px;
-        min-width: 200px;
-      }
-      .search-box svg {
-        position: absolute;
-        left: 11px;
-        top: 50%;
-        transform: translateY(-50%);
-        opacity: 0.45;
-      }
-      .search-box input {
-        width: 100%;
-        padding: 9px 12px 9px 34px;
-        border: 1px solid var(--border);
-        border-radius: 7px;
-        font-size: 13.5px;
-        font-family: "Inter", sans-serif;
-        background: var(--surface-2);
-        color: var(--text);
-      }
-      .search-box input:focus {
-        outline: none;
-        border-color: var(--primary-light);
-        background: #fff;
-      }
-      select,
-      .toolbar input[type="date"] {
-        padding: 9px 10px;
-        border: 1px solid var(--border);
-        border-radius: 7px;
-        font-size: 13px;
-        font-family: "Inter", sans-serif;
-        color: var(--text);
-        background: var(--surface-2);
-      }
-      select:focus,
-      .toolbar input[type="date"]:focus {
-        outline: none;
-        border-color: var(--primary-light);
-      }
-      .toolbar .divider {
-        width: 1px;
-        height: 24px;
-        background: var(--border);
-      }
+.toolbar{
+  display:flex; gap:10px; align-items:center; margin-bottom:18px; flex-wrap:wrap;
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+  padding:12px 14px; box-shadow:var(--shadow);
+}
+.search-box{
+  position:relative; flex:1 1 240px; min-width:200px;
+}
+.search-box svg{position:absolute; left:11px; top:50%; transform:translateY(-50%); opacity:.45;}
+.search-box input{
+  width:100%; padding:9px 12px 9px 34px; border:1px solid var(--border); border-radius:7px;
+  font-size:13.5px; font-family:'Inter',sans-serif; background:var(--surface-2); color:var(--text);
+}
+.search-box input:focus{outline:none; border-color:var(--primary-light); background:#fff;}
+select, .toolbar input[type=date]{
+  padding:9px 10px; border:1px solid var(--border); border-radius:7px; font-size:13px;
+  font-family:'Inter',sans-serif; color:var(--text); background:var(--surface-2);
+}
+select:focus, .toolbar input[type=date]:focus{outline:none; border-color:var(--primary-light);}
+.toolbar .divider{width:1px; height:24px; background:var(--border);}
 
-      .table-card {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow);
-        overflow: hidden;
-      }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-      }
-      thead th {
-        text-align: left;
-        font-size: 11px;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-        color: var(--text-faint);
-        font-weight: 600;
-        padding: 13px 16px;
-        border-bottom: 1px solid var(--border);
-        background: var(--surface-2);
-        cursor: pointer;
-        user-select: none;
-      }
-      thead th:hover {
-        color: var(--primary-dark);
-      }
-      tbody tr {
-        border-bottom: 1px solid var(--border);
-        transition: background 0.1s ease;
-      }
-      tbody tr:last-child {
-        border-bottom: none;
-      }
-      tbody tr:hover {
-        background: var(--surface-2);
-      }
-      tbody td {
-        padding: 14px 16px;
-        font-size: 13.5px;
-        vertical-align: middle;
-      }
-      .ao-num {
-        font-family: "JetBrains Mono", monospace;
-        font-weight: 600;
-        color: var(--primary-dark);
-        font-size: 13px;
-      }
-      .ao-objet {
-        font-weight: 500;
-        max-width: 260px;
-      }
-      .ao-objet .sub {
-        color: var(--text-faint);
-        font-size: 12px;
-        margin-top: 2px;
-      }
-      .amount {
-        font-family: "JetBrains Mono", monospace;
-        font-size: 13px;
-      }
-      .type-pill {
-        display: inline-block;
-        padding: 3px 9px;
-        border-radius: 5px;
-        font-size: 11.5px;
-        font-weight: 600;
-        background: var(--accent-light);
-        color: #8a651f;
-        border: 1px solid #ecdcb3;
-      }
+.table-card{
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+  box-shadow:var(--shadow); overflow:hidden;
+}
+table{width:100%; border-collapse:collapse;}
+thead th{
+  text-align:left; font-size:11px; letter-spacing:.06em; text-transform:uppercase;
+  color:var(--text-faint); font-weight:600; padding:13px 16px; border-bottom:1px solid var(--border);
+  background:var(--surface-2); cursor:pointer; user-select:none;
+}
+thead th:hover{color:var(--primary-dark);}
+tbody tr{border-bottom:1px solid var(--border); transition:background .1s ease;}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:var(--surface-2);}
+tbody td{padding:14px 16px; font-size:13.5px; vertical-align:middle;}
+.ao-num{font-family:'JetBrains Mono',monospace; font-weight:600; color:var(--primary-dark); font-size:13px;}
+.ao-objet{font-weight:500; max-width:260px;}
+.ao-objet .sub{color:var(--text-faint); font-size:12px; margin-top:2px;}
+.amount{font-family:'JetBrains Mono',monospace; font-size:13px;}
+.type-pill{
+  display:inline-block; padding:3px 9px; border-radius:5px; font-size:11.5px; font-weight:600;
+  background:var(--accent-light); color:#8a651f; border:1px solid #ecdcb3;
+}
 
-      .status-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 4px 10px;
-        border-radius: 20px;
-        font-size: 11.5px;
-        font-weight: 600;
-      }
-      .dot {
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-      }
-      .st-preparation {
-        background: #efede6;
-        color: #6b7268;
-      }
-      .st-preparation .dot {
-        background: #8b8578;
-      }
-      .st-publie {
-        background: #e2ecea;
-        color: var(--primary-light);
-      }
-      .st-publie .dot {
-        background: var(--primary-light);
-      }
-      .st-evaluation {
-        background: var(--accent-light);
-        color: #8a651f;
-      }
-      .st-evaluation .dot {
-        background: var(--accent);
-      }
-      .st-attribue {
-        background: #e4eee9;
-        color: var(--primary-dark);
-      }
-      .st-attribue .dot {
-        background: var(--primary);
-      }
-      .st-infructueux,
-      .st-annule {
-        background: var(--rust-bg);
-        color: var(--rust);
-      }
-      .st-infructueux .dot,
-      .st-annule .dot {
-        background: var(--rust);
-      }
-      .st-cloture {
-        background: #e9eae4;
-        color: var(--text-muted);
-      }
-      .st-cloture .dot {
-        background: var(--text-muted);
-      }
+.status-badge{
+  display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:20px;
+  font-size:11.5px; font-weight:600;
+}
+.dot{width:6px; height:6px; border-radius:50%;}
+.st-preparation{background:#efede6; color:#6b7268;} .st-preparation .dot{background:#8b8578;}
+.st-publie{background:#e2ecea; color:var(--primary-light);} .st-publie .dot{background:var(--primary-light);}
+.st-evaluation{background:var(--accent-light); color:#8a651f;} .st-evaluation .dot{background:var(--accent);}
+.st-attribue{background:#e4eee9; color:var(--primary-dark);} .st-attribue .dot{background:var(--primary);}
+.st-infructueux, .st-annule{background:var(--rust-bg); color:var(--rust);} .st-infructueux .dot, .st-annule .dot{background:var(--rust);}
+.st-cloture{background:#e9eae4; color:var(--text-muted);} .st-cloture .dot{background:var(--text-muted);}
 
-      .stepper {
-        display: flex;
-        align-items: center;
-        gap: 3px;
-        margin-top: 6px;
-      }
-      .stepper .seg {
-        height: 3px;
-        width: 16px;
-        border-radius: 2px;
-        background: var(--border);
-      }
-      .stepper .seg.done {
-        background: var(--primary-light);
-      }
-      .stepper .seg.current {
-        background: var(--accent);
-      }
-      .stepper .seg.stopped {
-        background: var(--rust);
-      }
+.stepper{display:flex; align-items:center; gap:3px; margin-top:6px;}
+.stepper .seg{height:3px; width:16px; border-radius:2px; background:var(--border);}
+.stepper .seg.done{background:var(--primary-light);}
+.stepper .seg.current{background:var(--accent);}
+.stepper .seg.stopped{background:var(--rust);}
 
-      .actions-cell {
-        display: flex;
-        gap: 6px;
-      }
-      .icon-btn {
-        width: 30px;
-        height: 30px;
-        border-radius: 6px;
-        border: 1px solid var(--border);
-        background: #fff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        color: var(--text-muted);
-        transition: all 0.12s ease;
-      }
-      .icon-btn:hover {
-        border-color: var(--primary-light);
-        color: var(--primary-dark);
-        background: var(--surface-2);
-      }
-      .icon-btn.danger:hover {
-        border-color: var(--rust);
-        color: var(--rust);
-        background: var(--rust-bg);
-      }
+.actions-cell{display:flex; gap:6px;}
+.icon-btn{
+  width:30px; height:30px; border-radius:6px; border:1px solid var(--border); background:#fff;
+  display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-muted);
+  transition:all .12s ease;
+}
+.icon-btn:hover{border-color:var(--primary-light); color:var(--primary-dark); background:var(--surface-2);}
+.icon-btn.danger:hover{border-color:var(--rust); color:var(--rust); background:var(--rust-bg);}
 
-      .empty-state {
-        padding: 64px 24px;
-        text-align: center;
-      }
-      .empty-state h3 {
-        font-family: "Fraunces", serif;
-        font-size: 18px;
-        color: var(--text);
-        margin-bottom: 6px;
-      }
-      .empty-state p {
-        color: var(--text-muted);
-        font-size: 13.5px;
-        margin-bottom: 18px;
-      }
+.empty-state{padding:64px 24px; text-align:center;}
+.empty-state h3{font-family:'Fraunces',serif; font-size:18px; color:var(--text); margin-bottom:6px;}
+.empty-state p{color:var(--text-muted); font-size:13.5px; margin-bottom:18px;}
 
-      .overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(21, 25, 22, 0.45);
-        display: none;
-        align-items: flex-start;
-        justify-content: center;
-        padding: 40px 20px;
-        z-index: 100;
-        overflow-y: auto;
-        backdrop-filter: blur(2px);
-      }
-      .overlay.open {
-        display: flex;
-      }
-      .modal {
-        background: var(--surface);
-        border-radius: 14px;
-        width: 100%;
-        max-width: 640px;
-        box-shadow: var(--shadow-lg);
-        animation: pop 0.16s ease;
-      }
-      @keyframes pop {
-        from {
-          opacity: 0;
-          transform: translateY(8px) scale(0.98);
-        }
-        to {
-          opacity: 1;
-          transform: none;
-        }
-      }
-      .modal-header {
-        padding: 20px 24px;
-        border-bottom: 1px solid var(--border);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-      .modal-header h2 {
-        font-family: "Fraunces", serif;
-        font-size: 19px;
-        font-weight: 600;
-        color: var(--primary-dark);
-      }
-      .modal-close {
-        background: none;
-        border: none;
-        cursor: pointer;
-        color: var(--text-faint);
-        font-size: 20px;
-        line-height: 1;
-      }
-      .modal-body {
-        padding: 22px 24px;
-        max-height: 64vh;
-        overflow-y: auto;
-      }
-      .form-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 14px;
-      }
-      .field {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-      }
-      .field.full {
-        grid-column: 1/-1;
-      }
-      .field label {
-        font-size: 12px;
-        font-weight: 600;
-        color: var(--text-muted);
-      }
-      .field .req {
-        color: var(--rust);
-      }
-      .field input,
-      .field select,
-      .field textarea {
-        padding: 9px 11px;
-        border: 1px solid var(--border);
-        border-radius: 7px;
-        font-size: 13.5px;
-        font-family: "Inter", sans-serif;
-        color: var(--text);
-        background: var(--surface-2);
-      }
-      .field input:focus,
-      .field select:focus,
-      .field textarea:focus {
-        outline: none;
-        border-color: var(--primary-light);
-        background: #fff;
-      }
-      .field textarea {
-        resize: vertical;
-        min-height: 64px;
-      }
-      .field .err {
-        font-size: 11.5px;
-        color: var(--rust);
-        display: none;
-      }
-      .field.invalid input,
-      .field.invalid select {
-        border-color: var(--rust);
-        background: var(--rust-bg);
-      }
-      .field.invalid .err {
-        display: block;
-      }
-      .modal-footer {
-        padding: 16px 24px;
-        border-top: 1px solid var(--border);
-        display: flex;
-        justify-content: flex-end;
-        gap: 10px;
-      }
+.overlay{
+  position:fixed; inset:0; background:rgba(21,25,22,.45); display:none;
+  align-items:flex-start; justify-content:center; padding:40px 20px; z-index:100; overflow-y:auto;
+  backdrop-filter:blur(2px);
+}
+.overlay.open{display:flex;}
+.modal{
+  background:var(--surface); border-radius:14px; width:100%; max-width:640px;
+  box-shadow:var(--shadow-lg); animation:pop .16s ease;
+}
+@keyframes pop{from{opacity:0; transform:translateY(8px) scale(.98);} to{opacity:1; transform:none;}}
+.modal-header{
+  padding:20px 24px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between;
+}
+.modal-header h2{font-family:'Fraunces',serif; font-size:19px; font-weight:600; color:var(--primary-dark);}
+.modal-close{background:none; border:none; cursor:pointer; color:var(--text-faint); font-size:20px; line-height:1;}
+.modal-body{padding:22px 24px; max-height:64vh; overflow-y:auto;}
+.form-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+.field{display:flex; flex-direction:column; gap:5px;}
+.field.full{grid-column:1/-1;}
+.field label{font-size:12px; font-weight:600; color:var(--text-muted);}
+.field .req{color:var(--rust);}
+.field input, .field select, .field textarea{
+  padding:9px 11px; border:1px solid var(--border); border-radius:7px; font-size:13.5px;
+  font-family:'Inter',sans-serif; color:var(--text); background:var(--surface-2);
+}
+.field input:focus, .field select:focus, .field textarea:focus{outline:none; border-color:var(--primary-light); background:#fff;}
+.field textarea{resize:vertical; min-height:64px;}
+.field .err{font-size:11.5px; color:var(--rust); display:none;}
+.field.invalid input, .field.invalid select{border-color:var(--rust); background:var(--rust-bg);}
+.field.invalid .err{display:block;}
+.modal-footer{
+  padding:16px 24px; border-top:1px solid var(--border); display:flex; justify-content:flex-end; gap:10px;
+}
 
-      .detail-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 16px 22px;
-        margin-bottom: 18px;
-      }
-      .detail-item .k {
-        font-size: 11px;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: var(--text-faint);
-        font-weight: 600;
-        margin-bottom: 3px;
-      }
-      .detail-item .v {
-        font-size: 14px;
-        color: var(--text);
-        font-weight: 500;
-      }
-      .timeline {
-        display: flex;
-        justify-content: space-between;
-        position: relative;
-        margin: 26px 4px 8px;
-      }
-      .timeline::before {
-        content: "";
-        position: absolute;
-        top: 9px;
-        left: 0;
-        right: 0;
-        height: 2px;
-        background: var(--border);
-        z-index: 0;
-      }
-      .tl-step {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 6px;
-        position: relative;
-        z-index: 1;
-        flex: 1;
-      }
-      .tl-dot {
-        width: 18px;
-        height: 18px;
-        border-radius: 50%;
-        background: var(--surface);
-        border: 2px solid var(--border);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      .tl-dot.done {
-        background: var(--primary-light);
-        border-color: var(--primary-light);
-      }
-      .tl-dot.current {
-        background: var(--accent);
-        border-color: var(--accent);
-      }
-      .tl-dot.stopped {
-        background: var(--rust);
-        border-color: var(--rust);
-      }
-      .tl-label {
-        font-size: 10.5px;
-        color: var(--text-muted);
-        text-align: center;
-        max-width: 70px;
-        font-weight: 500;
-      }
+.detail-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px 22px; margin-bottom:18px;}
+.detail-item .k{font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--text-faint); font-weight:600; margin-bottom:3px;}
+.detail-item .v{font-size:14px; color:var(--text); font-weight:500;}
+.timeline{display:flex; justify-content:space-between; position:relative; margin:26px 4px 8px;}
+.timeline::before{content:''; position:absolute; top:9px; left:0; right:0; height:2px; background:var(--border); z-index:0;}
+.tl-step{display:flex; flex-direction:column; align-items:center; gap:6px; position:relative; z-index:1; flex:1;}
+.tl-dot{width:18px; height:18px; border-radius:50%; background:var(--surface); border:2px solid var(--border); display:flex; align-items:center; justify-content:center;}
+.tl-dot.done{background:var(--primary-light); border-color:var(--primary-light);}
+.tl-dot.current{background:var(--accent); border-color:var(--accent);}
+.tl-dot.stopped{background:var(--rust); border-color:var(--rust);}
+.tl-label{font-size:10.5px; color:var(--text-muted); text-align:center; max-width:70px; font-weight:500;}
 
-      .confirm-modal {
-        max-width: 400px;
-      }
-      .confirm-modal .modal-body {
-        text-align: center;
-        padding-top: 8px;
-      }
-      .confirm-icon {
-        width: 48px;
-        height: 48px;
-        border-radius: 50%;
-        background: var(--rust-bg);
-        color: var(--rust);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 4px auto 14px;
-        font-size: 22px;
-      }
+.confirm-modal{max-width:400px;}
+.confirm-modal .modal-body{text-align:center; padding-top:8px;}
+.confirm-icon{
+  width:48px; height:48px; border-radius:50%; background:var(--rust-bg); color:var(--rust);
+  display:flex; align-items:center; justify-content:center; margin:4px auto 14px; font-size:22px;
+}
 
-      #toast-host {
-        position: fixed;
-        bottom: 24px;
-        right: 24px;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        z-index: 200;
-      }
-      .toast {
-        background: var(--primary-dark);
-        color: #fff;
-        padding: 12px 18px;
-        border-radius: 8px;
-        font-size: 13.5px;
-        box-shadow: var(--shadow-lg);
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        animation: slide 0.18s ease;
-        font-weight: 500;
-      }
-      .toast.error {
-        background: var(--rust);
-      }
-      @keyframes slide {
-        from {
-          opacity: 0;
-          transform: translateX(16px);
-        }
-        to {
-          opacity: 1;
-          transform: none;
-        }
-      }
+#toast-host{position:fixed; bottom:24px; right:24px; display:flex; flex-direction:column; gap:10px; z-index:200;}
+.toast{
+  background:var(--primary-dark); color:#fff; padding:12px 18px; border-radius:8px; font-size:13.5px;
+  box-shadow:var(--shadow-lg); display:flex; align-items:center; gap:10px; animation:slide .18s ease;
+  font-weight:500;
+}
+.toast.error{background:var(--rust);}
+@keyframes slide{from{opacity:0; transform:translateX(16px);} to{opacity:1; transform:none;}}
 
-      @media (max-width: 900px) {
-        .stats {
-          grid-template-columns: repeat(2, 1fr);
-        }
-        .form-grid {
-          grid-template-columns: 1fr;
-        }
-        .detail-grid {
-          grid-template-columns: 1fr;
-        }
-        table thead {
-          display: none;
-        }
-        tbody tr {
-          display: block;
-          padding: 12px 16px;
-        }
-        tbody td {
-          display: flex;
-          justify-content: space-between;
-          padding: 6px 0;
-          border: none;
-        }
-        tbody td::before {
-          content: attr(data-label);
-          font-weight: 600;
-          color: var(--text-faint);
-          font-size: 11px;
-          text-transform: uppercase;
-        }
-      }
-      @media (prefers-reduced-motion: reduce) {
-        * {
-          animation: none !important;
-          transition: none !important;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div class="wrap">
-      <div class="topbar">
-        <div class="brand">
-          <div class="brand-mark">AO</div>
-          <div class="brand-text">
-            <div class="eyebrow">ORMVA/SM — Bureau Informatique</div>
-            <h1>Gestion des Appels d'Offres</h1>
+@media (max-width:900px){
+  .stats{grid-template-columns:repeat(2,1fr);}
+  .form-grid{grid-template-columns:1fr;}
+  .detail-grid{grid-template-columns:1fr;}
+  table thead{display:none;}
+  tbody tr{display:block; padding:12px 16px;}
+  tbody td{display:flex; justify-content:space-between; padding:6px 0; border:none;}
+  tbody td::before{content:attr(data-label); font-weight:600; color:var(--text-faint); font-size:11px; text-transform:uppercase;}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none !important; transition:none !important;}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-mark">AO</div>
+      <div class="brand-text">
+        <div class="eyebrow">ORMVA/SM — Bureau Informatique</div>
+        <h1>Gestion des Appels d'Offres</h1>
+      </div>
+    </div>
+    <button class="btn btn-primary" id="btn-new">
+     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+      Nouvel appel d'offres
+    </button>
+  </div>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="toolbar">
+    <div class="search-box">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="text" id="f-search" placeholder="Rechercher par n° AO ou objet…">
+    </div>
+    <select id="f-type">
+      <option value="">Tous les types</option>
+      <option>Travaux</option><option>Fournitures</option><option>Services</option><option>Études</option>
+    </select>
+    <select id="f-statut">
+      <option value="">Tous les statuts</option>
+      <option value="preparation">En préparation</option>
+      <option value="publie">Publié</option>
+      <option value="evaluation">En cours d'évaluation</option>
+      <option value="attribue">Attribué</option>
+      <option value="infructueux">Infructueux</option>
+      <option value="annule">Annulé</option>
+      <option value="cloture">Clôturé</option>
+    </select>
+    <div class="divider"></div>
+    <button class="btn btn-ghost btn-sm" id="btn-reset">Réinitialiser</button>
+  </div>
+
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th data-sort="numero">N° AO</th>
+          <th data-sort="objet">Objet</th>
+          <th data-sort="type">Type</th>
+          <th data-sort="montant">Montant estimatif</th>
+          <th data-sort="dateLimite">Date limite dépôt</th>
+          <th data-sort="statut">Statut & avancement</th>
+          <th style="width:110px;">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+    <div class="empty-state" id="empty-state" style="display:none;">
+      <h3>Aucun appel d'offres trouvé</h3>
+      <p>Ajustez vos critères de recherche ou créez un nouvel appel d'offres.</p>
+      <button class="btn btn-primary" id="btn-empty-new">Créer un appel d'offres</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay-form">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="form-title">Nouvel appel d'offres</h2>
+      <button class="modal-close" data-close>&times;</button>
+    </div>
+    <div class="modal-body">
+      <form id="ao-form" novalidate>
+        <input type="hidden" id="f-id">
+        <div class="form-grid">
+          <div class="field full">
+            <label>N° de l'appel d'offres <span class="req">*</span></label>
+            <input type="text" id="in-numero" placeholder="ex : 12/2026/ORMVASM">
+            <span class="err">Le numéro de l'AO est requis.</span>
+          </div>
+          <div class="field full">
+            <label>Objet du marché <span class="req">*</span></label>
+            <input type="text" id="in-objet" placeholder="ex : Aménagement du réseau d'irrigation — secteur Ouled Teima">
+            <span class="err">L'objet est requis.</span>
+          </div>
+          <div class="field">
+            <label>Type de marché <span class="req">*</span></label>
+            <select id="in-type">
+              <option value="">Sélectionner…</option>
+              <option>Travaux</option><option>Fournitures</option><option>Services</option><option>Études</option>
+            </select>
+            <span class="err">Choisissez un type.</span>
+          </div>
+          <div class="field">
+            <label>Mode de passation</label>
+            <select id="in-mode">
+              <option>Appel d'offres ouvert</option>
+              <option>Appel d'offres restreint</option>
+              <option>Concours</option>
+              <option>Bon de commande</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Montant estimatif (DH) <span class="req">*</span></label>
+            <input type="number" id="in-montant" placeholder="0.00" min="0" step="0.01">
+            <span class="err">Indiquez un montant valide.</span>
+          </div>
+          <div class="field">
+            <label>Statut</label>
+            <select id="in-statut">
+              <option value="preparation">En préparation</option>
+              <option value="publie">Publié</option>
+              <option value="evaluation">En cours d'évaluation</option>
+              <option value="attribue">Attribué</option>
+              <option value="infructueux">Infructueux</option>
+              <option value="annule">Annulé</option>
+              <option value="cloture">Clôturé</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Date de publication</label>
+            <input type="date" id="in-datePub">
+          </div>
+          <div class="field">
+            <label>Date limite de dépôt des offres <span class="req">*</span></label>
+            <input type="date" id="in-dateLimite">
+            <span class="err">Cette date est requise.</span>
+          </div>
+          <div class="field full" id="wrap-fournisseur">
+            <label>Fournisseur attributaire</label>
+            <input type="text" id="in-fournisseur" placeholder="Renseigné lorsque le marché est attribué">
+          </div>
+          <div class="field full">
+            <label>Observations</label>
+            <textarea id="in-obs" placeholder="Notes internes, remarques du bureau…"></textarea>
           </div>
         </div>
-        <button class="btn btn-primary" id="btn-new">
-          <svg
-            width="15"
-            height="15"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.5"
-          >
-            <path d="M12 5v14M5 12h14" />
-          </svg>
-          Nouvel appel d'offres
-        </button>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" data-close>Annuler</button>
+      <button class="btn btn-primary" id="btn-save">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay-detail">
+  <div class="modal" style="max-width:600px;">
+    <div class="modal-header">
+      <h2 id="detail-title">Détail de l'appel d'offres</h2>
+      <button class="modal-close" data-close>&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="timeline" id="detail-timeline"></div>
+      <div class="detail-grid" id="detail-grid"></div>
+      <div class="detail-item full" id="detail-obs-wrap" style="display:none;">
+        <div class="k">Observations</div>
+        <div class="v" id="detail-obs"></div>
       </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" data-close>Fermer</button>
+      <button class="btn btn-primary" id="btn-detail-edit">Modifier</button>
+    </div>
+  </div>
+</div>
 
-      <div class="stats" id="stats"></div>
+<div class="overlay" id="overlay-confirm">
+  <div class="modal confirm-modal">
+    <div class="modal-header">
+      <h2>Supprimer l'appel d'offres</h2>
+      <button class="modal-close" data-close>&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="confirm-icon">!</div>
+      <p style="color:var(--text-muted); font-size:14px;">Cette action est définitive. L'appel d'offres <strong id="confirm-numero"></strong> sera supprimé de la liste.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" data-close>Annuler</button>
+      <button class="btn btn-danger" id="btn-confirm-delete">Supprimer définitivement</button>
+    </div>
+  </div>
+</div>
 
-      <div class="toolbar">
-        <div class="search-box">
-          <svg
-            width="15"
-            height="15"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <circle cx="11" cy="11" r="7" />
-            <path d="m21 21-4.3-4.3" />
-          </svg>
-          <input
-            type="text"
-            id="f-search"
-            placeholder="Rechercher par n° AO ou objet…"
-          />
-        </div>
-        <select id="f-type">
-          <option value="">Tous les types</option>
-          <option>Travaux</option>
-          <option>Fournitures</option>
-          <option>Services</option>
-          <option>Études</option>
-        </select>
-        <select id="f-statut">
-          <option value="">Tous les statuts</option>
-          <option value="preparation">En préparation</option>
-          <option value="publie">Publié</option>
-          <option value="evaluation">En cours d'évaluation</option>
-          <option value="attribue">Attribué</option>
-          <option value="infructueux">Infructueux</option>
-          <option value="annule">Annulé</option>
-          <option value="cloture">Clôturé</option>
-        </select>
-        <div class="divider"></div>
-        <button class="btn btn-ghost btn-sm" id="btn-reset">
-          Réinitialiser
-        </button>
-      </div>
+<div id="toast-host"></div>
 
-      <div class="table-card">
-        <table>
-          <thead>
-            <tr>
-              <th data-sort="numero">N° AO</th>
-              <th data-sort="objet">Objet</th>
-              <th data-sort="type">Type</th>
-              <th data-sort="montant">Montant estimatif</th>
-              <th data-sort="dateLimite">Date limite dépôt</th>
-              <th data-sort="statut">Statut & avancement</th>
-              <th style="width: 110px">Actions</th>
-            </tr>
-          </thead>
-          <tbody id="table-body"></tbody>
-        </table>
-        <div class="empty-state" id="empty-state" style="display: none">
-          <h3>Aucun appel d'offres trouvé</h3>
-          <p>
-            Ajustez vos critères de recherche ou créez un nouvel appel d'offres.
-          </p>
-          <button class="btn btn-primary" id="btn-empty-new">
-            Créer un appel d'offres
+<script>
+/* ---------------------------------------------------------------
+   Données injectées par le serveur (via le contrôleur Express) :
+   res.render('appelsOffres', { appelsOffres: listeDepuisMySQL })
+   Sert d'affichage immédiat le temps que le fetch de confirmation
+   réponde, et de repli si l'API est momentanément indisponible.
+------------------------------------------------------------------ */
+const initialData = <%- JSON.stringify(typeof appelsOffres !== 'undefined' ? appelsOffres : []) %>;
+
+/* ---------------------------------------------------------------
+   Couche de données : appels réels vers l'API Express/MySQL.
+   Adapter les routes ci-dessous à ta structure de routers/controllers
+   (ex: routes/appelsOffres.js -> controllers/appelsOffresController.js).
+   Attendu côté serveur :
+     GET    /api/appels-offres        -> liste JSON
+     POST   /api/appels-offres        -> crée, renvoie l'objet créé (avec id)
+     PUT    /api/appels-offres/:id    -> met à jour, renvoie l'objet mis à jour
+     DELETE /api/appels-offres/:id    -> supprime
+------------------------------------------------------------------ */
+const API_BASE = '/api/appels-offres';
+
+async function handleResponse(res){
+  if(!res.ok){
+    let message = `Erreur ${res.status}`;
+    try{ const body = await res.json(); if(body && body.message) message = body.message; }catch(e){}
+    throw new Error(message);
+  }
+  if(res.status === 204) return null;
+  return res.json();
+}
+
+const api = {
+  async list(){
+    const res = await fetch(API_BASE);
+    return handleResponse(res);
+  },
+  async create(ao){
+    const res = await fetch(API_BASE, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(ao)
+    });
+    return handleResponse(res);
+  },
+  async update(id, patch){
+    const res = await fetch(`${API_BASE}/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(patch)
+    });
+    return handleResponse(res);
+  },
+  async remove(id){
+    const res = await fetch(`${API_BASE}/${id}`, { method: 'DELETE' });
+    return handleResponse(res);
+  }
+};
+
+const STATUT_LABELS = {
+  preparation:"En préparation", publie:"Publié", evaluation:"En cours d'évaluation",
+  attribue:"Attribué", infructueux:"Infructueux", annule:"Annulé", cloture:"Clôturé"
+};
+const STAGE_ORDER = ["preparation","publie","evaluation","attribue"];
+const currencyFmt = new Intl.NumberFormat('fr-MA', {maximumFractionDigits:0});
+const dateFmt = d => d ? new Date(d).toLocaleDateString('fr-FR', {day:'2-digit', month:'short', year:'numeric'}) : '—';
+
+let allAOs = [];
+let sortState = {key:'dateLimite', dir:'asc'};
+let editingId = null;
+let pendingDeleteId = null;
+
+function stageIndex(statut){
+  if(statut === 'infructueux' || statut === 'annule') return -1;
+  if(statut === 'cloture') return STAGE_ORDER.length - 1;
+  return STAGE_ORDER.indexOf(statut);
+}
+
+function stepperHTML(statut){
+  const stopped = statut === 'infructueux' || statut === 'annule';
+  const idx = stageIndex(statut);
+  return STAGE_ORDER.map((s, i) => {
+    let cls = '';
+    if(stopped) cls = i === 0 ? 'stopped' : '';
+    else if(i < idx) cls = 'done';
+    else if(i === idx) cls = 'current';
+    return `<div class="seg ${cls}"></div>`;
+  }).join('');
+}
+
+function renderStats(list){
+  const total = list.length;
+  const enCours = list.filter(a => ['publie','evaluation'].includes(a.statut)).length;
+  const attribues = list.filter(a => a.statut === 'attribue').length;
+  const montantTotal = list.reduce((s,a) => s + (Number(a.montant)||0), 0);
+  document.getElementById('stats').innerHTML = `
+    <div class="stat-card"><div class="num">${total}</div><div class="label">Appels d'offres au total</div></div>
+    <div class="stat-card accent"><div class="num">${enCours}</div><div class="label">En cours (publiés / en évaluation)</div></div>
+    <div class="stat-card"><div class="num">${attribues}</div><div class="label">Marchés attribués</div></div>
+    <div class="stat-card"><div class="num">${currencyFmt.format(montantTotal)}</div><div class="label">Montant estimatif cumulé (DH)</div></div>
+  `;
+}
+
+function applyFilters(list){
+  const q = document.getElementById('f-search').value.trim().toLowerCase();
+  const type = document.getElementById('f-type').value;
+  const statut = document.getElementById('f-statut').value;
+  return list.filter(a => {
+    const numero = String(a.numero || '').toLowerCase();
+    const objet = String(a.objet || '').toLowerCase();
+    if(q && !(numero.includes(q) || objet.includes(q))) return false;
+    if(type && a.type !== type) return false;
+    if(statut && a.statut !== statut) return false;
+    return true;
+  });
+}
+
+function applySort(list){
+  const {key, dir} = sortState;
+  const mult = dir === 'asc' ? 1 : -1;
+  return [...list].sort((a,b) => {
+    let va = a[key];
+    let vb = b[key];
+    if(key === 'montant'){
+      va = Number(va) || 0;
+      vb = Number(vb) || 0;
+    }else{
+      va = va ?? '';
+      vb = vb ?? '';
+    }
+    if(va < vb) return -1*mult;
+    if(va > vb) return 1*mult;
+    return 0;
+  });
+}
+
+function render(){
+  const filtered = applySort(applyFilters(allAOs));
+  renderStats(allAOs);
+  const tbody = document.getElementById('table-body');
+  const empty = document.getElementById('empty-state');
+  if(filtered.length === 0){
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  tbody.innerHTML = filtered.map(a => `
+    <tr>
+      <td data-label="N° AO"><span class="ao-num">${escapeHTML(a.numero)}</span></td>
+      <td data-label="Objet"><div class="ao-objet">${escapeHTML(a.objet)}<div class="sub">${escapeHTML(a.mode||'')}</div></div></td>
+      <td data-label="Type"><span class="type-pill">${escapeHTML(a.type)}</span></td>
+      <td data-label="Montant"><span class="amount">${currencyFmt.format(a.montant||0)} DH</span></td>
+      <td data-label="Date limite">${dateFmt(a.dateLimite)}</td>
+      <td data-label="Statut">
+        <span class="status-badge st-${a.statut}"><span class="dot"></span>${STATUT_LABELS[a.statut] || a.statut}</span>
+        <div class="stepper">${stepperHTML(a.statut)}</div>
+      </td>
+      <td>
+        <div class="actions-cell">
+          <button class="icon-btn" title="Voir le détail" onclick="openDetail(${a.id})">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+          <button class="icon-btn" title="Modifier" onclick="openForm(${a.id})">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+          </button>
+          <button class="icon-btn danger" title="Supprimer" onclick="askDelete(${a.id})">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
           </button>
         </div>
-      </div>
-    </div>
+      </td>
+    </tr>
+  `).join('');
+}
 
-    <div class="overlay" id="overlay-form">
-      <div class="modal">
-        <div class="modal-header">
-          <h2 id="form-title">Nouvel appel d'offres</h2>
-          <button class="modal-close" data-close>&times;</button>
-        </div>
-        <div class="modal-body">
-          <form id="ao-form" novalidate>
-            <input type="hidden" id="f-id" />
-            <div class="form-grid">
-              <div class="field full">
-                <label>N° de l'appel d'offres <span class="req">*</span></label>
-                <input
-                  type="text"
-                  id="in-numero"
-                  placeholder="ex : 12/2026/ORMVASM"
-                />
-                <span class="err">Le numéro de l'AO est requis.</span>
-              </div>
-              <div class="field full">
-                <label>Objet du marché <span class="req">*</span></label>
-                <input
-                  type="text"
-                  id="in-objet"
-                  placeholder="ex : Aménagement du réseau d'irrigation — secteur Ouled Teima"
-                />
-                <span class="err">L'objet est requis.</span>
-              </div>
-              <div class="field">
-                <label>Type de marché <span class="req">*</span></label>
-                <select id="in-type">
-                  <option value="">Sélectionner…</option>
-                  <option>Travaux</option>
-                  <option>Fournitures</option>
-                  <option>Services</option>
-                  <option>Études</option>
-                </select>
-                <span class="err">Choisissez un type.</span>
-              </div>
-              <div class="field">
-                <label>Mode de passation</label>
-                <select id="in-mode">
-                  <option>Appel d'offres ouvert</option>
-                  <option>Appel d'offres restreint</option>
-                  <option>Concours</option>
-                  <option>Bon de commande</option>
-                </select>
-              </div>
-              <div class="field">
-                <label>Montant estimatif (DH) <span class="req">*</span></label>
-                <input
-                  type="number"
-                  id="in-montant"
-                  placeholder="0.00"
-                  min="0"
-                  step="0.01"
-                />
-                <span class="err">Indiquez un montant valide.</span>
-              </div>
-              <div class="field">
-                <label>Statut</label>
-                <select id="in-statut">
-                  <option value="preparation">En préparation</option>
-                  <option value="publie">Publié</option>
-                  <option value="evaluation">En cours d'évaluation</option>
-                  <option value="attribue">Attribué</option>
-                  <option value="infructueux">Infructueux</option>
-                  <option value="annule">Annulé</option>
-                  <option value="cloture">Clôturé</option>
-                </select>
-              </div>
-              <div class="field">
-                <label>Date de publication</label>
-                <input type="date" id="in-datePub" />
-              </div>
-              <div class="field">
-                <label
-                  >Date limite de dépôt des offres
-                  <span class="req">*</span></label
-                >
-                <input type="date" id="in-dateLimite" />
-                <span class="err">Cette date est requise.</span>
-              </div>
-              <div class="field full" id="wrap-fournisseur">
-                <label>Fournisseur attributaire</label>
-                <input
-                  type="text"
-                  id="in-fournisseur"
-                  placeholder="Renseigné lorsque le marché est attribué"
-                />
-              </div>
-              <div class="field full">
-                <label>Observations</label>
-                <textarea
-                  id="in-obs"
-                  placeholder="Notes internes, remarques du bureau…"
-                ></textarea>
-              </div>
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-ghost" data-close>Annuler</button>
-          <button class="btn btn-primary" id="btn-save">Enregistrer</button>
-        </div>
-      </div>
-    </div>
+function escapeHTML(str){
+  return String(str ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
 
-    <div class="overlay" id="overlay-detail">
-      <div class="modal" style="max-width: 600px">
-        <div class="modal-header">
-          <h2 id="detail-title">Détail de l'appel d'offres</h2>
-          <button class="modal-close" data-close>&times;</button>
-        </div>
-        <div class="modal-body">
-          <div class="timeline" id="detail-timeline"></div>
-          <div class="detail-grid" id="detail-grid"></div>
-          <div
-            class="detail-item full"
-            id="detail-obs-wrap"
-            style="display: none"
-          >
-            <div class="k">Observations</div>
-            <div class="v" id="detail-obs"></div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-ghost" data-close>Fermer</button>
-          <button class="btn btn-primary" id="btn-detail-edit">Modifier</button>
-        </div>
-      </div>
-    </div>
+document.querySelectorAll('thead th[data-sort]').forEach(th => {
+  th.addEventListener('click', () => {
+    const key = th.dataset.sort;
+    if(sortState.key === key) sortState.dir = sortState.dir === 'asc' ? 'desc' : 'asc';
+    else sortState = {key, dir:'asc'};
+    render();
+  });
+});
 
-    <div class="overlay" id="overlay-confirm">
-      <div class="modal confirm-modal">
-        <div class="modal-header">
-          <h2>Supprimer l'appel d'offres</h2>
-          <button class="modal-close" data-close>&times;</button>
-        </div>
-        <div class="modal-body">
-          <div class="confirm-icon">!</div>
-          <p style="color: var(--text-muted); font-size: 14px">
-            Cette action est définitive. L'appel d'offres
-            <strong id="confirm-numero"></strong> sera supprimé de la liste.
-          </p>
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-ghost" data-close>Annuler</button>
-          <button class="btn btn-danger" id="btn-confirm-delete">
-            Supprimer définitivement
-          </button>
-        </div>
-      </div>
-    </div>
+document.getElementById('f-search').addEventListener('input', render);
+document.getElementById('f-type').addEventListener('change', render);
+document.getElementById('f-statut').addEventListener('change', render);
+document.getElementById('btn-reset').addEventListener('click', () => {
+  document.getElementById('f-search').value = '';
+  document.getElementById('f-type').value = '';
+  document.getElementById('f-statut').value = '';
+  render();
+});
 
-    <div id="toast-host"></div>
+const overlayForm = document.getElementById('overlay-form');
+const overlayDetail = document.getElementById('overlay-detail');
+const overlayConfirm = document.getElementById('overlay-confirm');
 
-    <script>
-      const STORAGE_KEY = 'ormvasm_appels_offres';
+function openForm(id = null){
+  editingId = id;
+  const form = document.getElementById('ao-form');
+  form.querySelectorAll('.field').forEach(f => f.classList.remove('invalid'));
+  if(id){
+    const a = allAOs.find(x => x.id === id);
+    document.getElementById('form-title').textContent = "Modifier l'appel d'offres";
+    document.getElementById('f-id').value = a.id;
+    document.getElementById('in-numero').value = a.numero;
+    document.getElementById('in-objet').value = a.objet;
+    document.getElementById('in-type').value = a.type;
+    document.getElementById('in-mode').value = a.mode || "Appel d'offres ouvert";
+    document.getElementById('in-montant').value = a.montant;
+    document.getElementById('in-statut').value = a.statut;
+    document.getElementById('in-datePub').value = a.datePub || '';
+    document.getElementById('in-dateLimite').value = a.dateLimite || '';
+    document.getElementById('in-fournisseur').value = a.fournisseur || '';
+    document.getElementById('in-obs').value = a.obs || '';
+  }else{
+    document.getElementById('form-title').textContent = "Nouvel appel d'offres";
+    form.reset();
+    document.getElementById('f-id').value = '';
+    document.getElementById('in-statut').value = 'preparation';
+  }
+  overlayForm.classList.add('open');
+}
 
-      /* Graine de démonstration : utilisée uniquement si le contrôleur Express
-         ne transmet aucune donnée via la variable EJS "appelsOffres" et que le
-         localStorage est vide. Dès que le contrôleur passe de vraies données
-         (res.render('appels-offres/index', { appelsOffres })), elles prennent
-         le dessus automatiquement, sans toucher au reste du script. */
-      const seed = <%- JSON.stringify(typeof appelsOffres !== 'undefined' && appelsOffres && appelsOffres.length ? appelsOffres : [
-        {id:1, numero:"07/2026/ORMVASM", objet:"Réhabilitation du réseau d'irrigation goutte-à-goutte — périmètre Chtouka", type:"Travaux", mode:"Appel d'offres ouvert", montant:1850000, datePub:"2026-05-10", dateLimite:"2026-06-15", statut:"attribue", fournisseur:"STE HYDROTECH SARL", obs:""},
-        {id:2, numero:"11/2026/ORMVASM", objet:"Fourniture d'équipements de pompage solaire", type:"Fournitures", mode:"Appel d'offres ouvert", montant:620000, datePub:"2026-06-20", dateLimite:"2026-07-25", statut:"evaluation", fournisseur:"", obs:"3 plis reçus, commission prévue le 28/07."},
-        {id:3, numero:"14/2026/ORMVASM", objet:"Étude de faisabilité — extension du périmètre irrigué d'Ouled Teima", type:"Études", mode:"Concours", montant:340000, datePub:"2026-07-01", dateLimite:"2026-08-10", statut:"publie", fournisseur:"", obs:""},
-        {id:4, numero:"05/2026/ORMVASM", objet:"Maintenance des ouvrages de curage des seguias", type:"Services", mode:"Bon de commande", montant:180000, datePub:"2026-03-05", dateLimite:"2026-04-01", statut:"cloture", fournisseur:"GROUPE AGRISERV", obs:""},
-        {id:5, numero:"09/2026/ORMVASM", objet:"Construction d'un bassin de stockage d'eau — secteur Biougra", type:"Travaux", mode:"Appel d'offres ouvert", montant:2400000, datePub:"2026-05-28", dateLimite:"2026-07-05", statut:"infructueux", fournisseur:"", obs:"Aucune offre conforme au cahier des charges."},
-        {id:6, numero:"16/2026/ORMVASM", objet:"Acquisition de matériel informatique pour le bureau technique", type:"Fournitures", mode:"Appel d'offres restreint", montant:95000, datePub:"", dateLimite:"2026-08-30", statut:"preparation", fournisseur:"", obs:""},
-      ]) %>;
+function closeAll(){
+  overlayForm.classList.remove('open');
+  overlayDetail.classList.remove('open');
+  overlayConfirm.classList.remove('open');
+}
 
-      /* Couche de données : localStorage pour l'instant.
-         Pour brancher sur l'API Express/MySQL, remplacer le corps de
-         chaque méthode par un fetch vers /api/appels-offres (GET, POST,
-         PUT /:id, DELETE /:id) — les signatures restent identiques. */
-      const api = {
-        _read(){
-          const raw = localStorage.getItem(STORAGE_KEY);
-          if(!raw){ localStorage.setItem(STORAGE_KEY, JSON.stringify(seed)); return [...seed]; }
-          try{ return JSON.parse(raw); }catch(e){ return [...seed]; }
-        },
-        _write(list){ localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); },
-        async list(){ return this._read(); },
-        async create(ao){
-          const list = this._read();
-          ao.id = Date.now();
-          list.unshift(ao);
-          this._write(list);
-          return ao;
-        },
-        async update(id, patch){
-          const list = this._read();
-          const idx = list.findIndex(a => a.id === id);
-          if(idx === -1) throw new Error('introuvable');
-          list[idx] = {...list[idx], ...patch};
-          this._write(list);
-          return list[idx];
-        },
-        async remove(id){
-          const list = this._read().filter(a => a.id !== id);
-          this._write(list);
-        }
-      };
+document.querySelectorAll('[data-close]').forEach(btn => btn.addEventListener('click', closeAll));
+[overlayForm, overlayDetail, overlayConfirm].forEach(ov => {
+  ov.addEventListener('click', e => { if(e.target === ov) closeAll(); });
+});
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeAll(); });
 
-      const STATUT_LABELS = {
-        preparation:"En préparation", publie:"Publié", evaluation:"En cours d'évaluation",
-        attribue:"Attribué", infructueux:"Infructueux", annule:"Annulé", cloture:"Clôturé"
-      };
-      const STAGE_ORDER = ["preparation","publie","evaluation","attribue"];
-      const currencyFmt = new Intl.NumberFormat('fr-MA', {maximumFractionDigits:0});
-      const dateFmt = d => d ? new Date(d).toLocaleDateString('fr-FR', {day:'2-digit', month:'short', year:'numeric'}) : '—';
+document.getElementById('btn-new').addEventListener('click', () => openForm());
+document.getElementById('btn-empty-new').addEventListener('click', () => openForm());
 
-      let allAOs = [];
-      let sortState = {key:'dateLimite', dir:'asc'};
-      let editingId = null;
-      let pendingDeleteId = null;
+function validateForm(){
+  let valid = true;
+  const checks = [
+    ['in-numero', v => v.trim().length > 0],
+    ['in-objet', v => v.trim().length > 0],
+    ['in-type', v => v.trim().length > 0],
+    ['in-montant', v => v !== '' && Number(v) >= 0],
+    ['in-dateLimite', v => v.trim().length > 0],
+  ];
+  checks.forEach(([id, test]) => {
+    const el = document.getElementById(id);
+    const field = el.closest('.field');
+    if(!test(el.value)){ field.classList.add('invalid'); valid = false; }
+    else field.classList.remove('invalid');
+  });
+  return valid;
+}
 
-      function stageIndex(statut){
-        if(statut === 'infructueux' || statut === 'annule') return -1;
-        if(statut === 'cloture') return STAGE_ORDER.length - 1;
-        return STAGE_ORDER.indexOf(statut);
-      }
+document.getElementById('btn-save').addEventListener('click', async () => {
+  if(!validateForm()) return;
+  const payload = {
+    numero: document.getElementById('in-numero').value.trim(),
+    objet: document.getElementById('in-objet').value.trim(),
+    type: document.getElementById('in-type').value,
+    mode: document.getElementById('in-mode').value,
+    montant: Number(document.getElementById('in-montant').value),
+    statut: document.getElementById('in-statut').value,
+    datePub: document.getElementById('in-datePub').value,
+    dateLimite: document.getElementById('in-dateLimite').value,
+    fournisseur: document.getElementById('in-fournisseur').value.trim(),
+    obs: document.getElementById('in-obs').value.trim(),
+  };
+  try{
+    if(editingId){
+      await api.update(editingId, payload);
+      toast("Appel d'offres modifié avec succès.");
+    }else{
+      await api.create(payload);
+      toast("Appel d'offres créé avec succès.");
+    }
+    allAOs = await api.list();
+    closeAll();
+    render();
+  }catch(e){
+    toast(e.message || "Une erreur est survenue lors de l'enregistrement.", true);
+  }
+});
 
-      function stepperHTML(statut){
-        const stopped = statut === 'infructueux' || statut === 'annule';
-        const idx = stageIndex(statut);
-        return STAGE_ORDER.map((s, i) => {
-          let cls = '';
-          if(stopped) cls = i === 0 ? 'stopped' : '';
-          else if(i < idx) cls = 'done';
-          else if(i === idx) cls = 'current';
-          return `<div class="seg ${cls}"></div>`;
-        }).join('');
-      }
+function openDetail(id){
+  const a = allAOs.find(x => x.id === id);
+  document.getElementById('detail-title').textContent = a.numero;
 
-      function renderStats(list){
-        const total = list.length;
-        const enCours = list.filter(a => ['publie','evaluation'].includes(a.statut)).length;
-        const attribues = list.filter(a => a.statut === 'attribue').length;
-        const montantTotal = list.reduce((s,a) => s + (Number(a.montant)||0), 0);
-        document.getElementById('stats').innerHTML = `
-          <div class="stat-card"><div class="num">${total}</div><div class="label">Appels d'offres au total</div></div>
-          <div class="stat-card accent"><div class="num">${enCours}</div><div class="label">En cours (publiés / en évaluation)</div></div>
-          <div class="stat-card"><div class="num">${attribues}</div><div class="label">Marchés attribués</div></div>
-          <div class="stat-card"><div class="num">${currencyFmt.format(montantTotal)}</div><div class="label">Montant estimatif cumulé (DH)</div></div>
-        `;
-      }
+  const stopped = a.statut === 'infructueux' || a.statut === 'annule';
+  const idx = stageIndex(a.statut);
+  const stageLabels = ['Préparation','Publication','Évaluation','Attribution'];
+  document.getElementById('detail-timeline').innerHTML = stageLabels.map((label, i) => {
+    let cls = '';
+    if(stopped) cls = i === 0 ? 'stopped' : '';
+    else if(i < idx) cls = 'done';
+    else if(i === idx) cls = 'current';
+    return `<div class="tl-step"><div class="tl-dot ${cls}"></div><div class="tl-label">${label}</div></div>`;
+  }).join('');
 
-      function applyFilters(list){
-        const q = document.getElementById('f-search').value.trim().toLowerCase();
-        const type = document.getElementById('f-type').value;
-        const statut = document.getElementById('f-statut').value;
-        return list.filter(a => {
-          if(q && !(a.numero.toLowerCase().includes(q) || a.objet.toLowerCase().includes(q))) return false;
-          if(type && a.type !== type) return false;
-          if(statut && a.statut !== statut) return false;
-          return true;
-        });
-      }
+  document.getElementById('detail-grid').innerHTML = `
+    <div class="detail-item"><div class="k">Objet</div><div class="v">${escapeHTML(a.objet)}</div></div>
+    <div class="detail-item"><div class="k">Statut</div><div class="v"><span class="status-badge st-${a.statut}"><span class="dot"></span>${STATUT_LABELS[a.statut] || a.statut}</span></div></div>
+    <div class="detail-item"><div class="k">Type de marché</div><div class="v">${escapeHTML(a.type)}</div></div>
+    <div class="detail-item"><div class="k">Mode de passation</div><div class="v">${escapeHTML(a.mode||'—')}</div></div>
+    <div class="detail-item"><div class="k">Montant estimatif</div><div class="v">${currencyFmt.format(a.montant||0)} DH</div></div>
+    <div class="detail-item"><div class="k">Fournisseur attributaire</div><div class="v">${escapeHTML(a.fournisseur) || '—'}</div></div>
+    <div class="detail-item"><div class="k">Date de publication</div><div class="v">${dateFmt(a.datePub)}</div></div>
+    <div class="detail-item"><div class="k">Date limite de dépôt</div><div class="v">${dateFmt(a.dateLimite)}</div></div>
+  `;
+  const obsWrap = document.getElementById('detail-obs-wrap');
+  if(a.obs){ obsWrap.style.display = 'block'; document.getElementById('detail-obs').textContent = a.obs; }
+  else obsWrap.style.display = 'none';
 
-      function applySort(list){
-        const {key, dir} = sortState;
-        const mult = dir === 'asc' ? 1 : -1;
-        return [...list].sort((a,b) => {
-          let va = a[key];
-          let vb = b[key];
-          if(key === 'montant'){ va = Number(va)||0; vb = Number(vb)||0; }
-          if(va < vb) return -1*mult;
-          if(va > vb) return 1*mult;
-          return 0;
-        });
-      }
+  document.getElementById('btn-detail-edit').onclick = () => { closeAll(); openForm(a.id); };
+  overlayDetail.classList.add('open');
+}
 
-      function render(){
-        const filtered = applySort(applyFilters(allAOs));
-        renderStats(allAOs);
-        const tbody = document.getElementById('table-body');
-        const empty = document.getElementById('empty-state');
-        if(filtered.length === 0){
-          tbody.innerHTML = '';
-          empty.style.display = 'block';
-          return;
-        }
-        empty.style.display = 'none';
-        tbody.innerHTML = filtered.map(a => `
-          <tr>
-            <td data-label="N° AO"><span class="ao-num">${escapeHTML(a.numero)}</span></td>
-            <td data-label="Objet"><div class="ao-objet">${escapeHTML(a.objet)}<div class="sub">${escapeHTML(a.mode||'')}</div></div></td>
-            <td data-label="Type"><span class="type-pill">${escapeHTML(a.type)}</span></td>
-            <td data-label="Montant"><span class="amount">${currencyFmt.format(a.montant||0)} DH</span></td>
-            <td data-label="Date limite">${dateFmt(a.dateLimite)}</td>
-            <td data-label="Statut">
-              <span class="status-badge st-${a.statut}"><span class="dot"></span>${STATUT_LABELS[a.statut]}</span>
-              <div class="stepper">${stepperHTML(a.statut)}</div>
-            </td>
-            <td>
-              <div class="actions-cell">
-                <button class="icon-btn" title="Voir le détail" onclick="openDetail(${a.id})">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-                </button>
-                <button class="icon-btn" title="Modifier" onclick="openForm(${a.id})">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-                </button>
-                <button class="icon-btn danger" title="Supprimer" onclick="askDelete(${a.id})">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
-                </button>
-              </div>
-            </td>
-          </tr>
-        `).join('');
-      }
+function askDelete(id){
+  pendingDeleteId = id;
+  const a = allAOs.find(x => x.id === id);
+  document.getElementById('confirm-numero').textContent = a.numero;
+  overlayConfirm.classList.add('open');
+}
+document.getElementById('btn-confirm-delete').addEventListener('click', async () => {
+  try{
+    await api.remove(pendingDeleteId);
+    allAOs = await api.list();
+    closeAll();
+    render();
+    toast("Appel d'offres supprimé.");
+  }catch(e){
+    toast(e.message || 'Suppression impossible.', true);
+  }
+});
 
-      function escapeHTML(str){
-        return String(str ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-      }
+function toast(msg, isError = false){
+  const host = document.getElementById('toast-host');
+  const el = document.createElement('div');
+  el.className = 'toast' + (isError ? ' error' : '');
+  el.textContent = msg;
+  host.appendChild(el);
+  setTimeout(() => el.remove(), 3200);
+}
 
-      document.querySelectorAll('thead th[data-sort]').forEach(th => {
-        th.addEventListener('click', () => {
-          const key = th.dataset.sort;
-          if(sortState.key === key) sortState.dir = sortState.dir === 'asc' ? 'desc' : 'asc';
-          else sortState = {key, dir:'asc'};
-          render();
-        });
-      });
-
-      document.getElementById('f-search').addEventListener('input', render);
-      document.getElementById('f-type').addEventListener('change', render);
-      document.getElementById('f-statut').addEventListener('change', render);
-      document.getElementById('btn-reset').addEventListener('click', () => {
-        document.getElementById('f-search').value = '';
-        document.getElementById('f-type').value = '';
-        document.getElementById('f-statut').value = '';
-        render();
-      });
-
-      const overlayForm = document.getElementById('overlay-form');
-      const overlayDetail = document.getElementById('overlay-detail');
-      const overlayConfirm = document.getElementById('overlay-confirm');
-
-      function openForm(id = null){
-        editingId = id;
-        const form = document.getElementById('ao-form');
-        form.querySelectorAll('.field').forEach(f => f.classList.remove('invalid'));
-        if(id){
-          const a = allAOs.find(x => x.id === id);
-          document.getElementById('form-title').textContent = "Modifier l'appel d'offres";
-          document.getElementById('f-id').value = a.id;
-          document.getElementById('in-numero').value = a.numero;
-          document.getElementById('in-objet').value = a.objet;
-          document.getElementById('in-type').value = a.type;
-          document.getElementById('in-mode').value = a.mode || "Appel d'offres ouvert";
-          document.getElementById('in-montant').value = a.montant;
-          document.getElementById('in-statut').value = a.statut;
-          document.getElementById('in-datePub').value = a.datePub || '';
-          document.getElementById('in-dateLimite').value = a.dateLimite || '';
-          document.getElementById('in-fournisseur').value = a.fournisseur || '';
-          document.getElementById('in-obs').value = a.obs || '';
-        }else{
-          document.getElementById('form-title').textContent = "Nouvel appel d'offres";
-          form.reset();
-          document.getElementById('f-id').value = '';
-          document.getElementById('in-statut').value = 'preparation';
-        }
-        overlayForm.classList.add('open');
-      }
-
-      function closeAll(){
-        overlayForm.classList.remove('open');
-        overlayDetail.classList.remove('open');
-        overlayConfirm.classList.remove('open');
-      }
-
-      document.querySelectorAll('[data-close]').forEach(btn => btn.addEventListener('click', closeAll));
-      [overlayForm, overlayDetail, overlayConfirm].forEach(ov => {
-        ov.addEventListener('click', e => { if(e.target === ov) closeAll(); });
-      });
-      document.addEventListener('keydown', e => { if(e.key === 'Escape') closeAll(); });
-
-      document.getElementById('btn-new').addEventListener('click', () => openForm());
-      document.getElementById('btn-empty-new').addEventListener('click', () => openForm());
-
-      function validateForm(){
-        let valid = true;
-
-         ['in-numero', v => v.trim().length > 0],
-          ['in-objet', v => v.trim().length > 0],
-          ['in-type', v => v.trim().length > 0],
-          ['in-montant', v => v !== '' && Number(v) >= 0],
-          ['in-dateLimite', v => v.trim().length > 0],
-        ];
-        checks.forEach(([id, test]) => {
-          const el = document.getElementById(id);
-          const field = el.closest('.field');
-          if(!test(el.value)){ field.classList.add('invalid'); valid = false; }
-          else field.classList.remove('invalid');
-        });
-        return valid;
-      }
-
-      document.getElementById('btn-save').addEventListener('click', async () => {
-        if(!validateForm()) return;
-        const payload = {
-          numero: document.getElementById('in-numero').value.trim(),
-          objet: document.getElementById('in-objet').value.trim(),
-          type: document.getElementById('in-type').value,
-          mode: document.getElementById('in-mode').value,
-          montant: Number(document.getElementById('in-montant').value),
-          statut: document.getElementById('in-statut').value,
-          datePub: document.getElementById('in-datePub').value,
-          dateLimite: document.getElementById('in-dateLimite').value,
-          fournisseur: document.getElementById('in-fournisseur').value.trim(),
-          obs: document.getElementById('in-obs').value.trim(),
-        };
-        try{
-          if(editingId){
-            await api.update(editingId, payload);
-            toast("Appel d'offres modifié avec succès.");
-          }else{
-            await api.create(payload);
-            toast("Appel d'offres créé avec succès.");
-          }
-          allAOs = await api.list();
-          closeAll();
-          render();
-        }catch(e){
-          toast("Une erreur est survenue lors de l'enregistrement.", true);
-        }
-      });
-
-      function openDetail(id){
-        const a = allAOs.find(x => x.id === id);
-        document.getElementById('detail-title').textContent = a.numero;
-
-        const stopped = a.statut === 'infructueux' || a.statut === 'annule';
-        const idx = stageIndex(a.statut);
-        const stageLabels = ['Préparation','Publication','Évaluation','Attribution'];
-        document.getElementById('detail-timeline').innerHTML = stageLabels.map((label, i) => {
-          let cls = '';
-          if(stopped) cls = i === 0 ? 'stopped' : '';
-          else if(i < idx) cls = 'done';
-          else if(i === idx) cls = 'current';
-          return `<div class="tl-step"><div class="tl-dot ${cls}"></div><div class="tl-label">${label}</div></div>`;
-        }).join('');
-
-        document.getElementById('detail-grid').innerHTML = `
-          <div class="detail-item"><div class="k">Objet</div><div class="v">${escapeHTML(a.objet)}</div></div>
-          <div class="detail-item"><div class="k">Statut</div><div class="v"><span class="status-badge st-${a.statut}"><span class="dot"></span>${STATUT_LABELS[a.statut]}</span></div></div>
-          <div class="detail-item"><div class="k">Type de marché</div><div class="v">${escapeHTML(a.type)}</div></div>
-          <div class="detail-item"><div class="k">Mode de passation</div><div class="v">${escapeHTML(a.mode||'—')}</div></div>
-          <div class="detail-item"><div class="k">Montant estimatif</div><div class="v">${currencyFmt.format(a.montant||0)} DH</div></div>
-          <div class="detail-item"><div class="k">Fournisseur attributaire</div><div class="v">${escapeHTML(a.fournisseur) || '—'}</div></div>
-          <div class="detail-item"><div class="k">Date de publication</div><div class="v">${dateFmt(a.datePub)}</div></div>
-          <div class="detail-item"><div class="k">Date limite de dépôt</div><div class="v">${dateFmt(a.dateLimite)}</div></div>
-        `;
-        const obsWrap = document.getElementById('detail-obs-wrap');
-        if(a.obs){ obsWrap.style.display = 'block'; document.getElementById('detail-obs').textContent = a.obs; }
-        else obsWrap.style.display = 'none';
-
-        document.getElementById('btn-detail-edit').onclick = () => { closeAll(); openForm(a.id); };
-        overlayDetail.classList.add('open');
-      }
-
-      function askDelete(id){
-        pendingDeleteId = id;
-        const a = allAOs.find(x => x.id === id);
-        document.getElementById('confirm-numero').textContent = a.numero;
-        overlayConfirm.classList.add('open');
-      }
-      document.getElementById('btn-confirm-delete').addEventListener('click', async () => {
-        try{
-          await api.remove(pendingDeleteId);
-          allAOs = await api.list();
-          closeAll();
-          render();
-          toast("Appel d'offres supprimé.");
-        }catch(e){
-          toast('Suppression impossible.', true);
-        }
-      });
-
-      function toast(msg, isError = false){
-        const host = document.getElementById('toast-host');
-        const el = document.createElement('div');
-        el.className = 'toast' + (isError ? ' error' : '');
-        el.textContent = msg;
-        host.appendChild(el);
-        setTimeout(() => el.remove(), 3200);
-      }
-
-      (async function init(){
-        allAOs = await api.list();
-        render();
-      })();
-    </script>
-  </body>
+(async function init(){
+  allAOs = initialData; // affichage immédiat depuis le rendu serveur
+  render();
+  try{
+    allAOs = await api.list(); // confirmation/rafraîchissement depuis l'API
+    render();
+  }catch(e){
+    toast("Impossible de contacter le serveur, affichage des dernières données disponibles.", true);
+  }
+})();
+</script>
+</body>
 </html>
