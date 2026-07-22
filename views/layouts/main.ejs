@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title || "ORMVA/SM — Bureau Informatique" %></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="C:\Users\GAMETECH\Documents\ormvasm-ao-marches\public\css\Layout\sidebar.css">
+  <style>
+    *{ box-sizing:border-box; margin:0; padding:0; }
+    body{ display:flex; min-height:100vh; background:#F6F3EC; }
+    .content{ flex:1; padding:32px; }
+  </style>
+</head>
+<body>
+
+  <%- include('partials/sidebar', {
+    currentPage: currentPage,
+    counts: counts,
+    currentUser: currentUser
+  }) %>
+
+  <main class="content">
+    <%- body %>
+  </main>
+
+</body>
+</html>
