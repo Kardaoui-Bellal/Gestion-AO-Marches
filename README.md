@@ -91,20 +91,13 @@ gestion-ao-marches/
 │   ├── referentiels/
 │   ├── checklist/
 │   ├── historique/
-│   └── erreurs/
+│   
 │
 ├── database/
 │   ├── schema.sql
 │   ├── seed.sql
 │   └── backup/
-│
-├── tests/
-│
-└── docs/
-    ├── Guide_Utilisateur.pdf
-    ├── Guide_Technique.pdf
-    └── Installation.pdf
-```
+
 
 ## Étapes exactes d'installation
 
