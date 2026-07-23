@@ -11,26 +11,24 @@
   }
   *{box-sizing:border-box;}
   html,body{height:100%;}
-  body{
+   body{
     margin:0;
     font-family:"Segoe UI",Roboto,-apple-system,BlinkMacSystemFont,Arial,sans-serif;
     background:#eef1f4;
-    display:flex;
-    align-items:center;
-    justify-content:center;
     min-height:100vh;
-    padding:24px;
-  }
+    padding:0;
+}
 
-  .card{
+.card{
     display:flex;
-    width:100%;
-    max-width:1040px;
-    min-height:560px;
-    border-radius:0px;
+    width:100vw;
+    height:100vh;
+    max-width:none;
+    min-height:100vh;
+    border-radius:0;
     overflow:hidden;
-    box-shadow:0 30px 60px -20px rgba(13,59,46,.35);
-  }
+    box-shadow:none;
+}
 
   /* ---------- LEFT PANEL ---------- */
   .panel-left{
