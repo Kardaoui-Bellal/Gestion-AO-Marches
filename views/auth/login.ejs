@@ -4,10 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Connexion — ORMVA Souss Massa</title>
-    <link
-      rel="stylesheet"
-      href="C:\Users\GAMETECH\Documents\ormvasm-ao-marches\public\css\login.css"
-    />
+    <link rel="stylesheet" href="/css/login.css" />
   </head>
   <body>
     <div class="card">
@@ -33,7 +30,7 @@
 
         <div class="logo-badge">
           <img
-            src="C:\Users\GAMETECH\Documents\ormvasm-ao-marches\public\img\LOGO_OMRVASM.png"
+            src="/img/LOGO_OMRVASM.png"
             alt="Logo ORMVA Souss Massa"
             style="
               width: 100%;
@@ -69,7 +66,7 @@
       <div class="panel-right">
         <div class="org-logo">
           <img
-            src="C:\Users\GAMETECH\Documents\ormvasm-ao-marches\public\img\LOGO_OMRVASM.png"
+            src="/img/LOGO_OMRVASM.png"
             alt="Logo ORMVA Souss Massa"
             style="
               width: 100%;
@@ -85,11 +82,14 @@
           Veuillez vous authentifier pour accéder au système.
         </p>
 
-        <div class="error-msg" id="errorMsg">
-          Nom d'utilisateur ou mot de passe incorrect.
-        </div>
+        <!-- Message d'erreur rendu côté serveur par authController.js (variable `error`) -->
+        <% if (typeof error !== 'undefined' && error) { %>
+          <div class="error-msg show" id="errorMsg"><%= error %></div>
+        <% } else { %>
+          <div class="error-msg" id="errorMsg"></div>
+        <% } %>
 
-        <form id="loginForm" novalidate>
+        <form id="loginForm" action="/auth/login" method="POST">
           <label for="email">Email</label>
           <div class="field">
             <svg class="icon-left" viewBox="0 0 24 24">
@@ -107,6 +107,7 @@
             />
           </div>
 
+          <!-- name="mot_de_passe" : c'est le nom lu par authController.js (const { email, mot_de_passe } = req.body) -->
           <label for="password">Mot de passe</label>
           <div class="field">
             <svg class="icon-left" viewBox="0 0 24 24">
@@ -116,7 +117,7 @@
             <input
               type="password"
               id="password"
-              name="password"
+              name="mot_de_passe"
               placeholder="••••••••"
               autocomplete="current-password"
               required
@@ -147,10 +148,6 @@
       </div>
     </div>
 
-    <script
-      src="C:\Users\GAMETECH\Documents\ormvasm-ao-marches\public\js\login.js"
-    >
-     
-    </script>
+    <script src="/js/login.js"></script>
   </body>
 </html>

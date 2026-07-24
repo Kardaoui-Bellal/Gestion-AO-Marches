@@ -1,18 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="C:\Users\GAMETECH\Documents\ormvasm-ao-marches\public\css\Layout\sidebar.css">
-</head>
-<body>
-    <%
+<%
 /**
  * Partial: sidebar.ejs
- * Variables attendues lors du render (avec valeurs par défaut si absentes) :
+ * À inclure dans le <body> de chaque page avec :
+ *   <%- include('../layouts/partials/sidebar', {
+ *         currentPage: 'appels-offres',
+ *         counts: { appelsOffres: 4, alertes: 1 },
+ *         currentUser: currentUser
+ *       }) %>
+ *
+ * Important : la page qui inclut ce partial doit elle-même charger dans
+ * son <head> :
+ *   <link rel="preconnect" href="https://fonts.googleapis.com">
+ *   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+ *   <link rel="stylesheet" href="/css/Layout/sidebar.css">
+ * (un partial inclus au milieu du <body> ne peut pas injecter de contenu
+ * dans le <head> qui a déjà été envoyé au navigateur).
+ *
+ * Variables attendues (avec valeurs par défaut si absentes) :
  *   currentPage   : string  -> id de la page active (ex: 'marches')
  *   counts        : { appelsOffres: number, alertes: number }
  *   currentUser   : { name: string, role: string, initials: string }
@@ -110,6 +114,3 @@ const menuGroups = [
     document.getElementById('sidebar').classList.toggle('collapsed');
   });
 </script>
-
-</body>
-</html>

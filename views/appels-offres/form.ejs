@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= typeof title !== 'undefined' ? title : "Appel d'offres — ORMVA/SM" %></title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/Layout/sidebar.css" />
+    <link rel="stylesheet" href="/css/appels-offres-form.css" />
+  </head>
+  <body>
+    <%
+      // `appelOffre` vaut null (nouvel AO), ou un objet — soit venant de la
+      // base (édition, avec id_ao/dates en objets Date), soit venant de
+      // req.body en cas d'erreur de validation (dates déjà en chaînes).
+      const ao = typeof appelOffre !== 'undefined' && appelOffre ? appelOffre : {};
+      const isEdit = !!ao.id_ao;
+
+      function toDateInputValue(v) {
+        if (!v) return '';
+        if (typeof v === 'string') return v.slice(0, 10);
+        const d = new Date(v);
+        if (isNaN(d)) return '';
+        return d.toISOString().slice(0, 10);
+      }
+    %>
+
+    <div class="app-shell">
+      <%- include('../layouts/partials/sidebar', {
+        currentPage: 'appels-offres',
+        currentUser: currentUser
+      }) %>
+
+      <main class="app-content">
+    <div class="wrap">
+      <div class="topbar">
+        <div class="brand">
+          <div class="brand-mark">AO</div>
+          <div class="brand-text">
+            <div class="eyebrow">ORMVA/SM — Bureau Informatique</div>
+            <h1><%= typeof title !== 'undefined' ? title : (isEdit ? "Modifier l'appel d'offres" : "Nouvel appel d'offres") %></h1>
+          </div>
+        </div>
+        <a class="btn btn-ghost" href="<%= isEdit ? ('/appels-offres/' + ao.id_ao) : '/appels-offres' %>">
+          Annuler
+        </a>
+      </div>
+
+      <% if (typeof error !== 'undefined' && error) { %>
+        <div class="alert-error"><%= error %></div>
+      <% } %>
+
+      <form
+        id="aoForm"
+        class="form-card"
+        method="POST"
+        action="<%= isEdit ? ('/appels-offres/' + ao.id_ao) : '/appels-offres' %>"
+        novalidate
+      >
+        <div class="form-grid">
+          <div class="field">
+            <label for="numero_ao">N° de l'appel d'offres <span class="req">*</span></label>
+            <input
+              type="text"
+              id="numero_ao"
+              name="numero_ao"
+              placeholder="ex : 12/2026/ORMVASM"
+              value="<%= ao.numero_ao || '' %>"
+              required
+            />
+            <span class="err">Le numéro de l'AO est requis.</span>
+          </div>
+
+          <div class="field">
+            <label for="montant_estimatif">Montant estimatif (DH) <span class="req">*</span></label>
+            <input
+              type="number"
+              id="montant_estimatif"
+              name="montant_estimatif"
+              placeholder="0.00"
+              min="0"
+              step="0.01"
+              value="<%= (ao.montant_estimatif !== undefined && ao.montant_estimatif !== null) ? ao.montant_estimatif : '' %>"
+              required
+            />
+            <span class="err">Indiquez un montant valide (≥ 0).</span>
+          </div>
+
+          <div class="field full">
+            <label for="objet">Objet du marché <span class="req">*</span></label>
+            <input
+              type="text"
+              id="objet"
+              name="objet"
+              placeholder="ex : Aménagement du réseau d'irrigation — secteur Ouled Teima"
+              value="<%= ao.objet || '' %>"
+              required
+            />
+            <span class="err">L'objet est requis.</span>
+          </div>
+
+          <div class="field">
+            <label for="categorie_id">Catégorie <span class="req">*</span></label>
+            <select id="categorie_id" name="categorie_id" required>
+              <option value="">Sélectionner…</option>
+              <% categories.forEach(function(c) { %>
+                <option value="<%= c.id_ref %>" <%= String(ao.categorie_id) === String(c.id_ref) ? 'selected' : '' %>>
+                  <%= c.libelle %>
+                </option>
+              <% }); %>
+            </select>
+            <span class="err">Choisissez une catégorie.</span>
+          </div>
+
+          <div class="field">
+            <label for="etat_id">État <span class="req">*</span></label>
+            <select id="etat_id" name="etat_id" required>
+              <option value="">Sélectionner…</option>
+              <% etats.forEach(function(e) { %>
+                <option value="<%= e.id_ref %>" <%= String(ao.etat_id) === String(e.id_ref) ? 'selected' : '' %>>
+                  <%= e.libelle %>
+                </option>
+              <% }); %>
+            </select>
+            <span class="err">Choisissez un état.</span>
+            <span class="hint">
+              L'attribution (fournisseur retenu) se fait depuis la fiche détail de l'AO, pas depuis ce formulaire.
+            </span>
+          </div>
+
+          <div class="field">
+            <label for="date_lancement">Date de lancement</label>
+            <input type="date" id="date_lancement" name="date_lancement" value="<%= toDateInputValue(ao.date_lancement) %>" />
+          </div>
+
+          <div class="field">
+            <label for="date_limite_depot">Date limite de dépôt des offres</label>
+            <input type="date" id="date_limite_depot" name="date_limite_depot" value="<%= toDateInputValue(ao.date_limite_depot) %>" />
+          </div>
+
+          <div class="field">
+            <label for="date_ouverture_plis">Date d'ouverture des plis</label>
+            <input type="date" id="date_ouverture_plis" name="date_ouverture_plis" value="<%= toDateInputValue(ao.date_ouverture_plis) %>" />
+          </div>
+
+          <div class="field full">
+            <label for="observation">Observations</label>
+            <textarea id="observation" name="observation" placeholder="Notes internes, remarques du bureau…"><%= ao.observation || '' %></textarea>
+          </div>
+        </div>
+
+        <div class="form-footer">
+          <a class="btn btn-ghost" href="<%= isEdit ? ('/appels-offres/' + ao.id_ao) : '/appels-offres' %>">Annuler</a>
+          <button type="submit" class="btn btn-primary" id="submitBtn">
+            <span id="submitBtnText"><%= isEdit ? 'Enregistrer les modifications' : "Créer l'appel d'offres" %></span>
+          </button>
+        </div>
+      </form>
+    </div>
+      </main>
+    </div>
+
+    <script src="/js/appels-offres-form.js"></script>
+  </body>
+</html>

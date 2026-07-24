@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= typeof title !== 'undefined' ? title : "Appels d'offres — ORMVA/SM" %></title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/Layout/sidebar.css" />
+    <link rel="stylesheet" href="/css/appels-offres.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <%- include('../layouts/partials/sidebar', {
+        currentPage: 'appels-offres',
+        counts: { appelsOffres: appelsOffres.length, alertes: 0 },
+        currentUser: currentUser
+      }) %>
+
+      <main class="app-content">
+    <div class="wrap">
+      <div class="topbar">
+        <div class="brand">
+          <div class="brand-mark">AO</div>
+          <div class="brand-text">
+            <div class="eyebrow">ORMVA/SM — Bureau Informatique</div>
+            <h1>Gestion des Appels d'Offres</h1>
+          </div>
+        </div>
+        <a class="btn btn-primary" href="/appels-offres/new">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <path d="M12 5v14M5 12h14" />
+          </svg>
+          Nouvel appel d'offres
+        </a>
+      </div>
+
+      <div class="toolbar">
+        <div class="search-box">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="7" />
+            <path d="m21 21-4.3-4.3" />
+          </svg>
+          <input type="text" id="searchInput" placeholder="Rechercher par n° AO ou objet…" />
+        </div>
+
+        <select id="filterType">
+          <option value="">Tous les types</option>
+          <% categories.forEach(function(c) { %>
+            <option value="<%= c.libelle %>"><%= c.libelle %></option>
+          <% }); %>
+        </select>
+
+        <select id="filterStatut">
+          <option value="">Tous les statuts</option>
+          <% etats.forEach(function(e) { %>
+            <option value="<%= e.libelle %>"><%= e.libelle %></option>
+          <% }); %>
+        </select>
+
+        <div class="divider"></div>
+        <button class="btn btn-ghost btn-sm" id="resetBtn">Réinitialiser</button>
+      </div>
+
+      <div class="result-count" id="resultCount"></div>
+
+      <div class="table-card">
+        <table>
+          <thead>
+            <tr>
+              <th data-key="reference">N° AO <span class="arrow"></span></th>
+              <th data-key="objet">Objet <span class="arrow"></span></th>
+              <th data-key="type">Type <span class="arrow"></span></th>
+              <th data-key="datePublication">Lancement <span class="arrow"></span></th>
+              <th data-key="dateLimite">Date limite dépôt <span class="arrow"></span></th>
+              <th data-key="budget">Montant estimatif <span class="arrow"></span></th>
+              <th data-key="statut">Statut <span class="arrow"></span></th>
+              <th style="width: 110px">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+
+        <div class="empty-state" id="emptyState">
+          <h3>Aucun appel d'offres trouvé</h3>
+          <p>Ajustez vos critères de recherche ou créez un nouvel appel d'offres.</p>
+          <a class="btn btn-primary" href="/appels-offres/new">Créer un appel d'offres</a>
+        </div>
+
+        <div class="pagination">
+          <span id="paginationInfo"></span>
+          <div class="page-controls" id="paginationControls"></div>
+        </div>
+      </div>
+    </div>
+      </main>
+    </div>
+
+    <div id="toast"></div>
+
+    <script>
+      // Données réelles injectées par le contrôleur (appelOffreController.list)
+      // via `res.render("appels_offres/liste", { appelsOffres, ... })`.
+      // On les reformate ici vers le format attendu par appels-offres.js,
+      // sans toucher au contrôleur / modèle.
+      function toISODate(v) {
+        if (!v) return '';
+        const d = new Date(v);
+        if (isNaN(d)) return '';
+        return d.toISOString().slice(0, 10);
+      }
+
+      const appelsOffres = <%- JSON.stringify(appelsOffres) %>.map(function (r) {
+        return {
+          id: r.id_ao,
+          reference: r.numero_ao,
+          objet: r.objet,
+          service: r.fournisseur_nom ? ('Attributaire : ' + r.fournisseur_nom) : '',
+          type: r.categorie_libelle,
+          datePublication: toISODate(r.date_lancement),
+          dateLimite: toISODate(r.date_limite_depot),
+          budget: Number(r.montant_estimatif),
+          statut: r.etat_libelle,
+        };
+      });
+    </script>
+    <script src="/js/appels-offres.js"></script>
+  </body>
+</html>

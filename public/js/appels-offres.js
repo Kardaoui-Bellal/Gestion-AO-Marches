@@ -1,20 +1,26 @@
-
 // ---------------------------------------------------------------
-// Données injectées par le serveur (EJS) depuis la variable `appelsOffres`
-// passée au res.render(). Le tableau ci-dessous alimente la recherche,
-// le tri et la pagination côté client, en plus du rendu initial côté serveur.
+// Les données ne sont plus injectées ici : la ligne
+// `const appelsOffres = <%- JSON.stringify(_appelsOffres) %>;`
+// a été retirée car ce fichier est servi tel quel par express.static
+// (jamais passé par le moteur EJS), donc ce code n'était jamais
+// interprété. La variable `appelsOffres` est maintenant définie par
+// un <script> inline dans views/appels-offres/liste.ejs, juste avant
+// le chargement de ce fichier, à partir des vraies données du
+// contrôleur (numero_ao, categorie_libelle, etat_libelle, etc.).
 // ---------------------------------------------------------------
-const appelsOffres = <%- JSON.stringify(_appelsOffres) %>;
 
+// Libellés réels (table `referentiels`, type ETAT_AO — cf. referentiels_seed.sql)
 const statutBadge = {
-  "En cours":"info",
-  "Clôturé":"neutral",
-  "Attribué":"success",
-  "Infructueux":"warning",
-  "Annulé":"danger",
+  "En préparation": "neutral",
+  "Lancé": "info",
+  "Plis ouverts": "info",
+  "En cours d'évaluation": "warning",
+  "Attribué": "success",
+  "Infructueux": "warning",
+  "Annulé": "danger",
 };
 
-const state = { search:"", statut:"", type:"", sortKey:"datePublication", sortDir:"desc", page:1, perPage:8 };
+const state = { search:"", statut:"", type:"", sortKey:"dateLimite", sortDir:"asc", page:1, perPage:8 };
 
 const tableBody = document.getElementById('tableBody');
 const resultCount = document.getElementById('resultCount');
@@ -24,11 +30,12 @@ const paginationControls = document.getElementById('paginationControls');
 const toast = document.getElementById('toast');
 
 function fmtDate(iso){
+  if (!iso) return '—';
   const [y,m,d] = iso.split('-');
   return `${d}/${m}/${y}`;
 }
 function fmtBudget(n){
-  return n.toLocaleString('fr-FR') + ' MAD';
+  return Number(n || 0).toLocaleString('fr-FR') + ' MAD';
 }
 function showToast(msg){
   toast.textContent = msg;
@@ -76,7 +83,7 @@ function render(){
         <td><span class="ref">${r.reference}</span></td>
         <td class="objet">
           <div class="objet-title">${r.objet}</div>
-          <div class="objet-service">${r.service}</div>
+          ${r.service ? `<div class="objet-service">${r.service}</div>` : ''}
         </td>
         <td><span class="type-tag">${r.type}</span></td>
         <td><span class="date-mono">${fmtDate(r.datePublication)}</span></td>
@@ -85,13 +92,13 @@ function render(){
         <td><span class="badge ${statutBadge[r.statut] || 'neutral'}">${r.statut}</span></td>
         <td>
           <div class="actions">
-            <a class="icon-btn" title="Voir la fiche" href="/appels-offres/${r.reference}">
+            <a class="icon-btn" title="Voir la fiche" href="/appels-offres/${r.id}">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
             </a>
-            <a class="icon-btn" title="Modifier" href="/appels-offres/${r.reference}/modifier">
+            <a class="icon-btn" title="Modifier" href="/appels-offres/${r.id}/edit">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
             </a>
-            <button class="icon-btn danger" title="Supprimer" data-action="delete" data-ref="${r.reference}">
+            <button class="icon-btn danger" title="Supprimer" data-action="delete" data-id="${r.id}" data-ref="${r.reference}">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16"/><path d="M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>
             </button>
           </div>
@@ -156,23 +163,29 @@ document.querySelectorAll('thead th[data-key]').forEach(th=>{
     render();
   });
 });
+
+// NOTE : il n'existe actuellement aucune route DELETE dans
+// appelOffreRoutes.js. Ce bouton reste câblé (et le sera nativement
+// le jour où la route sera ajoutée côté backend), mais pour l'instant
+// le fetch échouera avec un 404 — c'est un choix volontaire pour ne
+// pas modifier les routes/contrôleur sans ta validation.
 tableBody.addEventListener('click', e=>{
   const btn = e.target.closest('button[data-action="delete"]');
   if(!btn) return;
+  const id = btn.dataset.id;
   const ref = btn.dataset.ref;
   if(confirm(`Confirmer la suppression de l'appel d'offres ${ref} ?`)){
-    // À connecter : DELETE /appels-offres/:reference
-    fetch(`/appels-offres/${encodeURIComponent(ref)}`, { method: 'DELETE' })
+    fetch(`/appels-offres/${encodeURIComponent(id)}`, { method: 'DELETE' })
       .then(res => {
         if(!res.ok) throw new Error('Échec de la suppression');
-        const idx = appelsOffres.findIndex(a=>a.reference===ref);
+        const idx = appelsOffres.findIndex(a=>a.id===Number(id));
         if(idx !== -1){ appelsOffres.splice(idx,1); render(); showToast(`${ref} supprimé.`); }
       })
-      .catch(() => showToast(`Erreur lors de la suppression de ${ref}.`));
+      .catch(() => showToast(`Erreur lors de la suppression de ${ref}. (Route DELETE à ajouter côté backend)`));
   }
 });
 
-// Le rendu initial vient du serveur (EJS) ; on ne relance render() que si
-// l'utilisateur interagit (recherche, tri, filtre, pagination) — voir events ci-dessus.
-// Pour activer le tri/la pagination dès le chargement, décommenter la ligne suivante :
-// render();
+// Rendu initial : la table est vide au chargement du DOM tant que
+// render() n'a pas tourné une première fois (contrairement au commentaire
+// d'origine, il n'y a pas de rendu HTML côté serveur ligne par ligne ici).
+render();
