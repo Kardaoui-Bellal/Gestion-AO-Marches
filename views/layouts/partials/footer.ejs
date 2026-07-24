@@ -1,0 +1,22 @@
+<%
+/**
+ * Partial: footer.ejs
+ * À inclure en bas de .app-content, après le contenu de la page :
+ *
+ *   <%- include('../layouts/partials/footer') %>
+ */
+const currentYear = new Date().getFullYear();
+%>
+
+<footer class="app-footer">
+  <div class="af-left">
+    © <%= currentYear %> ORMVA Souss-Massa — Bureau Informatique
+  </div>
+  <div class="af-right">
+    <a href="/dashboard">Tableau de bord</a>
+    <span class="af-sep">·</span>
+    <a href="mailto:informatique@ormvasm.ma">Support technique</a>
+    <span class="af-sep">·</span>
+    <span class="af-version">v1.0.0</span>
+  </div>
+</footer>

@@ -23,7 +23,20 @@
  */
 const currentPage = typeof locals.currentPage !== 'undefined' ? locals.currentPage : '';
 const counts = typeof locals.counts !== 'undefined' ? locals.counts : { appelsOffres: 0, alertes: 0 };
-const currentUser = typeof locals.currentUser !== 'undefined' ? locals.currentUser : { name: 'Utilisateur', role: 'Bureau Informatique', initials: 'BI' };
+
+// req.session.user (défini dans authController.js) a la forme
+// { id_utilisateur, nom, email, role_code, role_libelle } — pas
+// { name, role, initials }. On gère les deux formes ici, comme dans
+// navbar.ejs, pour rester compatible sans toucher au contrôleur d'auth.
+const rawUser = typeof locals.currentUser !== 'undefined' && locals.currentUser ? locals.currentUser : null;
+const currentUser = {
+  name: rawUser ? (rawUser.name || rawUser.nom || 'Utilisateur') : 'Utilisateur',
+  role: rawUser ? (rawUser.role || rawUser.role_libelle || 'Bureau Informatique') : 'Bureau Informatique',
+  initials: rawUser && rawUser.initials
+    ? rawUser.initials
+    : (rawUser ? (rawUser.name || rawUser.nom || '') : '')
+        .split(' ').filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join('') || 'BI',
+};
 
 const icons = {
   dashboard: `<rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/>`,

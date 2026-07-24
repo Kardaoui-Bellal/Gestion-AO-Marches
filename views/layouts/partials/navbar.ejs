@@ -1,0 +1,95 @@
+<%
+/**
+ * Partial: navbar.ejs
+ * Barre supérieure affichée en haut de .app-content, à droite de la sidebar.
+ * À inclure ainsi, juste après l'ouverture de <main class="app-content"> :
+ *
+ *   <%- include('../layouts/partials/navbar', {
+ *         title: typeof title !== 'undefined' ? title : "ORMVA/SM",
+ *         currentUser: currentUser
+ *       }) %>
+ *
+ * Variables attendues (avec valeurs par défaut si absentes) :
+ *   title       : string -> titre de la page affiché comme fil d'ariane
+ *   currentUser : { name: string, role: string, initials: string }
+ */
+const navTitle = typeof locals.title !== 'undefined' && locals.title ? locals.title : 'ORMVA/SM — Bureau Informatique';
+
+// req.session.user (défini dans authController.js) a la forme
+// { id_utilisateur, nom, email, role_code, role_libelle } — pas
+// { name, role, initials }. On gère les deux formes ici pour rester
+// compatible sans devoir toucher au contrôleur d'auth.
+const rawUser = typeof locals.currentUser !== 'undefined' && locals.currentUser ? locals.currentUser : null;
+const displayName = rawUser ? (rawUser.name || rawUser.nom || 'Utilisateur') : 'Utilisateur';
+const displayRole = rawUser ? (rawUser.role || rawUser.role_libelle || 'Bureau Informatique') : 'Bureau Informatique';
+const displayInitials = rawUser && rawUser.initials
+  ? rawUser.initials
+  : displayName.split(' ').filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join('') || 'BI';
+%>
+
+<header class="navbar">
+  <div class="nb-left">
+    <div class="nb-breadcrumb">
+      <a href="/dashboard" class="nb-home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9.5 12 3l9 6.5" /><path d="M5 9.5V21h14V9.5" />
+        </svg>
+      </a>
+      <span class="nb-sep">/</span>
+      <span class="nb-current"><%= navTitle %></span>
+    </div>
+  </div>
+
+  <div class="nb-right">
+    <div class="nb-search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" />
+      </svg>
+      <input type="text" placeholder="Rechercher…" />
+    </div>
+
+    <button class="nb-icon-btn" id="nbNotifBtn" title="Notifications">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" style="display:none" />
+        <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 0 1-3.46 0" />
+      </svg>
+      <span class="nb-dot"></span>
+    </button>
+
+    <div class="nb-divider"></div>
+
+    <div class="nb-user" id="nbUserMenu">
+      <div class="nb-avatar"><%= displayInitials %></div>
+      <div class="nb-user-text">
+        <div class="nb-user-name"><%= displayName %></div>
+        <div class="nb-user-role"><%= displayRole %></div>
+      </div>
+      <svg class="nb-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 9 12 15 18 9" />
+      </svg>
+
+      <div class="nb-dropdown" id="nbDropdown">
+        <a href="/parametres" class="nb-dropdown-item">Paramètres</a>
+        <div class="nb-dropdown-divider"></div>
+        <form action="/auth/logout" method="POST">
+          <button type="submit" class="nb-dropdown-item danger">Déconnexion</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+
+<script>
+  (function () {
+    const menu = document.getElementById('nbUserMenu');
+    const dropdown = document.getElementById('nbDropdown');
+    if (!menu || !dropdown) return;
+    menu.addEventListener('click', function (e) {
+      e.stopPropagation();
+      dropdown.classList.toggle('open');
+    });
+    document.addEventListener('click', function () {
+      dropdown.classList.remove('open');
+    });
+  })();
+</script>

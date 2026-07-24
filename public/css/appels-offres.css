@@ -52,12 +52,16 @@ body {
 .app-content {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .wrap {
   max-width: 1280px;
+  width: 100%;
   margin: 0 auto;
   padding: 32px 28px 60px;
+  flex: 1;
 }
 
 /* ---------- Topbar ---------- */

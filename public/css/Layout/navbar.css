@@ -1,0 +1,164 @@
+/* ==========================================================
+   navbar.css — barre supérieure du contenu principal
+   Même palette que sidebar.css
+   ========================================================== */
+
+.navbar {
+  height: 64px;
+  flex: 0 0 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 24px;
+  background: #FFFFFF;
+  border-bottom: 1px solid rgba(31, 46, 40, 0.10);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.nb-left { display: flex; align-items: center; min-width: 0; }
+.nb-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.nb-home {
+  display: flex;
+  color: #7C8F84;
+  text-decoration: none;
+}
+.nb-home svg { width: 16px; height: 16px; }
+.nb-home:hover { color: #1F2E28; }
+.nb-sep { color: #AFC0B6; font-size: 13px; }
+.nb-current {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700;
+  font-size: 14.5px;
+  color: #1F2E28;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nb-right { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; }
+
+.nb-search {
+  position: relative;
+  display: none;
+}
+.nb-search svg {
+  position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
+  width: 15px; height: 15px;
+  color: #7C8F84;
+}
+.nb-search input {
+  width: 220px;
+  padding: 8px 12px 8px 32px;
+  border-radius: 8px;
+  border: 1px solid rgba(31, 46, 40, 0.10);
+  background: #F6F3EC;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  color: #1F2E28;
+}
+.nb-search input:focus { outline: 2px solid #E7B76A; border-color: #C88A34; }
+@media (min-width: 860px) { .nb-search { display: block; } }
+
+.nb-icon-btn {
+  position: relative;
+  width: 36px; height: 36px;
+  border: 1px solid rgba(31, 46, 40, 0.10);
+  border-radius: 9px;
+  background: #FFFFFF;
+  color: #5B6E65;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+.nb-icon-btn svg { width: 17px; height: 17px; }
+.nb-icon-btn:hover { background: #F6F3EC; color: #1F2E28; }
+.nb-dot {
+  position: absolute;
+  top: 7px; right: 8px;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #D96C4B;
+  border: 1.5px solid #FFFFFF;
+}
+
+.nb-divider {
+  width: 1px;
+  height: 26px;
+  background: rgba(31, 46, 40, 0.10);
+  margin: 0 2px;
+}
+
+.nb-user {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 8px 5px 5px;
+  border-radius: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+.nb-user:hover { background: #F6F3EC; }
+.nb-avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: #E7B76A;
+  color: #1F2E28;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700;
+  font-size: 12.5px;
+  flex: 0 0 32px;
+}
+.nb-user-text { display: none; line-height: 1.25; }
+.nb-user-name { font-size: 13px; font-weight: 600; color: #1F2E28; }
+.nb-user-role { font-size: 11px; color: #7C8F84; }
+@media (min-width: 720px) { .nb-user-text { display: block; } }
+
+.nb-chevron { width: 14px; height: 14px; color: #7C8F84; }
+
+.nb-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 190px;
+  background: #FFFFFF;
+  border: 1px solid rgba(31, 46, 40, 0.10);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(31, 46, 40, 0.12);
+  padding: 6px;
+  display: none;
+  flex-direction: column;
+  z-index: 30;
+}
+.nb-dropdown.open { display: flex; }
+.nb-dropdown-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 9px 10px;
+  border: none;
+  background: none;
+  border-radius: 7px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #1F2E28;
+  text-decoration: none;
+  cursor: pointer;
+}
+.nb-dropdown-item:hover { background: #F6F3EC; }
+.nb-dropdown-item.danger { color: #D96C4B; }
+.nb-dropdown-item.danger:hover { background: rgba(217, 108, 75, 0.10); }
+.nb-dropdown-divider {
+  height: 1px;
+  background: rgba(31, 46, 40, 0.08);
+  margin: 5px 4px;
+}
