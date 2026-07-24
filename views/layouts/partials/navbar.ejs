@@ -2,12 +2,10 @@
 /**
  * Partial: navbar.ejs
  * Barre supérieure affichée en haut de .app-content, à droite de la sidebar.
- * À inclure ainsi, juste après l'ouverture de <main class="app-content"> :
- *
- *   <%- include('../layouts/partials/navbar', {
- *         title: typeof title !== 'undefined' ? title : "ORMVA/SM",
- *         currentUser: currentUser
- *       }) %>
+ * A inclure ainsi, juste apres l'ouverture de main.app-content, via un
+ * appel "include" EJS vers ../layouts/partials/navbar, en lui passant :
+ *   title: typeof title !== 'undefined' ? title : "ORMVA/SM",
+ *   currentUser: currentUser
  *
  * Variables attendues (avec valeurs par défaut si absentes) :
  *   title       : string -> titre de la page affiché comme fil d'ariane

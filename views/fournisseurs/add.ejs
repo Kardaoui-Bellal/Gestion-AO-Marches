@@ -1,42 +1,129 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ajouter un Fournisseur</title>
-    <link rel="stylesheet" href="public/css/fournisseurs.css">
-</head>
-<body>
-    <div class="container">
-        <h1>Ajouter un Fournisseur</h1>
-        <form action="/fournisseurs/ajouter" method="POST">
-            <div class="form-group">
-                <label for="raisonSociale">Raison Sociale :</label>
-                <input type="text" id="raisonSociale" name="raisonSociale" required>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= typeof title !== 'undefined' ? title : "Nouveau fournisseur — ORMVA/SM" %></title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/Layout/sidebar.css" />
+    <link rel="stylesheet" href="/css/Layout/navbar.css" />
+    <link rel="stylesheet" href="/css/Layout/footer.css" />
+    <link rel="stylesheet" href="/css/fournisseurs.css" />
+  </head>
+  <body>
+    <%
+      // En cas d'erreur de validation, le contrôleur renvoie ici avec
+      // fournisseur = req.body (valeurs déjà saisies par l'utilisateur).
+      const f = typeof fournisseur !== 'undefined' && fournisseur ? fournisseur : {};
+    %>
+    <div class="app-shell">
+      <%- include('../layouts/partials/sidebar', {
+        currentPage: 'fournisseurs',
+        counts: { appelsOffres: 0, alertes: 0 },
+        currentUser: currentUser
+      }) %>
+
+      <main class="app-content">
+        <%- include('../layouts/partials/navbar', {
+          title: "Nouveau fournisseur",
+          currentUser: currentUser
+        }) %>
+
+    <div class="wrap">
+      <div class="topbar">
+        <div class="brand-text">
+          <div class="eyebrow">ORMVA/SM — Bureau Informatique</div>
+          <h1>Ajouter un fournisseur</h1>
+        </div>
+        <a class="btn btn-ghost" href="/fournisseurs">Annuler</a>
+      </div>
+
+      <% if (typeof error !== 'undefined' && error) { %>
+        <div class="alert-error"><%= error %></div>
+      <% } %>
+
+      <div class="form-layout">
+        <form id="fournisseurForm" class="form-card" method="POST" action="/fournisseurs" novalidate>
+          <div class="form-grid">
+            <div class="field full">
+              <label for="raison_sociale">Raison sociale <span class="req">*</span></label>
+              <input type="text" id="raison_sociale" name="raison_sociale" placeholder="ex : Société Générale des Travaux" value="<%= f.raison_sociale || '' %>" required />
+              <span class="err">La raison sociale est requise.</span>
             </div>
-            <div class="form-group">
-                <label for="ice">Numéro ICE :</label>
-                <input type="text" id="ice" name="ice" required>
+
+            <div class="field">
+              <label for="ice">Numéro ICE <span class="req">*</span></label>
+              <input type="text" id="ice" name="ice" placeholder="15 chiffres" maxlength="15" value="<%= f.ice || '' %>" required />
+              <span class="err">L'ICE doit contenir exactement 15 chiffres.</span>
             </div>
-            <div class="form-group">
-                <label for="adresse">Adresse :</label>
-                <input type="text" id="adresse" name="adresse" required>
+
+            <div class="field">
+              <label for="domaine_activite_id">Domaine d'activité <span class="req">*</span></label>
+              <select id="domaine_activite_id" name="domaine_activite_id" required>
+                <option value="">Sélectionner…</option>
+                <% domaines.forEach(function(d) { %>
+                  <option value="<%= d.id_ref %>" <%= String(f.domaine_activite_id) === String(d.id_ref) ? 'selected' : '' %>>
+                    <%= d.libelle %>
+                  </option>
+                <% }); %>
+              </select>
+              <span class="err">Choisissez un domaine d'activité.</span>
             </div>
-            <div class="form-group">
-                <label for="telephone">Téléphone :</label>
-                <input type="tel" id="telephone" name="telephone" required>
+
+            <div class="field">
+              <label for="telephone">Téléphone</label>
+              <input type="tel" id="telephone" name="telephone" placeholder="ex : 0528123456" value="<%= f.telephone || '' %>" />
+              <span class="err">Format attendu : 10 chiffres commençant par 0.</span>
             </div>
-            <div class="form-group">
-                <label for="email">Adresse Électronique :</label>
-                <input type="email" id="email" name="email" required>
+
+            <div class="field">
+              <label for="email">Adresse électronique</label>
+              <input type="email" id="email" name="email" placeholder="contact@entreprise.ma" value="<%= f.email || '' %>" />
             </div>
-            <div class="form-group">
-                <label for="domaineActivite">Domaine d'Activité :</label>
-                <input type="text" id="domaineActivite" name="domaineActivite" required>
+
+            <div class="field">
+              <label for="contact">Personne à contacter</label>
+              <input type="text" id="contact" name="contact" placeholder="Nom du contact" value="<%= f.contact || '' %>" />
             </div>
-            <button type="submit" class="btn-submit">Ajouter</button>
-            <a href="/fournisseurs" class="btn-annuler">Annuler</a>
+
+            <div class="field full">
+              <label for="adresse">Adresse</label>
+              <textarea id="adresse" name="adresse" placeholder="Adresse complète de l'entreprise"><%= f.adresse || '' %></textarea>
+            </div>
+          </div>
+
+          <div class="form-footer">
+            <button type="reset" class="btn btn-ghost">Réinitialiser</button>
+            <button type="submit" class="btn btn-primary" id="submitBtn">Ajouter le Fournisseur</button>
+          </div>
         </form>
+
+        <aside class="info-panel">
+          <h3>Informations utiles</h3>
+          <div class="info-item">
+            <span class="dot"></span>
+            <p><strong>Numéro ICE</strong> — doit être composé de 15 chiffres, conformément aux normes de l'OMPIC.</p>
+          </div>
+          <div class="info-item">
+            <span class="dot"></span>
+            <p><strong>Téléphone</strong> — format recommandé : 0528123456 (fixe) ou 0612345678 (mobile).</p>
+          </div>
+          <div class="info-item">
+            <span class="dot"></span>
+            <p><strong>Domaine d'activité</strong> — à sélectionner selon l'activité principale exercée par le fournisseur.</p>
+          </div>
+        </aside>
+      </div>
     </div>
-</body>
+
+        <%- include('../layouts/partials/footer') %>
+      </main>
+    </div>
+
+    <script src="/js/fournisseurs.js"></script>
+  </body>
 </html>

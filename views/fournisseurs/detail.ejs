@@ -1,24 +1,115 @@
-<!-- views/fournisseurs/details.ejs -->
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Détails du Fournisseur</title>
-    <link rel="stylesheet" href="public/css/fournisseurs.css">
-</head>
-<body>
-    <div class="container">
-        <h1>Détails du Fournisseur</h1>
-        <div class="details">
-            <p><strong>Raison Sociale :</strong> <%= fournisseur.raisonSociale %></p>
-            <p><strong>Numéro ICE :</strong> <%= fournisseur.ice %></p>
-            <p><strong>Adresse :</strong> <%= fournisseur.adresse %></p>
-            <p><strong>Téléphone :</strong> <%= fournisseur.telephone %></p>
-            <p><strong>Adresse Électronique :</strong> <%= fournisseur.email %></p>
-            <p><strong>Domaine d'Activité :</strong> <%= fournisseur.domaineActivite %></p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= typeof title !== 'undefined' ? title : "Fournisseur — ORMVA/SM" %></title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/Layout/sidebar.css" />
+    <link rel="stylesheet" href="/css/Layout/navbar.css" />
+    <link rel="stylesheet" href="/css/Layout/footer.css" />
+    <link rel="stylesheet" href="/css/fournisseurs.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <%- include('../layouts/partials/sidebar', {
+        currentPage: 'fournisseurs',
+        counts: { appelsOffres: 0, alertes: 0 },
+        currentUser: currentUser
+      }) %>
+
+      <main class="app-content">
+        <%- include('../layouts/partials/navbar', {
+          title: fournisseur.raison_sociale,
+          currentUser: currentUser
+        }) %>
+
+    <div class="wrap">
+      <div class="topbar">
+        <div class="brand-text">
+          <div class="eyebrow">ORMVA/SM — Bureau Informatique</div>
+          <h1>Fiche fournisseur</h1>
         </div>
-        <a href="/fournisseurs" class="btn-retour">Retour à la liste</a>
+        <a class="btn btn-ghost" href="/fournisseurs">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" />
+          </svg>
+          Retour à la liste
+        </a>
+      </div>
+
+      <div class="detail-layout">
+        <div class="detail-card">
+          <div class="detail-header">
+            <div class="detail-avatar">
+              <%= fournisseur.raison_sociale.split(' ').filter(Boolean).slice(0,2).map(w => w[0].toUpperCase()).join('') %>
+            </div>
+            <div>
+              <h2><%= fournisseur.raison_sociale %></h2>
+              <% if (fournisseur.actif) { %>
+                <span class="badge success">Actif</span>
+              <% } else { %>
+                <span class="badge neutral">Inactif</span>
+              <% } %>
+            </div>
+          </div>
+
+          <div class="detail-fields">
+            <div class="detail-field">
+              <div class="dl-label">Numéro ICE</div>
+              <div class="dl-value mono"><%= fournisseur.ice %></div>
+            </div>
+            <div class="detail-field">
+              <div class="dl-label">Domaine d'activité</div>
+              <div class="dl-value"><span class="type-tag"><%= fournisseur.domaine_activite_libelle %></span></div>
+            </div>
+            <div class="detail-field">
+              <div class="dl-label">Téléphone</div>
+              <div class="dl-value"><%= fournisseur.telephone || '—' %></div>
+            </div>
+            <div class="detail-field">
+              <div class="dl-label">Adresse électronique</div>
+              <div class="dl-value"><%= fournisseur.email || '—' %></div>
+            </div>
+            <div class="detail-field">
+              <div class="dl-label">Personne à contacter</div>
+              <div class="dl-value"><%= fournisseur.contact || '—' %></div>
+            </div>
+            <div class="detail-field">
+              <div class="dl-label">Dernière modification</div>
+              <div class="dl-value">
+                <%= fournisseur.date_modification ? new Date(fournisseur.date_modification).toLocaleDateString('fr-FR') : '—' %>
+              </div>
+            </div>
+            <div class="detail-field full">
+              <div class="dl-label">Adresse</div>
+              <div class="dl-value"><%= fournisseur.adresse || '—' %></div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="side-card">
+          <h3>Actions</h3>
+          <div class="side-actions">
+            <a class="btn btn-primary" href="/fournisseurs/<%= fournisseur.id_fournisseur %>/edit">Modifier</a>
+            <form method="POST" action="/fournisseurs/<%= fournisseur.id_fournisseur %>/toggle" data-toggle-form data-currently-active="<%= fournisseur.actif ? '1' : '0' %>">
+              <button type="submit" class="btn btn-ghost">
+                <%= fournisseur.actif ? 'Désactiver' : 'Réactiver' %>
+              </button>
+            </form>
+          </div>
+        </aside>
+      </div>
     </div>
-</body>
+
+        <%- include('../layouts/partials/footer') %>
+      </main>
+    </div>
+
+    <script src="/js/fournisseurs.js"></script>
+  </body>
 </html>

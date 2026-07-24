@@ -1,12 +1,10 @@
 <%
 /**
  * Partial: sidebar.ejs
- * À inclure dans le <body> de chaque page avec :
- *   <%- include('../layouts/partials/sidebar', {
- *         currentPage: 'appels-offres',
- *         counts: { appelsOffres: 4, alertes: 1 },
- *         currentUser: currentUser
- *       }) %>
+ * A inclure dans le body de chaque page avec un appel "include" EJS vers
+ * ../layouts/partials/sidebar, en lui passant :
+ *   currentPage: 'appels-offres', counts: { appelsOffres: 4, alertes: 1 },
+ *   currentUser: currentUser
  *
  * Important : la page qui inclut ce partial doit elle-même charger dans
  * son <head> :
