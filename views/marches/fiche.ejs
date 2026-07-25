@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= typeof title !== 'undefined' ? title : ("Fiche — " + marche.numero) %></title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/Layout/sidebar.css" />
+    <link rel="stylesheet" href="/css/marches.css" />
+  </head>
+  <body>
+    <%
+      function fmtDate(v) {
+        if (!v) return '—';
+        const d = new Date(v);
+        if (isNaN(d)) return '—';
+        return d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
+      }
+      function fmtMoney(v) {
+        if (v === null || v === undefined || v === '') return '—';
+        return Number(v).toLocaleString('fr-FR') + ' DH';
+      }
+    %>
+    <div class="app-shell">
+      <%- include('../layouts/partials/sidebar', {
+        currentPage: 'marches',
+        counts: { appelsOffres: 0, alertes: 0 },
+        currentUser: currentUser
+      }) %>
+
+      <main class="app-content">
+    <div class="wrap narrow">
+      <a class="back-link" href="/marches/<%= marche.id_marche %>">&larr; Retour au marché</a>
+
+      <div class="topbar">
+        <div class="title-block">
+          <div class="eyebrow">Fiche imprimable</div>
+          <h1 class="page-title"><%= marche.numero %></h1>
+        </div>
+        <div class="actions-top">
+          <button class="btn btn-ghost" id="printFicheBtn" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 6 2 18 2 18 9" /><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" /><rect x="6" y="14" width="12" height="8" />
+            </svg>
+            Imprimer
+          </button>
+          <a class="btn btn-primary" href="/export/marches/<%= marche.id_marche %>/fiche">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Télécharger en PDF
+          </a>
+        </div>
+      </div>
+
+      <div class="fiche-sheet">
+        <div class="fiche-header">
+          <div class="org">ORMVA/SM</div>
+          <div class="org-sub">Office Régional de Mise en Valeur Agricole du Souss-Massa — Bureau Informatique</div>
+          <div class="fiche-title">Fiche du Marché <%= marche.numero %></div>
+        </div>
+
+        <div class="fiche-section">
+          <h3>Identification</h3>
+          <div class="fiche-grid">
+            <div class="fiche-item"><div class="k">Objet</div><div class="v"><%= marche.objet %></div></div>
+            <div class="fiche-item"><div class="k">Type de marché</div><div class="v"><%= marche.type_marche_libelle %></div></div>
+            <div class="fiche-item"><div class="k">Statut</div><div class="v"><%= marche.statut_libelle %></div></div>
+            <div class="fiche-item"><div class="k">Appel d'offres lié</div><div class="v"><%= marche.numero_ao || '—' %></div></div>
+          </div>
+        </div>
+
+        <div class="fiche-section">
+          <h3>Fournisseur</h3>
+          <div class="fiche-grid">
+            <div class="fiche-item"><div class="k">Raison sociale</div><div class="v"><%= marche.fournisseur_nom %></div></div>
+            <div class="fiche-item"><div class="k">N° ICE</div><div class="v"><%= marche.fournisseur_ice || '—' %></div></div>
+          </div>
+        </div>
+
+        <div class="fiche-section">
+          <h3>Financier</h3>
+          <div class="fiche-grid">
+            <div class="fiche-item"><div class="k">Montant TTC</div><div class="v"><%= fmtMoney(marche.montant) %></div></div>
+            <div class="fiche-item"><div class="k">Délai d'exécution</div><div class="v"><%= marche.delai_execution_jours ? marche.delai_execution_jours + ' jours' : '—' %></div></div>
+          </div>
+        </div>
+
+        <div class="fiche-section">
+          <h3>Calendrier</h3>
+          <div class="fiche-grid">
+            <div class="fiche-item"><div class="k">Date de notification</div><div class="v"><%= fmtDate(marche.date_notification) %></div></div>
+            <div class="fiche-item"><div class="k">Date de début</div><div class="v"><%= fmtDate(marche.date_debut) %></div></div>
+            <div class="fiche-item"><div class="k">Date de fin prévue</div><div class="v"><%= fmtDate(marche.date_fin) %></div></div>
+            <div class="fiche-item"><div class="k">Prochaine échéance</div><div class="v"><%= fmtDate(marche.date_prochaine_echeance) %></div></div>
+            <div class="fiche-item"><div class="k">Réception provisoire</div><div class="v"><%= fmtDate(marche.date_reception_provisoire) %></div></div>
+            <div class="fiche-item"><div class="k">Réception définitive</div><div class="v"><%= fmtDate(marche.date_reception_definitive) %></div></div>
+          </div>
+        </div>
+
+        <% if (marche.observation) { %>
+          <div class="fiche-section">
+            <h3>Observations</h3>
+            <p style="font-size:13.5px; color:var(--ink); margin:0;"><%= marche.observation %></p>
+          </div>
+        <% } %>
+
+        <div class="fiche-section">
+          <h3>Pièces jointes (<%= documents.length %>)</h3>
+          <% if (documents.length === 0) { %>
+            <p class="empty-msg">Aucun document déposé.</p>
+          <% } else { %>
+            <ul class="doc-list">
+              <% documents.forEach(function(d) { %>
+                <li class="doc-item">
+                  <div class="doc-info">
+                    <div class="doc-name"><%= d.nom_original %></div>
+                    <div class="doc-meta"><%= d.type_document_libelle %></div>
+                  </div>
+                </li>
+              <% }); %>
+            </ul>
+          <% } %>
+        </div>
+
+        <div class="fiche-footer">
+          Document généré le <%= fmtDate(new Date()) %> — ORMVA/SM, Bureau Informatique
+        </div>
+      </div>
+    </div>
+      </main>
+    </div>
+
+    <script src="/js/marches.js"></script>
+  </body>
+</html>

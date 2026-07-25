@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= typeof title !== 'undefined' ? title : "Marché — ORMVA/SM" %></title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/Layout/sidebar.css" />
+    <link rel="stylesheet" href="/css/marches.css" />
+  </head>
+  <body>
+    <%
+      const m = typeof marche !== 'undefined' && marche ? marche : {};
+      const isEdit = !!m.id_marche;
+      const docs = typeof documents !== 'undefined' && documents ? documents : [];
+      function fmtSize(bytes) {
+        if (!bytes) return '';
+        const kb = bytes / 1024;
+        if (kb < 1024) return Math.round(kb) + ' Ko';
+        return (kb / 1024).toFixed(1) + ' Mo';
+      }
+      function fmtDate(v) {
+        if (!v) return '—';
+        const d = new Date(v);
+        if (isNaN(d)) return '—';
+        return d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
+      }
+      // valeur d'un champ date pour un <input type="date"> (format YYYY-MM-DD)
+      function dv(v) {
+        if (!v) return '';
+        const d = new Date(v);
+        if (isNaN(d)) return '';
+        return d.toISOString().slice(0, 10);
+      }
+    %>
+    <div class="app-shell">
+      <%- include('../layouts/partials/sidebar', {
+        currentPage: 'marches',
+        counts: { appelsOffres: 0, alertes: 0 },
+        currentUser: currentUser
+      }) %>
+
+      <main class="app-content">
+    <div class="wrap">
+      <a class="back-link" href="<%= isEdit ? ('/marches/' + m.id_marche) : '/marches' %>">&larr; <%= isEdit ? 'Retour au marché' : 'Retour à la liste' %></a>
+
+      <div class="topbar">
+        <div class="title-block">
+          <div class="eyebrow">ORMVA/SM — Bureau Informatique</div>
+          <h1 class="page-title"><%= isEdit ? ('Modifier le marché ' + m.numero) : "Nouveau marché" %></h1>
+        </div>
+      </div>
+
+      <% if (typeof error !== 'undefined' && error) { %>
+        <div class="alert-error"><%= error %></div>
+      <% } %>
+
+      <div class="form-shell">
+        <form id="marcheForm" class="form-card" method="POST" action="<%= isEdit ? ('/marches/' + m.id_marche) : '/marches' %>" novalidate>
+
+          <div class="tabs">
+            <button type="button" class="tab-btn active" data-tab="general"><span class="num">1</span> Informations générales</button>
+            <button type="button" class="tab-btn" data-tab="complementaire"><span class="num">2</span> Informations complémentaires</button>
+            <button type="button" class="tab-btn" data-tab="pieces"><span class="num">3</span> Pièces jointes</button>
+          </div>
+
+          <!-- ===== Onglet 1 : Informations générales ===== -->
+          <div class="tab-panel active" data-panel="general">
+            <div class="form-grid">
+              <div class="field">
+                <label for="numero">Numéro du marché <span class="req">*</span></label>
+                <input type="text" id="numero" name="numero" placeholder="ex : M-2026-014" value="<%= m.numero || '' %>" required />
+                <span class="err">Le numéro du marché est requis.</span>
+              </div>
+
+              <div class="field">
+                <label for="type_marche_id">Type de marché <span class="req">*</span></label>
+                <select id="type_marche_id" name="type_marche_id" required>
+                  <option value="">Sélectionner…</option>
+                  <% types.forEach(function(t) { %>
+                    <option value="<%= t.id_ref %>" <%= String(m.type_marche_id) === String(t.id_ref) ? 'selected' : '' %>><%= t.libelle %></option>
+                  <% }); %>
+                </select>
+                <span class="err">Choisissez un type de marché.</span>
+              </div>
+
+              <div class="field full">
+                <label for="objet">Objet du marché <span class="req">*</span></label>
+                <textarea id="objet" name="objet" placeholder="Décrit les prestations ou travaux concernés" required><%= m.objet || '' %></textarea>
+                <span class="err">L'objet du marché est requis.</span>
+              </div>
+
+              <div class="field">
+                <label for="appel_offre_id">Appel d'offres associé</label>
+                <select id="appel_offre_id" name="appel_offre_id">
+                  <option value="">Aucun / hors AO</option>
+                  <% appelsOffres.forEach(function(ao) { %>
+                    <option
+                      value="<%= ao.id_ao %>"
+                      data-fournisseur="<%= ao.fournisseur_attributaire_id || '' %>"
+                      <%= String(m.appel_offre_id) === String(ao.id_ao) ? 'selected' : '' %>
+                    >
+                      <%= ao.numero_ao %> — <%= ao.objet %>
+                    </option>
+                  <% }); %>
+                  <% if (typeof appelOffre !== 'undefined' && appelOffre && !appelsOffres.find(a => String(a.id_ao) === String(appelOffre.id_ao))) { %>
+                    <option value="<%= appelOffre.id_ao %>" data-fournisseur="<%= appelOffre.fournisseur_attributaire_id || '' %>" selected>
+                      <%= appelOffre.numero_ao %> — <%= appelOffre.objet %>
+                    </option>
+                  <% } %>
+                </select>
+                <span class="hint">Seuls les AO au statut « Attribué » sont proposés.</span>
+              </div>
+
+              <div class="field">
+                <label for="fournisseur_id">Fournisseur attributaire <span class="req">*</span></label>
+                <select id="fournisseur_id" name="fournisseur_id" required>
+                  <option value="">Sélectionner…</option>
+                  <% fournisseurs.forEach(function(f) { %>
+                    <option value="<%= f.id_fournisseur %>" <%= String(m.fournisseur_id) === String(f.id_fournisseur) ? 'selected' : '' %>><%= f.raison_sociale %></option>
+                  <% }); %>
+                </select>
+                <span class="err">Choisissez le fournisseur attributaire.</span>
+              </div>
+
+              <div class="field">
+                <label for="montant">Montant TTC (DH) <span class="req">*</span></label>
+                <input type="number" id="montant" name="montant" min="0" step="0.01" placeholder="0.00" value="<%= m.montant || '' %>" required />
+                <span class="err">Le montant doit être un nombre positif.</span>
+              </div>
+            </div>
+
+            <div class="form-footer">
+              <span></span>
+              <div class="right">
+                <button type="button" class="btn btn-ghost" data-next-tab="complementaire">Suivant →</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== Onglet 2 : Informations complémentaires ===== -->
+          <div class="tab-panel" data-panel="complementaire">
+            <div class="form-grid">
+              <div class="field">
+                <label for="date_notification">Date de notification</label>
+                <input type="date" id="date_notification" name="date_notification" value="<%= dv(m.date_notification) %>" />
+              </div>
+
+              <div class="field">
+                <label for="statut_id">Statut <span class="req">*</span></label>
+                <select id="statut_id" name="statut_id" required <%= isEdit ? 'disabled' : '' %>>
+                  <option value="">Sélectionner…</option>
+                  <% statuts.forEach(function(s) { %>
+                    <option value="<%= s.id_ref %>" <%= String(m.statut_id) === String(s.id_ref) ? 'selected' : '' %>><%= s.libelle %></option>
+                  <% }); %>
+                </select>
+                <% if (isEdit) { %>
+                  <input type="hidden" name="statut_id" value="<%= m.statut_id %>" />
+                  <span class="hint">Le statut se change depuis la fiche détail du marché (bouton dédié), pas ici.</span>
+                <% } %>
+              </div>
+
+              <div class="field">
+                <label for="date_debut">Date de début</label>
+                <input type="date" id="date_debut" name="date_debut" value="<%= dv(m.date_debut) %>" />
+              </div>
+
+              <div class="field">
+                <label for="date_fin">Date de fin prévue</label>
+                <input type="date" id="date_fin" name="date_fin" value="<%= dv(m.date_fin) %>" />
+                <span class="err">La date de fin doit être postérieure à la date de début.</span>
+              </div>
+
+              <div class="field">
+                <label for="delai_execution_jours">Délai d'exécution (jours)</label>
+                <input type="number" id="delai_execution_jours" name="delai_execution_jours" min="0" value="<%= m.delai_execution_jours || '' %>" />
+              </div>
+
+              <div class="field">
+                <label for="date_prochaine_echeance">Prochaine échéance</label>
+                <input type="date" id="date_prochaine_echeance" name="date_prochaine_echeance" value="<%= dv(m.date_prochaine_echeance) %>" />
+              </div>
+
+              <div class="field">
+                <label for="date_reception_provisoire">Date de réception provisoire</label>
+                <input type="date" id="date_reception_provisoire" name="date_reception_provisoire" value="<%= dv(m.date_reception_provisoire) %>" <%= isEdit ? '' : 'disabled' %> />
+                <% if (!isEdit) { %><span class="hint">Renseignable après création du marché.</span><% } %>
+              </div>
+
+              <div class="field">
+                <label for="date_reception_definitive">Date de réception définitive</label>
+                <input type="date" id="date_reception_definitive" name="date_reception_definitive" value="<%= dv(m.date_reception_definitive) %>" <%= isEdit ? '' : 'disabled' %> />
+                <% if (!isEdit) { %><span class="hint">Renseignable après création du marché.</span><% } %>
+              </div>
+
+              <div class="field full">
+                <label for="observation">Observation</label>
+                <textarea id="observation" name="observation" placeholder="Remarque complémentaire utile au suivi du marché"><%= m.observation || '' %></textarea>
+              </div>
+            </div>
+
+            <div class="form-footer">
+              <button type="button" class="btn btn-ghost" data-next-tab="general">← Précédent</button>
+              <div class="right">
+                <button type="button" class="btn btn-ghost" data-next-tab="pieces">Suivant →</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== Onglet 3 : Pièces jointes ===== -->
+          <div class="tab-panel" data-panel="pieces">
+            <% if (!isEdit) { %>
+              <div class="attach-notice">
+                Le dépôt des pièces jointes se fait juste après l'enregistrement du marché — le fichier doit être rattaché à un marché déjà créé.
+                Une fois le marché enregistré, vous serez redirigé vers sa fiche détail où vous pourrez déposer directement : Registre de Commerce (RC),
+                Cahier des Prescriptions Spéciales (CPS), Avis d'Appel d'Offres, Attestation administrative, Garantie, Bordereau des Prix, Fiche Technique, etc.
+                <div class="attach-types">
+                  <% typesDocument.forEach(function(td) { %>
+                    <span class="type-chip"><%= td.libelle %></span>
+                  <% }); %>
+                </div>
+              </div>
+            <% } else { %>
+              <% if (docs.length === 0) { %>
+                <p class="empty-msg">Aucun document déposé pour le moment.</p>
+              <% } else { %>
+                <ul class="doc-list">
+                  <% docs.forEach(function(d) { %>
+                    <li class="doc-item">
+                      <div class="doc-info">
+                        <div class="doc-name"><%= d.nom_original %></div>
+                        <div class="doc-meta"><%= d.type_document_libelle %> · <%= fmtSize(d.taille) %> · déposé le <%= fmtDate(d.date_ajout) %></div>
+                      </div>
+                      <div class="doc-actions">
+                        <a class="icon-btn" title="Télécharger" href="/documents/<%= d.id_document %>/download">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        </a>
+                      </div>
+                    </li>
+                  <% }); %>
+                </ul>
+              <% } %>
+
+              <form class="inline-upload inline-upload-form" method="POST" action="/documents/upload" enctype="multipart/form-data">
+                <input type="hidden" name="type_entite" value="MARCHE" />
+                <input type="hidden" name="entite_id" value="<%= m.id_marche %>" />
+                <div class="inline-upload-row">
+                  <select name="type_document_id" required>
+                    <option value="">Type de pièce…</option>
+                    <% typesDocument.forEach(function(td) { %>
+                      <option value="<%= td.id_ref %>"><%= td.libelle %></option>
+                    <% }); %>
+                  </select>
+                  <input type="file" name="document" required />
+                  <button type="submit" class="btn btn-ghost btn-sm">+ Ajouter</button>
+                </div>
+              </form>
+            <% } %>
+
+            <div class="form-footer">
+              <button type="button" class="btn btn-ghost" data-next-tab="complementaire">← Précédent</button>
+              <div class="right">
+                <a class="btn btn-ghost" href="<%= isEdit ? ('/marches/' + m.id_marche) : '/marches' %>">Réinitialiser</a>
+                <button type="submit" class="btn btn-primary"><%= isEdit ? 'Enregistrer les modifications' : 'Enregistrer le Marché' %></button>
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <aside class="info-panel">
+          <h3>Informations utiles</h3>
+          <div class="info-item">
+            <span class="dot"></span>
+            <p><strong>Types de marché</strong> — Cadre (prestations récurrentes sans montant fixe), Ferme (montant et durée fixés dès le départ), Reconductible (renouvelable par tacite reconduction).</p>
+          </div>
+          <div class="info-item">
+            <span class="dot"></span>
+            <p><strong>Dates importantes</strong> — notification (point de départ légal), début/fin d'exécution, réceptions provisoire et définitive qui clôturent le marché.</p>
+          </div>
+          <div class="info-item">
+            <span class="dot"></span>
+            <p><strong>Pièces jointes</strong> — formats acceptés : PDF, DOC/DOCX, XLS/XLSX, JPG/PNG. Taille raisonnable recommandée pour un archivage rapide.</p>
+          </div>
+        </aside>
+      </div>
+    </div>
+      </main>
+    </div>
+
+    <div id="toast"></div>
+    <script src="/js/marches.js"></script>
+  </body>
+</html>

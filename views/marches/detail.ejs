@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= typeof title !== 'undefined' ? title : marche.numero %> — ORMVA/SM</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/Layout/sidebar.css" />
+    <link rel="stylesheet" href="/css/marches.css" />
+  </head>
+  <body>
+    <%
+      function fmtDate(v) {
+        if (!v) return '—';
+        const d = new Date(v);
+        if (isNaN(d)) return '—';
+        return d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
+      }
+      function fmtMoney(v) {
+        if (v === null || v === undefined || v === '') return '—';
+        return Number(v).toLocaleString('fr-FR') + ' DH';
+      }
+      function statutBadgeClass(code) {
+        switch (code) {
+          case 'NOTIFIE': return 'info';
+          case 'EN_COURS': return 'warning';
+          case 'SUSPENDU': return 'danger';
+          case 'ACHEVE': return 'success';
+          case 'RESILIE': return 'danger';
+          case 'RENOUVELE': return 'info';
+          case 'EXPIRE': return 'neutral';
+          default: return 'neutral';
+        }
+      }
+      function checklistBadgeClass(code) {
+        switch (code) {
+          case 'TODO': return 'neutral';
+          case 'WIP': return 'info';
+          case 'DONE': return 'success';
+          case 'BLOCKED': return 'danger';
+          case 'NA': return 'neutral';
+          default: return 'neutral';
+        }
+      }
+      function fmtSize(bytes) {
+        if (!bytes) return '';
+        const kb = bytes / 1024;
+        if (kb < 1024) return Math.round(kb) + ' Ko';
+        return (kb / 1024).toFixed(1) + ' Mo';
+      }
+    %>
+    <div class="app-shell">
+      <%- include('../layouts/partials/sidebar', {
+        currentPage: 'marches',
+        counts: { appelsOffres: 0, alertes: 0 },
+        currentUser: currentUser
+      }) %>
+
+      <main class="app-content">
+    <div class="wrap">
+      <a class="back-link" href="/marches">&larr; Retour à la liste</a>
+
+      <div class="topbar">
+        <div class="title-block">
+          <div class="ref-line">
+            <span class="ref"><%= marche.numero %></span>
+            <span class="badge <%= statutBadgeClass(marche.statut_code) %>"><%= marche.statut_libelle %></span>
+            <span class="badge neutral"><%= marche.type_marche_libelle %></span>
+          </div>
+          <h1><%= marche.objet %></h1>
+        </div>
+        <div class="actions-top">
+          <a class="btn btn-ghost" href="/marches/<%= marche.id_marche %>/fiche">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Voir la fiche
+          </a>
+          <a class="btn btn-ghost" href="/export/marches/<%= marche.id_marche %>/fiche">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            PDF
+          </a>
+          <a class="btn btn-ghost" href="/marches/<%= marche.id_marche %>/edit">Modifier</a>
+        </div>
+      </div>
+
+      <div class="grid-main">
+        <!-- Colonne principale -->
+        <div class="col-main">
+
+          <section class="card">
+            <h2>Informations générales</h2>
+            <div class="detail-grid">
+              <div class="detail-item">
+                <div class="k">Montant TTC</div>
+                <div class="v mono"><%= fmtMoney(marche.montant) %></div>
+              </div>
+              <div class="detail-item">
+                <div class="k">Fournisseur</div>
+                <div class="v"><%= marche.fournisseur_nom %></div>
+              </div>
+              <div class="detail-item">
+                <div class="k">Appel d'offres lié</div>
+                <div class="v"><%= marche.numero_ao || '—' %></div>
+              </div>
+              <div class="detail-item">
+                <div class="k">Date de notification</div>
+                <div class="v mono"><%= fmtDate(marche.date_notification) %></div>
+              </div>
+              <div class="detail-item">
+                <div class="k">Date de début</div>
+                <div class="v mono"><%= fmtDate(marche.date_debut) %></div>
+              </div>
+              <div class="detail-item">
+                <div class="k">Date de fin prévue</div>
+                <div class="v mono"><%= fmtDate(marche.date_fin) %></div>
+              </div>
+              <div class="detail-item">
+                <div class="k">Délai d'exécution</div>
+                <div class="v"><%= marche.delai_execution_jours ? marche.delai_execution_jours + ' jours' : '—' %></div>
+              </div>
+              <div class="detail-item">
+                <div class="k">Réception provisoire</div>
+                <div class="v mono"><%= fmtDate(marche.date_reception_provisoire) %></div>
+              </div>
+              <div class="detail-item">
+                <div class="k">Réception définitive</div>
+                <div class="v mono"><%= fmtDate(marche.date_reception_definitive) %></div>
+              </div>
+            </div>
+            <% if (marche.observation) { %>
+              <div class="detail-item full obs">
+                <div class="k">Observations</div>
+                <div class="v"><%= marche.observation %></div>
+              </div>
+            <% } %>
+          </section>
+
+          <section class="card">
+            <div class="card-header">
+              <h2>Documents <span class="count"><%= documents.length %></span></h2>
+            </div>
+
+            <% if (documents.length === 0) { %>
+              <p class="empty-msg">Aucun document déposé pour le moment.</p>
+            <% } else { %>
+              <ul class="doc-list">
+                <% documents.forEach(function(d) { %>
+                  <li class="doc-item">
+                    <div class="doc-info">
+                      <div class="doc-name"><%= d.nom_original %></div>
+                      <div class="doc-meta"><%= d.type_document_libelle %> · <%= fmtSize(d.taille) %> · déposé le <%= fmtDate(d.date_ajout) %></div>
+                    </div>
+                    <div class="doc-actions">
+                      <a class="icon-btn" title="Télécharger" href="/documents/<%= d.id_document %>/download">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                      </a>
+                      <form class="archive-form" method="POST" action="/documents/<%= d.id_document %>/archive">
+                        <button class="icon-btn danger" type="submit" title="Archiver">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+                        </button>
+                      </form>
+                    </div>
+                  </li>
+                <% }); %>
+              </ul>
+            <% } %>
+
+            <a class="link-more" href="/documents/upload?type_entite=MARCHE&entite_id=<%= marche.id_marche %>">+ Ajouter un document</a>
+          </section>
+
+        </div>
+
+        <!-- Colonne latérale -->
+        <div class="col-side">
+          <section class="card">
+            <h2>Statut du marché</h2>
+            <form class="status-form" method="POST" action="/marches/<%= marche.id_marche %>/statut">
+              <select name="statut_id">
+                <% statuts.forEach(function(s) { %>
+                  <option value="<%= s.id_ref %>" <%= String(marche.statut_id) === String(s.id_ref) ? 'selected' : '' %>><%= s.libelle %></option>
+                <% }); %>
+              </select>
+              <button type="submit" class="btn btn-ghost btn-sm">Changer</button>
+            </form>
+          </section>
+
+          <section class="card">
+            <h2>Checklist</h2>
+            <% if (checklist.length === 0) { %>
+              <p class="empty-msg">Aucune étape de checklist initialisée.</p>
+            <% } else { %>
+              <ul class="checklist">
+                <% checklist.forEach(function(item) { %>
+                  <li class="checklist-item">
+                    <span class="badge sm <%= checklistBadgeClass(item.statut_code) %>"><%= item.statut_libelle %></span>
+                    <div class="checklist-body">
+                      <div class="checklist-label"><%= item.etape_libelle %></div>
+                      <% if (item.date_validation) { %><div class="checklist-date">Validé le <%= fmtDate(item.date_validation) %></div><% } %>
+                      <% if (item.observation) { %><div class="checklist-obs"><%= item.observation %></div><% } %>
+                    </div>
+                  </li>
+                <% }); %>
+              </ul>
+              <a class="link-more" href="/checklist/MARCHE/<%= marche.id_marche %>">Voir la checklist complète →</a>
+            <% } %>
+          </section>
+
+          <section class="card">
+            <h2>Zone de danger</h2>
+            <form method="POST" action="/marches/<%= marche.id_marche %>/delete" class="delete-form" data-numero="<%= marche.numero %>">
+              <button type="submit" class="btn btn-danger" style="width:100%; justify-content:center;">Supprimer ce marché</button>
+            </form>
+          </section>
+        </div>
+      </div>
+    </div>
+      </main>
+    </div>
+
+    <div id="toast"></div>
+    <script src="/js/marches.js"></script>
+  </body>
+</html>
