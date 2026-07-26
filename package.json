@@ -20,6 +20,7 @@
     "multer": "^1.4.5-lts.1",
     "mysql": "^2.18.1",
     "mysql2": "^3.23.1",
+    "node.js": "^0.0.1-security",
     "pdfkit": "^0.19.1",
     "promise": "^8.3.0"
   },
