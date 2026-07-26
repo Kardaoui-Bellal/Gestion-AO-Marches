@@ -1,33 +1,719 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tableau de bord — ORMVA/SM Bureau Informatique</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      <%= typeof title !== 'undefined' ? title : 'Tableau de bord' %>
+    </title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/dashboard.css" />
+  </head>
 
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <div class="container-fluid">
-      <span class="navbar-brand">ORMVA/SM — Bureau Informatique</span>
-      <div class="d-flex align-items-center">
-        <span class="text-white me-3 small">
-          <%= currentUser.nom %> (<%= currentUser.role_libelle %>)
-        </span>
-        <form action="/auth/logout" method="POST" class="m-0">
-          <button type="submit" class="btn btn-sm btn-outline-light">Déconnexion</button>
-        </form>
+  <body>
+    <div class="wrapper">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="logo">
+          <img src="/images/logo.png" alt="logo" />
+
+          <h4>ORMVA/SM</h4>
+        </div>
+
+        <ul class="sidebar-menu">
+          <li class="active">
+            <a href="index.ejs">
+              <i class="bi bi-grid-fill"></i>
+              Tableau de bord
+            </a>
+          </li>
+
+          <li>
+            <a href="/appels_offres/liste.ejs">
+              <i class="bi bi-folder2-open"></i>
+              Appels d'offres
+            </a>
+          </li>
+
+          <li>
+            <a href="/marches/liste.ejs">
+              <i class="bi bi-file-earmark-text"></i>
+              Marchés
+            </a>
+          </li>
+
+          <li>
+            <a href="/fournisseurs/liste.ejs">
+              <i class="bi bi-building"></i>
+              Fournisseurs
+            </a>
+          </li>
+
+          <li>
+            <a href="/documents/uploads.ejs">
+              <i class="bi bi-folder"></i>
+              Documents
+            </a>
+          </li>
+
+          <li>
+            <a href="/utilisateurs/liste.ejs">
+              <i class="bi bi-people"></i>
+              Utilisateurs
+            </a>
+          </li>
+
+          <li>
+            <a href="/historique/liste.ejs">
+              <i class="bi bi-clock-history"></i>
+              Historique
+            </a>
+          </li>
+
+        </ul>
+      </aside>
+
+      <!-- Main -->
+      <main class="main-content">
+        <!-- Navbar -->
+
+        <nav class="top-navbar">
+          <div class="page-title">
+            <h2>Tableau de bord</h2>
+
+            <small>
+              Bienvenue
+              <strong>
+                <%= utilisateur ? utilisateur.nom : 'Administrateur' %>
+              </strong>
+            </small>
+          </div>
+
+          <div class="navbar-right">
+            <button class="notification-btn">
+              <i class="bi bi-bell"></i>
+
+              <span class="badge">4</span>
+            </button>
+
+            <div class="profile">
+              <div class="avatar">
+                <%= utilisateur ? utilisateur.nom.charAt(0) : 'A' %>
+              </div>
+
+              <div>
+                <strong>
+                  <%= utilisateur ? utilisateur.nom : 'Administrateur' %>
+                </strong>
+
+                <small>Connecté</small>
+              </div>
+            </div>
+          </div>
+        </nav>
+
+        <!-- Dashboard -->
+
+        <section class="dashboard">
+          <div class="row">
+            <!-- Carte -->
+
+            <div class="col-lg-3 col-md-6">
+              <div class="stat-card">
+                <div class="icon green">
+                  <i class="bi bi-folder2-open"></i>
+                </div>
+
+                <div>
+                  <h3>35</h3>
+
+                  <p>Appels d'offres</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Carte -->
+
+            <div class="col-lg-3 col-md-6">
+              <div class="stat-card">
+                <div class="icon blue">
+                  <i class="bi bi-file-earmark-text"></i>
+                </div>
+
+                <div>
+                  <h3>18</h3>
+
+                  <p>Marchés actifs</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Carte -->
+
+            <div class="col-lg-3 col-md-6">
+              <div class="stat-card">
+                <div class="icon orange">
+                  <i class="bi bi-building"></i>
+                </div>
+
+                <div>
+                  <h3>52</h3>
+
+                  <p>Fournisseurs</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Carte -->
+
+            <div class="col-lg-3 col-md-6">
+              <div class="stat-card">
+                <div class="icon red">
+                  <i class="bi bi-cash-stack"></i>
+                </div>
+
+                <div>
+                  <h3>18 450 000 DH</h3>
+
+                  <p>Montant engagé</p>
+                </div>
+              </div>
+            </div>
+          </div>
+         
+          <!-- Graphiques -->
+
+          <div class="row mt-4">
+            <!-- Evolution des appels d'offres -->
+
+            <div class="col-lg-8">
+              <div class="dashboard-card">
+                <div class="card-header-custom">
+                  <div>
+                    <h5>Évolution des appels d'offres</h5>
+
+                    <small>Statistiques mensuelles</small>
+                  </div>
+
+                  <button class="btn btn-outline-success btn-sm">
+                    <i class="bi bi-download"></i>
+
+                    Exporter
+                  </button>
+                </div>
+
+                <div class="card-body">
+                  <div id="aoChart" class="chart-container"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Répartition -->
+
+            <div class="col-lg-4">
+              <div class="dashboard-card">
+                <div class="card-header-custom">
+                  <div>
+                    <h5>Répartition des marchés</h5>
+
+                    <small>Par statut</small>
+                  </div>
+                </div>
+
+                <div class="card-body">
+                  <div
+                    id="statusChart"
+                    class="chart-container small-chart"
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+         
+
+          <div class="row mt-4">
+            <!-- Budget -->
+
+            <div class="col-lg-6">
+              <div class="dashboard-card">
+                <div class="card-header-custom">
+                  <div>
+                    <h5>Montants des marchés</h5>
+
+                    <small>Budget annuel</small>
+                  </div>
+                </div>
+
+                <div class="card-body">
+                  <div id="budgetChart" class="chart-container"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Domaine -->
+
+            <div class="col-lg-6">
+              <div class="dashboard-card">
+                <div class="card-header-custom">
+                  <div>
+                    <h5>Répartition par domaine</h5>
+
+                    <small>Informatique</small>
+                  </div>
+                </div>
+
+                <div class="card-body">
+                  <div id="domainChart" class="chart-container"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          
+          <div class="row mt-4">
+            <div class="col-lg-4">
+              <div class="mini-card success">
+                <div>
+                  <h6>Marchés en cours</h6>
+
+                  <h2>18</h2>
+
+                  <span>+4 ce mois</span>
+                </div>
+
+                <i class="bi bi-check-circle-fill"></i>
+              </div>
+            </div>
+
+            <div class="col-lg-4">
+              <div class="mini-card warning">
+                <div>
+                  <h6>Échéances proches</h6>
+
+                  <h2>7</h2>
+
+                  <span>À surveiller</span>
+                </div>
+
+                <i class="bi bi-alarm-fill"></i>
+              </div>
+            </div>
+
+            <div class="col-lg-4">
+              <div class="mini-card danger">
+                <div>
+                  <h6>Marchés expirés</h6>
+
+                  <h2>2</h2>
+
+                  <span>Action requise</span>
+                </div>
+
+                <i class="bi bi-exclamation-triangle-fill"></i>
+              </div>
+            </div>
+          </div>
+
+          
+          <!-- Activité récente -->
+
+          <div class="row mt-4">
+            <div class="col-lg-12">
+              <div class="dashboard-card">
+                <div class="card-header-custom">
+                  <div>
+                    <h5>Activité récente</h5>
+
+                    <small>Dernières opérations</small>
+                  </div>
+                </div>
+
+                <div class="activity-list">
+                  <div class="activity-item">
+                    <div class="activity-icon success">
+                      <i class="bi bi-plus-circle"></i>
+                    </div>
+
+                    <div class="activity-content">
+                      <strong>Nouveau marché enregistré</strong>
+
+                      <p>Marché M-2026-014 ajouté avec succès.</p>
+                    </div>
+
+                    <span>Il y a 5 min</span>
+                  </div>
+
+                  <div class="activity-item">
+                    <div class="activity-icon primary">
+                      <i class="bi bi-pencil-square"></i>
+                    </div>
+
+                    <div class="activity-content">
+                      <strong>Modification d'un appel d'offres</strong>
+
+                      <p>AO-2026-003 mis à jour.</p>
+                    </div>
+
+                    <span>20 min</span>
+                  </div>
+
+                  <div class="activity-item">
+                    <div class="activity-icon warning">
+                      <i class="bi bi-bell-fill"></i>
+                    </div>
+
+                    <div class="activity-content">
+                      <strong>Alerte automatique</strong>
+
+                      <p>Le marché M-2025-021 expire bientôt.</p>
+                    </div>
+
+                    <span>1 heure</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Derniers appels d'offres -->
+
+    <div class="row mt-4">
+      <div class="col-lg-8">
+        <div class="dashboard-card">
+          <div class="card-header-custom">
+            <div>
+              <h5>Derniers appels d'offres</h5>
+
+              <small>Liste des appels d'offres récemment ajoutés</small>
+            </div>
+
+            <a href="/appels_offres/liste.ejs" class="btn btn-success btn-sm">
+              Voir tout
+            </a>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table dashboard-table align-middle">
+              <thead>
+                <tr>
+                  <th>N° AO</th>
+
+                  <th>Objet</th>
+
+                  <th>Date</th>
+
+                  <th>Statut</th>
+
+                  <th>Action</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                  <td>AO-2026-001</td>
+
+                  <td>Acquisition de serveurs</td>
+
+                  <td>12/07/2026</td>
+
+                  <td>
+                    <span class="badge bg-success"> Attribué </span>
+                  </td>
+
+                  <td>
+                    <a href="#" class="btn btn-light btn-sm">
+                      <i class="bi bi-eye"></i>
+                    </a>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>AO-2026-002</td>
+
+                  <td>Firewall Sophos</td>
+
+                  <td>15/07/2026</td>
+
+                  <td>
+                    <span class="badge bg-warning text-dark"> En cours </span>
+                  </td>
+
+                  <td>
+                    <a href="#" class="btn btn-light btn-sm">
+                      <i class="bi bi-eye"></i>
+                    </a>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>AO-2026-003</td>
+
+                  <td>Licences Microsoft</td>
+
+                  <td>18/07/2026</td>
+
+                  <td>
+                    <span class="badge bg-primary"> Ouvert </span>
+                  </td>
+
+                  <td>
+                    <a href="#" class="btn btn-light btn-sm">
+                      <i class="bi bi-eye"></i>
+                    </a>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>AO-2026-004</td>
+
+                  <td>NAS Synology</td>
+
+                  <td>21/07/2026</td>
+
+                  <td>
+                    <span class="badge bg-danger"> Clôturé </span>
+                  </td>
+
+                  <td>
+                    <a href="#" class="btn btn-light btn-sm">
+                      <i class="bi bi-eye"></i>
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      
+      <!-- Alertes -->
+      
+
+      <div class="col-lg-4">
+        <div class="dashboard-card">
+          <div class="card-header-custom">
+            <h5>Alertes</h5>
+          </div>
+
+          <div class="alert-list">
+            <div class="alert-item danger">
+              <i class="bi bi-exclamation-circle-fill"></i>
+
+              <div>
+                <strong>Marché expiré</strong>
+
+                <p>M-2025-004</p>
+              </div>
+            </div>
+
+            <div class="alert-item warning">
+              <i class="bi bi-alarm-fill"></i>
+
+              <div>
+                <strong>Expire dans 5 jours</strong>
+
+                <p>M-2026-010</p>
+              </div>
+            </div>
+
+            <div class="alert-item success">
+              <i class="bi bi-check-circle-fill"></i>
+
+              <div>
+                <strong>Nouveau fournisseur</strong>
+
+                <p>HP Maroc</p>
+              </div>
+            </div>
+
+            <div class="alert-item primary">
+              <i class="bi bi-folder-check"></i>
+
+              <div>
+                <strong>AO validé</strong>
+
+                <p>AO-2026-011</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </nav>
 
-  <div class="container py-5">
-    <div class="alert alert-success">
-      Connexion réussie ✅ — Ceci est un placeholder. Les pages Référentiels, Fournisseurs,
-      Appels d'offres, Marchés, etc. seront ajoutées lors des phases suivantes du plan.
+    
+    <!-- Derniers marchés -->
+    
+
+    <div class="row mt-4">
+      <div class="col-lg-12">
+        <div class="dashboard-card">
+          <div class="card-header-custom">
+            <div>
+              <h5>Derniers marchés enregistrés</h5>
+
+              <small>Suivi des marchés informatiques</small>
+            </div>
+
+            <a href="/marches/liste.ejs" class="btn btn-success btn-sm"> Voir tous </a>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table dashboard-table align-middle">
+              <thead>
+                <tr>
+                  <th>Référence</th>
+
+                  <th>Fournisseur</th>
+
+                  <th>Montant</th>
+
+                  <th>Date</th>
+
+                  <th>Statut</th>
+
+                  <th>Action</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                  <td>M-2026-001</td>
+
+                  <td>Dell Maroc</td>
+
+                  <td>850 000 DH</td>
+
+                  <td>03/07/2026</td>
+
+                  <td>
+                    <span class="badge bg-success"> En cours </span>
+                  </td>
+
+                  <td>
+                    <a href="#" class="btn btn-light btn-sm">
+                      <i class="bi bi-eye"></i>
+                    </a>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>M-2026-002</td>
+
+                  <td>Oracle</td>
+
+                  <td>1 420 000 DH</td>
+
+                  <td>08/07/2026</td>
+
+                  <td>
+                    <span class="badge bg-primary"> Signé </span>
+                  </td>
+
+                  <td>
+                    <a href="#" class="btn btn-light btn-sm">
+                      <i class="bi bi-eye"></i>
+                    </a>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>M-2026-003</td>
+
+                  <td>HP Maroc</td>
+
+                  <td>670 000 DH</td>
+
+                  <td>14/07/2026</td>
+
+                  <td>
+                    <span class="badge bg-warning text-dark">
+                      Préparation
+                    </span>
+                  </td>
+
+                  <td>
+                    <a href="#" class="btn btn-light btn-sm">
+                      <i class="bi bi-eye"></i>
+                    </a>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>M-2026-004</td>
+
+                  <td>IBM Maroc</td>
+
+                  <td>980 000 DH</td>
+
+                  <td>20/07/2026</td>
+
+                  <td>
+                    <span class="badge bg-danger"> Expiré </span>
+                  </td>
+
+                  <td>
+                    <a href="#" class="btn btn-light btn-sm">
+                      <i class="bi bi-eye"></i>
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
+ </section>
+
+        <!-- ========================= -->
+        <!-- Footer -->
+        <!-- ========================= -->
+
+        <footer class="dashboard-footer">
+
+            <div class="footer-left">
+
+                © <%= new Date().getFullYear() %>
+
+                Office Régional de Mise en Valeur Agricole du Souss-Massa
+
+            </div>
+
+            <div class="footer-center">
+
+                Application de Gestion des Appels d'Offres et des Marchés
+
+            </div>
+
+            <div class="footer-right">
+
+                Version 1.0
+
+            </div>
+
+        </footer>
+
+    </main>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+<script src="/js/dashboard.js"></script>
 
 </body>
+
 </html>
+ 
