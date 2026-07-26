@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= typeof title !== 'undefined' ? title : "Checklist — ORMVA/SM" %></title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/Layout/sidebar.css" />
+    <link rel="stylesheet" href="/css/marches.css" />
+    <style>
+      .checklist-full { display: flex; flex-direction: column; gap: 12px; }
+      .checklist-row {
+        display: flex; align-items: flex-start; gap: 14px;
+        background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px;
+      }
+      .checklist-row-main { flex: 1; min-width: 0; }
+      .checklist-row .checklist-label { font-size: 14px; margin-bottom: 4px; }
+      .checklist-inline-form { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; align-items: center; }
+      .checklist-inline-form select, .checklist-inline-form input[type="date"] { width: auto; padding: 8px 10px; font-size: 12.5px; }
+      .checklist-inline-form input[type="text"] { flex: 1; min-width: 160px; padding: 8px 10px; font-size: 12.5px; }
+    </style>
+  </head>
+  <body>
+    <%
+      function fmtDate(v) {
+        if (!v) return '—';
+        const d = new Date(v);
+        if (isNaN(d)) return '—';
+        return d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
+      }
+      function checklistBadgeClass(code) {
+        switch (code) {
+          case 'TODO': return 'neutral';
+          case 'WIP': return 'info';
+          case 'DONE': return 'success';
+          case 'BLOCKED': return 'danger';
+          case 'NA': return 'neutral';
+          default: return 'neutral';
+        }
+      }
+      var statutsChecklist = (typeof statuts !== 'undefined' && statuts) ? statuts : [];
+      var backHref = type_entite === 'AO' ? ('/appels-offres/' + entite_id) : ('/marches/' + entite_id);
+      var done = checklist.filter(function(c) { return c.statut_code === 'DONE' || c.statut_code === 'NA'; }).length;
+    %>
+    <div class="app-shell">
+      <%- include('../layouts/partials/sidebar', {
+        currentPage: type_entite === 'AO' ? 'appels-offres' : 'marches',
+        counts: { appelsOffres: 0, alertes: 0 },
+        currentUser: currentUser
+      }) %>
+
+      <main class="app-content">
+        <div class="wrap narrow">
+          <a class="back-link" href="<%= backHref %>">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
+            Retour à <%= type_entite === 'AO' ? "l'appel d'offres" : 'au marché' %>
+          </a>
+
+          <div class="topbar">
+            <div class="title-block">
+              <div class="eyebrow">ORMVA/SM — Bureau Informatique</div>
+              <h1 class="page-title">Checklist — <%= type_entite %> #<%= entite_id %></h1>
+            </div>
+          </div>
+
+          <div class="result-count"><b><%= done %></b> / <b><%= checklist.length %></b> étape<%= checklist.length !== 1 ? 's' : '' %> validée<%= done !== 1 ? 's' : '' %></div>
+
+          <% if (checklist.length === 0) { %>
+            <div class="table-card">
+              <div class="empty-state" style="display:block">
+                <h3>Aucune étape de checklist</h3>
+                <p>La checklist de ce dossier n'a pas encore été initialisée.</p>
+              </div>
+            </div>
+          <% } else { %>
+            <div class="checklist-full">
+              <% checklist.forEach(function(item) { %>
+                <div class="checklist-row">
+                  <span class="badge sm <%= checklistBadgeClass(item.statut_code) %>"><%= item.statut_libelle %></span>
+                  <div class="checklist-row-main">
+                    <div class="checklist-label"><%= item.etape_libelle %></div>
+                    <% if (item.date_validation) { %><div class="checklist-date">Validé le <%= fmtDate(item.date_validation) %></div><% } %>
+                    <% if (item.observation) { %><div class="checklist-obs"><%= item.observation %></div><% } %>
+
+                    <form class="checklist-inline-form" method="POST" action="/checklist/<%= item.id_checklist %>">
+                      <select name="statut_id">
+                        <% statutsChecklist.forEach(function(s) { %>
+                          <option value="<%= s.id_ref %>" <%= String(s.id_ref) === String(item.statut_id) ? 'selected' : '' %>><%= s.libelle %></option>
+                        <% }); %>
+                      </select>
+                      <input type="date" name="date_validation" value="<%= item.date_validation ? new Date(item.date_validation).toISOString().split('T')[0] : '' %>" />
+                      <input type="text" name="observation" placeholder="Observation…" value="<%= item.observation || '' %>" />
+                      <button type="submit" class="btn btn-ghost btn-sm">Mettre à jour</button>
+                    </form>
+                  </div>
+                </div>
+              <% }); %>
+            </div>
+          <% } %>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= typeof title !== 'undefined' ? title : "Ajouter un document — ORMVA/SM" %></title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/Layout/sidebar.css" />
+    <link rel="stylesheet" href="/css/marches.css" />
+    <style>
+      .file-drop {
+        border: 2px dashed var(--border); border-radius: 10px; padding: 28px;
+        text-align: center; background: var(--bg-app);
+      }
+      .file-drop input[type="file"] { width: 100%; }
+    </style>
+  </head>
+  <body>
+    <%
+      var backHref = type_entite === 'AO' ? ('/appels-offres/' + entite_id) : ('/marches/' + entite_id);
+      var entiteLabel = type_entite === 'AO' ? (entite.numero_ao || ('AO #' + entite_id)) : (entite.numero || ('Marché #' + entite_id));
+    %>
+    <div class="app-shell">
+      <%- include('../layouts/partials/sidebar', {
+        currentPage: type_entite === 'AO' ? 'appels-offres' : 'marches',
+        counts: { appelsOffres: 0, alertes: 0 },
+        currentUser: currentUser
+      }) %>
+
+      <main class="app-content">
+        <div class="wrap narrow">
+          <a class="back-link" href="<%= backHref %>">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
+            Retour à <%= type_entite === 'AO' ? "l'appel d'offres" : 'au marché' %>
+          </a>
+
+          <div class="topbar">
+            <div class="title-block">
+              <div class="eyebrow">ORMVA/SM — Bureau Informatique</div>
+              <h1 class="page-title">Ajouter un document</h1>
+            </div>
+          </div>
+
+          <div class="attach-notice">
+            Document lié à <strong><%= entiteLabel %></strong>.
+            <div class="attach-types">
+              <span class="type-chip">PDF</span>
+              <span class="type-chip">Word</span>
+              <span class="type-chip">Excel</span>
+              <span class="type-chip">JPG</span>
+              <span class="type-chip">PNG</span>
+              <span class="type-chip">10 Mo max</span>
+            </div>
+          </div>
+
+          <% if (typeof error !== 'undefined' && error) { %>
+            <div class="alert-error"><%= error %></div>
+          <% } %>
+
+          <form class="form-card" method="POST" action="/documents/upload" enctype="multipart/form-data">
+            <input type="hidden" name="type_entite" value="<%= type_entite %>" />
+            <input type="hidden" name="entite_id" value="<%= entite_id %>" />
+
+            <div class="tab-panel active" style="padding: 26px 28px;">
+              <div class="form-grid">
+                <div class="field full">
+                  <label>Fichier <span class="req">*</span></label>
+                  <div class="file-drop">
+                    <input type="file" name="document" required accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png" />
+                  </div>
+                </div>
+
+                <div class="field full">
+                  <label>Type de document <span class="req">*</span></label>
+                  <select name="type_document_id" required>
+                    <option value="">— Sélectionner —</option>
+                    <% typesDocument.forEach(function(t) { %>
+                      <option value="<%= t.id_ref %>"><%= t.libelle %></option>
+                    <% }); %>
+                  </select>
+                </div>
+
+                <div class="field full">
+                  <label>Observation</label>
+                  <textarea name="observation" placeholder="Remarque optionnelle sur ce document…"></textarea>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-footer">
+              <a class="btn btn-ghost" href="<%= backHref %>">Annuler</a>
+              <div class="right">
+                <button type="submit" class="btn btn-primary">Ajouter le document</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
