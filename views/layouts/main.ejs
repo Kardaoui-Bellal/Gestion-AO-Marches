@@ -1,28 +1,66 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title><%= title || "ORMVA/SM — Bureau Informatique" %></title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="C:\Users\GAMETECH\Documents\ormvasm-ao-marches\public\css\Layout\sidebar.css">
-  <style>
-    *{ box-sizing:border-box; margin:0; padding:0; }
-    body{ display:flex; min-height:100vh; background:#F6F3EC; }
-    .content{ flex:1; padding:32px; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        <%= typeof title !== "undefined" ? title : "Gestion des Appels d'Offres" %>
+    </title>
+
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <!-- Bootstrap Icons -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet"
+    >
+
+    <!-- CSS global -->
+    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- CSS spécifique à la page -->
+    <% if (typeof css !== "undefined") { %>
+        <link rel="stylesheet" href="<%= css %>">
+    <% } %>
 </head>
+
 <body>
 
-  <%- include('partials/sidebar', {
-    currentPage: currentPage,
-    counts: counts,
-    currentUser: currentUser
-  }) %>
+<div class="wrapper">
 
-  <main class="content">
-    <%- body %>
-  </main>
+    <!-- Sidebar -->
+    <%- include("./partials/sidebar") %>
+
+    <main class="main-content">
+
+        <!-- Navbar -->
+        <%- include("./partials/navbar") %>
+
+        <!-- Contenu de la page -->
+        <%- body %>
+
+        <!-- Footer -->
+        <%- include("./partials/footer") %>
+
+    </main>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- ECharts -->
+<script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+
+<script src="/js/main.js"></script>
+
+<% if (typeof js !== "undefined") { %>
+<script src="<%= js %>"></script>
+<% } %>
 
 </body>
 </html>
