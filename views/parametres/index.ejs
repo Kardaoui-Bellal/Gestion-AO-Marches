@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= typeof title !== 'undefined' ? title : "Paramètres — ORMVA/SM" %></title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="/css/Layout/sidebar.css" />
+    <link rel="stylesheet" href="/css/Layout/navbar.css" />
+    <link rel="stylesheet" href="/css/Layout/footer.css" />
+    <link rel="stylesheet" href="/css/dashboard.css" />
+    <style>
+      .profile-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+      .profile-field label { display: block; font-size: 12px; color: var(--ink-muted, #6b7a72); margin-bottom: 4px; }
+      .profile-field .value { font-size: 15px; font-weight: 600; }
+    </style>
+  </head>
+
+  <body>
+    <%
+      const safeCurrentUser = typeof currentUser !== 'undefined' ? currentUser : null;
+      const u = typeof utilisateur !== 'undefined' && utilisateur ? utilisateur : {};
+
+      function fmtDate(v) {
+        if (!v) return '—';
+        const d = new Date(v);
+        if (isNaN(d)) return '—';
+        return d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+      }
+    %>
+
+    <div class="app-shell">
+      <%- include('../layouts/partials/sidebar', {
+        currentPage: 'parametres',
+        counts: { appelsOffres: 0, alertes: 0 },
+        currentUser: safeCurrentUser
+      }) %>
+
+      <main class="app-content">
+        <%- include('../layouts/partials/navbar', {
+          title: 'Paramètres',
+          currentUser: safeCurrentUser
+        }) %>
+
+        <div class="wrap">
+          <div class="topbar">
+            <div class="title-block">
+              <div class="eyebrow">ORMVA/SM — Bureau Informatique</div>
+              <h1 class="page-title">Paramètres du compte</h1>
+            </div>
+          </div>
+
+          <div class="dashboard-card">
+            <div class="card-header-custom">
+              <div>
+                <h5>Profil</h5>
+                <small>Informations de votre compte</small>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="profile-grid">
+                <div class="profile-field">
+                  <label>Nom</label>
+                  <div class="value"><%= u.nom || '—' %></div>
+                </div>
+                <div class="profile-field">
+                  <label>Email</label>
+                  <div class="value"><%= u.email || '—' %></div>
+                </div>
+                <div class="profile-field">
+                  <label>Rôle</label>
+                  <div class="value"><%= safeCurrentUser ? (safeCurrentUser.role_libelle || safeCurrentUser.role) : '—' %></div>
+                </div>
+                <div class="profile-field">
+                  <label>Compte créé le</label>
+                  <div class="value"><%= fmtDate(u.date_creation) %></div>
+                </div>
+                <div class="profile-field">
+                  <label>Statut</label>
+                  <div class="value">
+                    <span class="badge <%= u.actif ? 'success' : 'neutral' %>"><%= u.actif ? 'Actif' : 'Inactif' %></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dashboard-card">
+            <div class="card-header-custom">
+              <div>
+                <h5>Session</h5>
+                <small>Gestion de la connexion</small>
+              </div>
+            </div>
+            <div class="card-body">
+              <form action="/auth/logout" method="POST">
+                <button type="submit" class="btn btn-ghost btn-sm">Se déconnecter</button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <%- include('../layouts/partials/footer') %>
+      </main>
+    </div>
+  </body>
+</html>
