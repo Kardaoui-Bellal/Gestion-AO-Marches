@@ -125,6 +125,38 @@
               <h1 class="page-title">Tableau de bord</h1>
             </div>
           </div>
+     
+          
+          <!-- Mini cartes -->
+          <div class="mini-grid">
+            <div class="mini-card success">
+              <div>
+                <h6>Marchés en cours</h6>
+                <h2><%= miniStats.enCours %></h2>
+                <span>Suivi actif</span>
+              </div>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+
+            <div class="mini-card warning">
+              <div>
+                <h6>Échéances proches</h6>
+                <h2><%= miniStats.echeancesProches %></h2>
+                <span>À surveiller</span>
+              </div>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5"/><path d="M5 3 2 6"/><path d="m22 6-3-3"/></svg>
+            </div>
+
+            <div class="mini-card danger">
+              <div>
+                <h6>Marchés expirés</h6>
+                <h2><%= miniStats.expires %></h2>
+                <span>Action requise</span>
+              </div>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+          </div>
+
 
           <!-- Cartes statistiques -->
           <div class="stats-grid">
@@ -227,35 +259,6 @@
             </div>
           </div>
 
-          <!-- Mini cartes -->
-          <div class="mini-grid">
-            <div class="mini-card success">
-              <div>
-                <h6>Marchés en cours</h6>
-                <h2><%= miniStats.enCours %></h2>
-                <span>Suivi actif</span>
-              </div>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-            </div>
-
-            <div class="mini-card warning">
-              <div>
-                <h6>Échéances proches</h6>
-                <h2><%= miniStats.echeancesProches %></h2>
-                <span>À surveiller</span>
-              </div>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5"/><path d="M5 3 2 6"/><path d="m22 6-3-3"/></svg>
-            </div>
-
-            <div class="mini-card danger">
-              <div>
-                <h6>Marchés expirés</h6>
-                <h2><%= miniStats.expires %></h2>
-                <span>Action requise</span>
-              </div>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-            </div>
-          </div>
 
           <!-- Activité récente -->
           <div class="dashboard-card">
