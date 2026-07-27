@@ -25,7 +25,7 @@ const Offre = {
                    f.raison_sociale AS fournisseur_nom,
                    r.libelle AS statut_libelle
             FROM offres o
-            INNER JOIN appels_offres ao ON o.appel_offre_id = ao.id_appel_offre
+            INNER JOIN appels_offres ao ON o.appel_offre_id = ao.id_ao
             INNER JOIN fournisseurs f ON o.fournisseur_id = f.id_fournisseur
             INNER JOIN referentiels r ON o.statut_id = r.id_ref
             WHERE o.id_offre = ?
