@@ -6,6 +6,11 @@ const authRoutes = require("./routes/authRoutes");
 const { isAuthenticated } = require("./middlewares/authMiddleware");
 const multerErrorHandler = require("./middlewares/errorHandler");
 
+const expressLayouts = require('express-ejs-layouts');
+app.set('view engine', 'ejs');
+app.use(expressLayouts);
+app.set('layout', 'layouts/main');
+
 const app = express();
 
 app.set("view engine", "ejs");

@@ -21,104 +21,20 @@
   <body>
     <div class="wrapper">
       <!-- Sidebar -->
-      <aside class="sidebar">
-        <div class="logo">
-          <img src="/images/logo.png" alt="logo" />
-
-          <h4>ORMVA/SM</h4>
-        </div>
-
-        <ul class="sidebar-menu">
-          <li class="active">
-            <a href="index.ejs">
-              <i class="bi bi-grid-fill"></i>
-              Tableau de bord
-            </a>
-          </li>
-
-          <li>
-            <a href="/appels_offres/liste.ejs">
-              <i class="bi bi-folder2-open"></i>
-              Appels d'offres
-            </a>
-          </li>
-
-          <li>
-            <a href="/marches/liste.ejs">
-              <i class="bi bi-file-earmark-text"></i>
-              Marchés
-            </a>
-          </li>
-
-          <li>
-            <a href="/fournisseurs/liste.ejs">
-              <i class="bi bi-building"></i>
-              Fournisseurs
-            </a>
-          </li>
-
-          <li>
-            <a href="/documents/uploads.ejs">
-              <i class="bi bi-folder"></i>
-              Documents
-            </a>
-          </li>
-
-          <li>
-            <a href="/utilisateurs/liste.ejs">
-              <i class="bi bi-people"></i>
-              Utilisateurs
-            </a>
-          </li>
-
-          <li>
-            <a href="/historique/liste.ejs">
-              <i class="bi bi-clock-history"></i>
-              Historique
-            </a>
-          </li>
-
-        </ul>
-      </aside>
+      
+            currentPage: 'appels-offres',
+        counts: { appelsOffres: appelsOffres.length, alertes: 0 },
+        currentUser: currentUser
+      }) %>
 
       <!-- Main -->
       <main class="main-content">
         <!-- Navbar -->
 
-        <nav class="top-navbar">
-          <div class="page-title">
-            <h2>Tableau de bord</h2>
-
-            <small>
-              Bienvenue
-              <strong>
-                <%= utilisateur ? utilisateur.nom : 'Administrateur' %>
-              </strong>
-            </small>
-          </div>
-
-          <div class="navbar-right">
-            <button class="notification-btn">
-              <i class="bi bi-bell"></i>
-
-              <span class="badge">4</span>
-            </button>
-
-            <div class="profile">
-              <div class="avatar">
-                <%= utilisateur ? utilisateur.nom.charAt(0) : 'A' %>
-              </div>
-
-              <div>
-                <strong>
-                  <%= utilisateur ? utilisateur.nom : 'Administrateur' %>
-                </strong>
-
-                <small>Connecté</small>
-              </div>
-            </div>
-          </div>
-        </nav>
+        %- include('../layouts/partials/navbar', {
+          title: "Gestion des Appels d'Offres",
+          currentUser: currentUser
+        }) %>
 
         <!-- Dashboard -->
 
@@ -682,30 +598,7 @@
         <!-- Footer -->
         <!-- ========================= -->
 
-        <footer class="dashboard-footer">
-
-            <div class="footer-left">
-
-                © <%= new Date().getFullYear() %>
-
-                Office Régional de Mise en Valeur Agricole du Souss-Massa
-
-            </div>
-
-            <div class="footer-center">
-
-                Application de Gestion des Appels d'Offres et des Marchés
-
-            </div>
-
-            <div class="footer-right">
-
-                Version 1.0
-
-            </div>
-
-        </footer>
-
+        <%- include('../layouts/partials/footer') %>
     </main>
 
 </div>

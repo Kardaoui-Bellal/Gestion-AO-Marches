@@ -5,9 +5,9 @@ const bcrypt = require("bcrypt");
 const pool = require("../config/db");
 
 async function seedAdmin() {
-  const nom = process.env.ADMIN_NOM;
-  const email = process.env.ADMIN_LOGIN;
-  const plainPassword = process.env.ADMIN_PASSWORD;
+  const nom = "Administrateur Principal";
+    const email = "admin@gmail.ma"; // change to your real email
+    const plainPassword = "admin"; // CHANGE THIS after first login
 
   if (!nom || !email || !plainPassword) {
     console.error(
