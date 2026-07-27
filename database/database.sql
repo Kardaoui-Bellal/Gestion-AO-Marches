@@ -149,7 +149,7 @@ CREATE TABLE documents (
 CREATE TABLE historique(
  id_historique INT AUTO_INCREMENT PRIMARY KEY,
  utilisateur_id INT NOT NULL,
- action ENUM('INSERT','UPDATE','ARCHIVE','UPLOAD','LOGIN','LOGOUT','EXPORT') NOT NULL;
+ action ENUM('INSERT','UPDATE','ARCHIVE','UPLOAD','LOGIN','LOGOUT','EXPORT') NOT NULL,
  entite_type VARCHAR(50) NOT NULL,
  entite_id INT NOT NULL,
  champ_modifie VARCHAR(100),
