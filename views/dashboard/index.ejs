@@ -30,68 +30,58 @@
       // avec de vraies données issues de la base.
       // ---------------------------------------------------------------
       const stats = typeof locals.stats !== 'undefined' ? locals.stats : {
-        appelsOffres: 35,
-        marchesActifs: 18,
-        fournisseurs: 52,
-        montantEngage: 18450000,
+        appelsOffres: 0,
+        marchesActifs: 0,
+        fournisseurs: 0,
+        montantEngage: 0.00,
       };
 
       const miniStats = typeof locals.miniStats !== 'undefined' ? locals.miniStats : {
-        enCours: 18,
-        echeancesProches: 7,
-        expires: 2,
+        enCours: 0,
+        echeancesProches: 0,
+        expires: 0,
       };
 
       const evolutionAO = typeof locals.evolutionAO !== 'undefined' ? locals.evolutionAO : {
         labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'],
-        data: [2, 4, 5, 3, 6, 8, 5, 7, 9, 8, 6, 10],
+        data: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
       };
 
       const repartitionMarches = typeof locals.repartitionMarches !== 'undefined' ? locals.repartitionMarches : [
-        { value: 18, name: 'En cours' },
-        { value: 9, name: 'Terminés' },
-        { value: 5, name: 'Expirés' },
-        { value: 4, name: 'Suspendus' },
+        { value: 0, name: 'En cours' },
+        { value: 0, name: 'Terminés' },
+        { value: 0, name: 'Expirés' },
+        { value: 0, name: 'Suspendus' },
       ];
 
       const budgetAnnuel = typeof locals.budgetAnnuel !== 'undefined' ? locals.budgetAnnuel : {
         labels: ['2021', '2022', '2023', '2024', '2025', '2026'],
-        data: [3.2, 4.5, 5.8, 6.7, 7.3, 8.4],
+        data: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
       };
 
       const repartitionDomaine = typeof locals.repartitionDomaine !== 'undefined' ? locals.repartitionDomaine : [
-        { value: 15, name: 'Matériel' },
-        { value: 9, name: 'Logiciels' },
-        { value: 6, name: 'Maintenance' },
-        { value: 4, name: 'Sécurité' },
-        { value: 5, name: 'Réseau' },
+        { value: 0, name: 'Matériel' },
+        { value: 0, name: 'Logiciels' },
+        { value: 0, name: 'Maintenance' },
+        { value: 0, name: 'Sécurité' },
+        { value: 0, name: 'Réseau' },
       ];
 
       const derniersAO = typeof locals.derniersAO !== 'undefined' ? locals.derniersAO : [
-        { id: null, numero: 'AO-2026-001', objet: 'Acquisition de serveurs', date: '12/07/2026', statut: 'Attribué', badge: 'success' },
-        { id: null, numero: 'AO-2026-002', objet: 'Firewall Sophos', date: '15/07/2026', statut: 'En cours', badge: 'warning' },
-        { id: null, numero: 'AO-2026-003', objet: 'Licences Microsoft', date: '18/07/2026', statut: 'Ouvert', badge: 'info' },
-        { id: null, numero: 'AO-2026-004', objet: 'NAS Synology', date: '21/07/2026', statut: 'Clôturé', badge: 'neutral' },
+        { 'Aucune appel d\'offres ' : true },
+  
       ];
 
       const derniersMarches = typeof locals.derniersMarches !== 'undefined' ? locals.derniersMarches : [
-        { id: null, numero: 'M-2026-001', fournisseur: 'Dell Maroc', montant: 850000, date: '03/07/2026', statut: 'En cours', badge: 'success' },
-        { id: null, numero: 'M-2026-002', fournisseur: 'Oracle', montant: 1420000, date: '08/07/2026', statut: 'Signé', badge: 'info' },
-        { id: null, numero: 'M-2026-003', fournisseur: 'HP Maroc', montant: 670000, date: '14/07/2026', statut: 'Préparation', badge: 'warning' },
-        { id: null, numero: 'M-2026-004', fournisseur: 'IBM Maroc', montant: 980000, date: '20/07/2026', statut: 'Expiré', badge: 'danger' },
+        { 'Aucun marché enregistré' : true },
       ];
 
       const alertes = typeof locals.alertes !== 'undefined' ? locals.alertes : [
-        { type: 'danger', titre: 'Marché expiré', detail: 'M-2025-004' },
-        { type: 'warning', titre: 'Expire dans 5 jours', detail: 'M-2026-010' },
-        { type: 'success', titre: 'Nouveau fournisseur', detail: 'HP Maroc' },
-        { type: 'info', titre: 'AO validé', detail: 'AO-2026-011' },
+        { 'Aucune alerte' : true },
       ];
 
       const activites = typeof locals.activites !== 'undefined' ? locals.activites : [
-        { type: 'success', titre: 'Nouveau marché enregistré', detail: 'Marché M-2026-014 ajouté avec succès.', quand: 'Il y a 5 min' },
-        { type: 'info', titre: "Modification d'un appel d'offres", detail: 'AO-2026-003 mis à jour.', quand: 'Il y a 20 min' },
-        { type: 'warning', titre: 'Alerte automatique', detail: 'Le marché M-2025-021 expire bientôt.', quand: 'Il y a 1 heure' },
+        { 'Aucune activité récente' : true },
       ];
 
       function fmtMoney(v) {
@@ -125,6 +115,38 @@
               <h1 class="page-title">Tableau de bord</h1>
             </div>
           </div>
+     
+          
+          <!-- Mini cartes -->
+          <div class="mini-grid">
+            <div class="mini-card success">
+              <div>
+                <h6>Marchés en cours</h6>
+                <h2><%= miniStats.enCours %></h2>
+                <span>Suivi actif</span>
+              </div>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+
+            <div class="mini-card warning">
+              <div>
+                <h6>Échéances proches</h6>
+                <h2><%= miniStats.echeancesProches %></h2>
+                <span>À surveiller</span>
+              </div>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5"/><path d="M5 3 2 6"/><path d="m22 6-3-3"/></svg>
+            </div>
+
+            <div class="mini-card danger">
+              <div>
+                <h6>Marchés expirés</h6>
+                <h2><%= miniStats.expires %></h2>
+                <span>Action requise</span>
+              </div>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+          </div>
+
 
           <!-- Cartes statistiques -->
           <div class="stats-grid">
@@ -227,35 +249,6 @@
             </div>
           </div>
 
-          <!-- Mini cartes -->
-          <div class="mini-grid">
-            <div class="mini-card success">
-              <div>
-                <h6>Marchés en cours</h6>
-                <h2><%= miniStats.enCours %></h2>
-                <span>Suivi actif</span>
-              </div>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-            </div>
-
-            <div class="mini-card warning">
-              <div>
-                <h6>Échéances proches</h6>
-                <h2><%= miniStats.echeancesProches %></h2>
-                <span>À surveiller</span>
-              </div>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5"/><path d="M5 3 2 6"/><path d="m22 6-3-3"/></svg>
-            </div>
-
-            <div class="mini-card danger">
-              <div>
-                <h6>Marchés expirés</h6>
-                <h2><%= miniStats.expires %></h2>
-                <span>Action requise</span>
-              </div>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-            </div>
-          </div>
 
           <!-- Activité récente -->
           <div class="dashboard-card">

@@ -3,102 +3,109 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><%= typeof title !== 'undefined' ? title : "Ajouter un document — ORMVA/SM" %></title>
+    <title><%= typeof title !== 'undefined' ? title : "Pièces jointes — ORMVA/SM" %></title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
+
     <link rel="stylesheet" href="/css/Layout/sidebar.css" />
-    <link rel="stylesheet" href="/css/marches.css" />
-    <style>
-      .file-drop {
-        border: 2px dashed var(--border); border-radius: 10px; padding: 28px;
-        text-align: center; background: var(--bg-app);
-      }
-      .file-drop input[type="file"] { width: 100%; }
-    </style>
+    <link rel="stylesheet" href="/css/Layout/navbar.css" />
+    <link rel="stylesheet" href="/css/Layout/footer.css" />
+    <link rel="stylesheet" href="/css/dashboard.css" />
   </head>
+
   <body>
     <%
-      var backHref = type_entite === 'AO' ? ('/appels-offres/' + entite_id) : ('/marches/' + entite_id);
-      var entiteLabel = type_entite === 'AO' ? (entite.numero_ao || ('AO #' + entite_id)) : (entite.numero || ('Marché #' + entite_id));
+      const listDocuments = typeof documents !== 'undefined' ? documents : [];
+      const safeCurrentUser = typeof currentUser !== 'undefined' ? currentUser : null;
+
+      function fmtDate(v) {
+        if (!v) return '—';
+        const d = new Date(v);
+        if (isNaN(d)) return '—';
+        return d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+      }
+
+      function fmtTaille(octets) {
+        if (!octets) return '—';
+        if (octets < 1024) return octets + ' o';
+        if (octets < 1024 * 1024) return Math.round(octets / 1024) + ' Ko';
+        return (octets / (1024 * 1024)).toFixed(1) + ' Mo';
+      }
     %>
+
     <div class="app-shell">
       <%- include('../layouts/partials/sidebar', {
-        currentPage: type_entite === 'AO' ? 'appels-offres' : 'marches',
+        currentPage: 'pieces-jointes',
         counts: { appelsOffres: 0, alertes: 0 },
-        currentUser: currentUser
+        currentUser: safeCurrentUser
       }) %>
 
       <main class="app-content">
-        <div class="wrap narrow">
-          <a class="back-link" href="<%= backHref %>">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
-            Retour à <%= type_entite === 'AO' ? "l'appel d'offres" : 'au marché' %>
-          </a>
+        <%- include('../layouts/partials/navbar', {
+          title: 'Pièces jointes',
+          currentUser: safeCurrentUser
+        }) %>
 
+        <div class="wrap">
           <div class="topbar">
             <div class="title-block">
               <div class="eyebrow">ORMVA/SM — Bureau Informatique</div>
-              <h1 class="page-title">Ajouter un document</h1>
+              <h1 class="page-title">Pièces jointes</h1>
             </div>
           </div>
 
-          <div class="attach-notice">
-            Document lié à <strong><%= entiteLabel %></strong>.
-            <div class="attach-types">
-              <span class="type-chip">PDF</span>
-              <span class="type-chip">Word</span>
-              <span class="type-chip">Excel</span>
-              <span class="type-chip">JPG</span>
-              <span class="type-chip">PNG</span>
-              <span class="type-chip">10 Mo max</span>
+          <div class="dashboard-card">
+            <div class="card-header-custom">
+              <div>
+                <h5>Tous les documents</h5>
+                <small>Fichiers attachés aux appels d'offres et marchés</small>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="dashboard-table">
+                <thead>
+                  <tr>
+                    <th>Nom</th>
+                    <th>Type</th>
+                    <th>Entité</th>
+                    <th>Taille</th>
+                    <th>Ajouté le</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if (listDocuments.length === 0) { %>
+                    <tr><td colspan="6">Aucun document pour le moment.</td></tr>
+                  <% } %>
+                  <% listDocuments.forEach(function(d) { %>
+                    <tr>
+                      <td><%= d.nom_original %></td>
+                      <td><%= d.type_document_libelle %></td>
+                      <td>
+                        <a href="<%= d.type_entite === 'AO' ? '/appels-offres/' + d.entite_id : '/marches/' + d.entite_id %>" class="mono">
+                          <%= d.type_entite %>-<%= d.entite_id %>
+                        </a>
+                      </td>
+                      <td><%= fmtTaille(d.taille) %></td>
+                      <td><%= fmtDate(d.date_ajout) %></td>
+                      <td>
+                        <a href="/documents/<%= d.id_document %>/download" class="icon-btn" title="Télécharger">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        </a>
+                      </td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
             </div>
           </div>
-
-          <% if (typeof error !== 'undefined' && error) { %>
-            <div class="alert-error"><%= error %></div>
-          <% } %>
-
-          <form class="form-card" method="POST" action="/documents/upload" enctype="multipart/form-data">
-            <input type="hidden" name="type_entite" value="<%= type_entite %>" />
-            <input type="hidden" name="entite_id" value="<%= entite_id %>" />
-
-            <div class="tab-panel active" style="padding: 26px 28px;">
-              <div class="form-grid">
-                <div class="field full">
-                  <label>Fichier <span class="req">*</span></label>
-                  <div class="file-drop">
-                    <input type="file" name="document" required accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png" />
-                  </div>
-                </div>
-
-                <div class="field full">
-                  <label>Type de document <span class="req">*</span></label>
-                  <select name="type_document_id" required>
-                    <option value="">— Sélectionner —</option>
-                    <% typesDocument.forEach(function(t) { %>
-                      <option value="<%= t.id_ref %>"><%= t.libelle %></option>
-                    <% }); %>
-                  </select>
-                </div>
-
-                <div class="field full">
-                  <label>Observation</label>
-                  <textarea name="observation" placeholder="Remarque optionnelle sur ce document…"></textarea>
-                </div>
-              </div>
-            </div>
-
-            <div class="form-footer">
-              <a class="btn btn-ghost" href="<%= backHref %>">Annuler</a>
-              <div class="right">
-                <button type="submit" class="btn btn-primary">Ajouter le document</button>
-              </div>
-            </div>
-          </form>
         </div>
+
+        <%- include('../layouts/partials/footer') %>
       </main>
     </div>
   </body>
