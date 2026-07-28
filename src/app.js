@@ -31,8 +31,7 @@ app.get("/", (req, res) => {
 
 app.use("/auth", authRoutes);
 
-app.get("/dashboard", isAuthenticated, (req, res) => {
-});
+app.get("/dashboard", isAuthenticated, dashboardController.index);
 
 app.use("/referentiels", require("./routes/referentielRoutes"));
 app.use("/fournisseurs", require("./routes/fournisseurRoutes"));
