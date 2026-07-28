@@ -7,6 +7,21 @@ const Referentiel = require("../models/referentielModel");
 const Historique = require("../models/historiqueModel");
 
 const documentController = {
+    // GET /documents — "Pièces jointes" : tous les documents, toutes entités confondues
+    async list(req, res) {
+        try {
+            const documents = await Document.getAll();
+
+            res.render("documents/liste", {
+                title: "Pièces jointes",
+                documents,
+            });
+        } catch (err) {
+            console.error(err);
+            res.status(500).render("errors/500", { message: "Erreur lors du chargement des pièces jointes." });
+        }
+    },
+
     // GET /documents/upload?type_entite=AO&entite_id=12 — upload form
     async showUploadForm(req, res) {
         try {

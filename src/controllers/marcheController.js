@@ -1,3 +1,5 @@
+const path = require("path");
+const fs = require("fs");
 const Marche = require("../models/marcheModel");
 const Checklist = require("../models/checklistModel");
 const Document = require("../models/documentModel");
@@ -345,6 +347,86 @@ const marcheController = {
         .status(500)
         .render("errors/500", {
           message: "Erreur lors du changement de statut.",
+        });
+    }
+  },
+
+  // GET /marches/:id/fiche — printable HTML fiche (the PDF version lives at
+  // /export/marches/:id/fiche via exportController.marcheFiche). This is the
+  // page the "Voir la fiche" button on marches/detail.ejs links to.
+  async ficheView(req, res) {
+    try {
+      const id_marche = req.params.id;
+
+      const marche = await Marche.getById(id_marche);
+      if (!marche) {
+        return res.status(404).render("404", { title: "Marché introuvable" });
+      }
+
+      const [checklist, documents] = await Promise.all([
+        Checklist.getByMarche(id_marche),
+        Document.getByMarche(id_marche),
+      ]);
+
+      res.render("marches/fiche", {
+        title: `Fiche — ${marche.numero}`,
+        marche,
+        checklist,
+        documents,
+      });
+    } catch (err) {
+      console.error(err);
+      res
+        .status(500)
+        .render("errors/500", {
+          message: "Erreur lors du chargement de la fiche.",
+        });
+    }
+  },
+
+  // POST /marches/:id/delete — suppression définitive (irréversible), avec
+  // suppression en cascade de la checklist et des documents joints, y compris
+  // les fichiers physiques sur le disque. Confirmé côté client dans marches.js.
+  async remove(req, res) {
+    const id_marche = req.params.id;
+
+    try {
+      const marche = await Marche.getById(id_marche);
+      if (!marche) {
+        return res.status(404).render("404", { title: "Marché introuvable" });
+      }
+
+      // best-effort cleanup of the physical files before removing the DB rows
+      const documents = await Document.getByMarche(id_marche);
+      documents.forEach((d) => {
+        const filePath = path.join(
+          __dirname,
+          "../..",
+          d.chemin_dossier,
+          d.nom_stocke,
+        );
+        fs.unlink(filePath, () => {}); // ignore errors (already missing, etc.)
+      });
+
+      await Checklist.deleteByMarche(id_marche);
+      await Document.deleteByEntity("MARCHE", id_marche);
+      await Marche.remove(id_marche);
+
+      await Historique.log({
+        utilisateur_id: req.session.user.id_utilisateur,
+        action: "ARCHIVE", // pas de valeur "DELETE" dans l'enum historique.action
+        entite_type: "MARCHE",
+        entite_id: id_marche,
+        details: `Suppression définitive du marché ${marche.numero}`,
+      });
+
+      res.redirect("/marches");
+    } catch (err) {
+      console.error(err);
+      res
+        .status(500)
+        .render("errors/500", {
+          message: "Erreur lors de la suppression du marché.",
         });
     }
   },

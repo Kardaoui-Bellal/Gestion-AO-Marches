@@ -379,6 +379,78 @@ const exportController = {
         });
     }
   },
+  // GET /export/fournisseurs/excel
+  async fournisseursExcel(req, res) {
+    try {
+      const { domaine_activite_id } = req.query;
+      const fournisseurs = domaine_activite_id
+        ? await Fournisseur.getByDomaine(domaine_activite_id)
+        : await Fournisseur.getAll();
+
+      const workbook = new ExcelJS.Workbook();
+      workbook.creator = "ORMVA/SM — Bureau Informatique";
+      workbook.created = new Date();
+
+      const sheet = workbook.addWorksheet("Fournisseurs");
+
+      sheet.columns = [
+        { header: "Raison sociale", key: "raison_sociale", width: 32 },
+        { header: "ICE", key: "ice", width: 18 },
+        { header: "Domaine d'activité", key: "domaine_activite_libelle", width: 24 },
+        { header: "Téléphone", key: "telephone", width: 16 },
+        { header: "Email", key: "email", width: 26 },
+        { header: "Contact", key: "contact", width: 22 },
+        { header: "Statut", key: "statut", width: 12 },
+      ];
+
+      sheet.getRow(1).font = { bold: true };
+      sheet.getRow(1).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FFD9E1F2" },
+      };
+
+      fournisseurs.forEach((f) => {
+        sheet.addRow({
+          raison_sociale: f.raison_sociale,
+          ice: f.ice,
+          domaine_activite_libelle: f.domaine_activite_libelle,
+          telephone: f.telephone || "",
+          email: f.email || "",
+          contact: f.contact || "",
+          statut: f.actif ? "Actif" : "Inactif",
+        });
+      });
+
+      res.setHeader(
+        "Content-Type",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      );
+      res.setHeader(
+        "Content-Disposition",
+        `attachment; filename=fournisseurs_${Date.now()}.xlsx`,
+      );
+
+      await workbook.xlsx.write(res);
+      res.end();
+
+      await Historique.log({
+        utilisateur_id: req.session.user.id_utilisateur,
+        action: "EXPORT",
+        entite_type: "FOURNISSEUR",
+        entite_id: 0,
+        details: `Export Excel de la liste des fournisseurs (${fournisseurs.length} lignes)`,
+      });
+    } catch (err) {
+      console.error(err);
+      res
+        .status(500)
+        .render("errors/500", {
+          message: "Erreur lors de la génération du fichier Excel.",
+        });
+    }
+  },
+
   async marcheFiche(req, res) {
     try {
       const id_marche = req.params.id;

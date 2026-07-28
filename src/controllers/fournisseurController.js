@@ -188,6 +188,47 @@ const fournisseurController = {
         }
     },
 
+    // POST /fournisseurs/:id/toggle — activer/désactiver rapidement, sans passer
+    // par le formulaire complet (bouton "Désactiver/Réactiver" sur liste et detail)
+    async toggleActif(req, res) {
+        try {
+            const fournisseur = await Fournisseur.getById(req.params.id);
+
+            if (!fournisseur) {
+                return res.status(404).render("404", { title: "Fournisseur introuvable" });
+            }
+
+            const newActif = fournisseur.actif ? 0 : 1;
+
+            await Fournisseur.update(req.params.id, {
+                raison_sociale: fournisseur.raison_sociale,
+                ice: fournisseur.ice,
+                adresse: fournisseur.adresse,
+                telephone: fournisseur.telephone,
+                email: fournisseur.email,
+                contact: fournisseur.contact,
+                domaine_activite_id: fournisseur.domaine_activite_id,
+                actif: newActif,
+            });
+
+            await Historique.log({
+                utilisateur_id: req.session.user.id_utilisateur,
+                action: "UPDATE",
+                entite_type: "FOURNISSEUR",
+                entite_id: req.params.id,
+                champ_modifie: "actif",
+                ancienne_valeur: String(fournisseur.actif),
+                nouvelle_valeur: String(newActif),
+                details: `${newActif ? "Réactivation" : "Désactivation"} du fournisseur "${fournisseur.raison_sociale}"`,
+            });
+
+            res.redirect(req.get("Referer") || "/fournisseurs");
+        } catch (err) {
+            console.error(err);
+            res.status(500).render("errors/500", { message: "Erreur lors du changement de statut." });
+        }
+    },
+
     // GET /fournisseurs/search?ice=XXXX — used for AJAX lookup or a search form
     async searchByIce(req, res) {
         try {
