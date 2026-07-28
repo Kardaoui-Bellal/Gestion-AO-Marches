@@ -13,5 +13,6 @@ router.get("/:id", requireRole("ADMIN", "GESTIONNAIRE", "CONSULTANT"), fournisse
 // write access: admin + gestionnaire only, consultant is read-only per your seed data's intent
 router.post("/", requireRole("ADMIN", "GESTIONNAIRE"), fournisseurController.create);
 router.post("/:id", requireRole("ADMIN", "GESTIONNAIRE"), fournisseurController.update);
+router.post("/:id/toggle", requireRole("ADMIN", "GESTIONNAIRE"), fournisseurController.toggleActif);
 
 module.exports = router;

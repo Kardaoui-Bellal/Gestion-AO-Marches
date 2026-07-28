@@ -4,6 +4,7 @@ const documentController = require("../controllers/documentController");
 const upload = require("../middlewares/uploadMiddleware");
 const { requireRole } = require("../middlewares/roleMiddleware");
 
+router.get("/", requireRole("ADMIN", "GESTIONNAIRE", "CONSULTANT"), documentController.list);
 router.get("/upload", requireRole("ADMIN", "GESTIONNAIRE"), documentController.showUploadForm);
 router.post("/upload", requireRole("ADMIN", "GESTIONNAIRE"), upload.single("document"), documentController.upload);
 
