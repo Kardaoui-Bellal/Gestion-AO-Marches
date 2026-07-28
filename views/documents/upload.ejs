@@ -3,105 +3,88 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><%= typeof title !== 'undefined' ? title : "Pièces jointes — ORMVA/SM" %></title>
-
+    <title><%= typeof title !== 'undefined' ? title : "Ajouter un document — ORMVA/SM" %></title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
-
     <link rel="stylesheet" href="/css/Layout/sidebar.css" />
     <link rel="stylesheet" href="/css/Layout/navbar.css" />
     <link rel="stylesheet" href="/css/Layout/footer.css" />
     <link rel="stylesheet" href="/css/dashboard.css" />
   </head>
-
   <body>
     <%
-      const listDocuments = typeof documents !== 'undefined' ? documents : [];
-      const safeCurrentUser = typeof currentUser !== 'undefined' ? currentUser : null;
-
-      function fmtDate(v) {
-        if (!v) return '—';
-        const d = new Date(v);
-        if (isNaN(d)) return '—';
-        return d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
-      }
-
-      function fmtTaille(octets) {
-        if (!octets) return '—';
-        if (octets < 1024) return octets + ' o';
-        if (octets < 1024 * 1024) return Math.round(octets / 1024) + ' Ko';
-        return (octets / (1024 * 1024)).toFixed(1) + ' Mo';
-      }
+      const entiteLabel = type_entite === 'AO' ? "Appel d'offres" : "Marché";
+      const entiteRef = type_entite === 'AO' ? entite.numero_ao : entite.numero;
+      const backHref = type_entite === 'AO' ? ('/appels-offres/' + entite_id) : ('/marches/' + entite_id);
     %>
-
     <div class="app-shell">
       <%- include('../layouts/partials/sidebar', {
         currentPage: 'pieces-jointes',
         counts: { appelsOffres: 0, alertes: 0 },
-        currentUser: safeCurrentUser
+        currentUser: currentUser
       }) %>
 
       <main class="app-content">
         <%- include('../layouts/partials/navbar', {
-          title: 'Pièces jointes',
-          currentUser: safeCurrentUser
+          title: "Ajouter un document",
+          currentUser: currentUser
         }) %>
 
         <div class="wrap">
           <div class="topbar">
             <div class="title-block">
               <div class="eyebrow">ORMVA/SM — Bureau Informatique</div>
-              <h1 class="page-title">Pièces jointes</h1>
+              <h1 class="page-title">Ajouter un document</h1>
             </div>
+            <a class="btn btn-ghost" href="<%= backHref %>">Annuler</a>
           </div>
+
+          <% if (typeof error !== 'undefined' && error) { %>
+            <div class="alert-error"><%= error %></div>
+          <% } %>
 
           <div class="dashboard-card">
             <div class="card-header-custom">
               <div>
-                <h5>Tous les documents</h5>
-                <small>Fichiers attachés aux appels d'offres et marchés</small>
+                <h5><%= entiteLabel %> — <%= entiteRef %></h5>
+                <small>Le document sera rattaché à cette fiche</small>
               </div>
             </div>
-            <div class="table-responsive">
-              <table class="dashboard-table">
-                <thead>
-                  <tr>
-                    <th>Nom</th>
-                    <th>Type</th>
-                    <th>Entité</th>
-                    <th>Taille</th>
-                    <th>Ajouté le</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <% if (listDocuments.length === 0) { %>
-                    <tr><td colspan="6">Aucun document pour le moment.</td></tr>
-                  <% } %>
-                  <% listDocuments.forEach(function(d) { %>
-                    <tr>
-                      <td><%= d.nom_original %></td>
-                      <td><%= d.type_document_libelle %></td>
-                      <td>
-                        <a href="<%= d.type_entite === 'AO' ? '/appels-offres/' + d.entite_id : '/marches/' + d.entite_id %>" class="mono">
-                          <%= d.type_entite %>-<%= d.entite_id %>
-                        </a>
-                      </td>
-                      <td><%= fmtTaille(d.taille) %></td>
-                      <td><%= fmtDate(d.date_ajout) %></td>
-                      <td>
-                        <a href="/documents/<%= d.id_document %>/download" class="icon-btn" title="Télécharger">
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                        </a>
-                      </td>
-                    </tr>
-                  <% }); %>
-                </tbody>
-              </table>
-            </div>
+
+            <form method="POST" action="/documents/upload" enctype="multipart/form-data" class="form-card">
+              <input type="hidden" name="type_entite" value="<%= type_entite %>" />
+              <input type="hidden" name="entite_id" value="<%= entite_id %>" />
+
+              <div class="form-grid">
+                <div class="field">
+                  <label for="type_document_id">Type de document <span class="req">*</span></label>
+                  <select id="type_document_id" name="type_document_id" required>
+                    <option value="">Sélectionner…</option>
+                    <% typesDocument.forEach(function(td) { %>
+                      <option value="<%= td.id_ref %>"><%= td.libelle %></option>
+                    <% }); %>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label for="document">Fichier <span class="req">*</span></label>
+                  <input type="file" id="document" name="document" required />
+                </div>
+
+                <div class="field full">
+                  <label for="observation">Observation</label>
+                  <textarea id="observation" name="observation" placeholder="Remarque optionnelle sur ce document"></textarea>
+                </div>
+              </div>
+
+              <div class="form-footer">
+                <a class="btn btn-ghost" href="<%= backHref %>">Annuler</a>
+                <button type="submit" class="btn btn-primary">Téléverser le document</button>
+              </div>
+            </form>
           </div>
         </div>
 
