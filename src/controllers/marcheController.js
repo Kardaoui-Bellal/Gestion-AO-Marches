@@ -35,11 +35,9 @@ const marcheController = {
       });
     } catch (err) {
       console.error(err);
-      res
-        .status(500)
-        .render("errors/500", {
-          message: "Erreur lors du chargement des marchés.",
-        });
+      res.status(500).render("errors/500", {
+        message: "Erreur lors du chargement des marchés.",
+      });
     }
   },
 
@@ -66,11 +64,9 @@ const marcheController = {
       });
     } catch (err) {
       console.error(err);
-      res
-        .status(500)
-        .render("errors/500", {
-          message: "Erreur lors du chargement du marché.",
-        });
+      res.status(500).render("errors/500", {
+        message: "Erreur lors du chargement du marché.",
+      });
     }
   },
 
@@ -88,6 +84,15 @@ const marcheController = {
       const types = await Referentiel.getByType("TYPE_MARCHE");
       const statuts = await Referentiel.getByType("STATUT_MARCHE");
 
+      // --- ADDED ---
+      const etats = await Referentiel.getByType("ETAT_AO");
+      const etatAttribue = etats.find((e) => e.code === "ATTRIBUE");
+      const appelsOffres = etatAttribue
+        ? await AppelOffre.getByFilters({ etat_id: etatAttribue.id_ref })
+        : [];
+      const typesDocument = await Referentiel.getByType("TYPE_DOCUMENT");
+      // --- END ADDED ---
+
       res.render("marches/form", {
         title: "Nouveau marché",
         marche: null,
@@ -95,15 +100,15 @@ const marcheController = {
         fournisseurs,
         types,
         statuts,
+        appelsOffres, // ADDED
+        typesDocument, // ADDED
         error: null,
       });
     } catch (err) {
       console.error(err);
-      res
-        .status(500)
-        .render("errors/500", {
-          message: "Erreur lors du chargement du formulaire.",
-        });
+      res.status(500).render("errors/500", {
+        message: "Erreur lors du chargement du formulaire.",
+      });
     }
   },
 
@@ -111,7 +116,6 @@ const marcheController = {
   async showEditForm(req, res) {
     try {
       const marche = await Marche.getById(req.params.id);
-
       if (!marche) {
         return res.status(404).render("404", { title: "Marché introuvable" });
       }
@@ -120,6 +124,16 @@ const marcheController = {
       const types = await Referentiel.getByType("TYPE_MARCHE");
       const statuts = await Referentiel.getByType("STATUT_MARCHE");
 
+      // --- ADDED ---
+      const etats = await Referentiel.getByType("ETAT_AO");
+      const etatAttribue = etats.find((e) => e.code === "ATTRIBUE");
+      const appelsOffres = etatAttribue
+        ? await AppelOffre.getByFilters({ etat_id: etatAttribue.id_ref })
+        : [];
+      const typesDocument = await Referentiel.getByType("TYPE_DOCUMENT");
+      const documents = await Document.getByMarche(req.params.id);
+      // --- END ADDED ---
+
       res.render("marches/form", {
         title: "Modifier le marché",
         marche,
@@ -127,15 +141,16 @@ const marcheController = {
         fournisseurs,
         types,
         statuts,
+        appelsOffres, // ADDED
+        typesDocument, // ADDED
+        documents, // ADDED — so existing attachments show up
         error: null,
       });
     } catch (err) {
       console.error(err);
-      res
-        .status(500)
-        .render("errors/500", {
-          message: "Erreur lors du chargement du formulaire.",
-        });
+      res.status(500).render("errors/500", {
+        message: "Erreur lors du chargement du formulaire.",
+      });
     }
   },
 
@@ -168,6 +183,12 @@ const marcheController = {
       const fournisseurs = await Fournisseur.getAll();
       const types = await Referentiel.getByType("TYPE_MARCHE");
       const statuts = await Referentiel.getByType("STATUT_MARCHE");
+      const etats = await Referentiel.getByType("ETAT_AO");
+      const etatAttribue = etats.find((e) => e.code === "ATTRIBUE");
+      const appelsOffres = etatAttribue
+        ? await AppelOffre.getByFilters({ etat_id: etatAttribue.id_ref })
+        : [];
+      const typesDocument = await Referentiel.getByType("TYPE_DOCUMENT");
       return res.render("marches/form", {
         title: "Nouveau marché",
         marche: req.body,
@@ -304,11 +325,9 @@ const marcheController = {
       res.redirect(`/marches/${id_marche}`);
     } catch (err) {
       console.error(err);
-      res
-        .status(500)
-        .render("errors/500", {
-          message: "Erreur lors de la modification du marché.",
-        });
+      res.status(500).render("errors/500", {
+        message: "Erreur lors de la modification du marché.",
+      });
     }
   },
 
@@ -343,11 +362,9 @@ const marcheController = {
       res.redirect(`/marches/${id_marche}`);
     } catch (err) {
       console.error(err);
-      res
-        .status(500)
-        .render("errors/500", {
-          message: "Erreur lors du changement de statut.",
-        });
+      res.status(500).render("errors/500", {
+        message: "Erreur lors du changement de statut.",
+      });
     }
   },
 
@@ -376,11 +393,9 @@ const marcheController = {
       });
     } catch (err) {
       console.error(err);
-      res
-        .status(500)
-        .render("errors/500", {
-          message: "Erreur lors du chargement de la fiche.",
-        });
+      res.status(500).render("errors/500", {
+        message: "Erreur lors du chargement de la fiche.",
+      });
     }
   },
 
@@ -423,11 +438,9 @@ const marcheController = {
       res.redirect("/marches");
     } catch (err) {
       console.error(err);
-      res
-        .status(500)
-        .render("errors/500", {
-          message: "Erreur lors de la suppression du marché.",
-        });
+      res.status(500).render("errors/500", {
+        message: "Erreur lors de la suppression du marché.",
+      });
     }
   },
 
@@ -445,11 +458,9 @@ const marcheController = {
       });
     } catch (err) {
       console.error(err);
-      res
-        .status(500)
-        .render("errors/500", {
-          message: "Erreur lors du chargement des échéances.",
-        });
+      res.status(500).render("errors/500", {
+        message: "Erreur lors du chargement des échéances.",
+      });
     }
   },
 };
