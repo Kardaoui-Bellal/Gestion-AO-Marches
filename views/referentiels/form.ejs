@@ -20,8 +20,8 @@
     const r = typeof referentiel !== 'undefined' && referentiel ? referentiel : {};
     const isEdit = !!r.id_ref;
     const typesConnus = [
-      'CATEGORIE_AO', 'ETAT_AO', 'STATUT_OFFRE', 'TYPE_MARCHE', 'STATUT_MARCHE',
-      'DOMAINE_ACTIVITE', 'TYPE_DOCUMENT', 'ROLE'
+      'ROLE', 'DOMAINE_ACTIVITE', 'CATEGORIE_AO','ETAT_AO','STATUT_OFFRE',
+      'TYPE_MARCHE','STATUT_MARCHE','ETAPE_CHECKLIST','STATUT_CHECKLIST','TYPE_DOCUMENT'
     ];
     const typeCourant = r.type_referentiel || '';
     const types = typeCourant && typesConnus.indexOf(typeCourant) === -1
