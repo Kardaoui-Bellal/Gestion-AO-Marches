@@ -158,6 +158,17 @@ const Marche = {
         return result.affectedRows > 0;
     },
 
+    // Suppression physique d'un marché. Le controller doit avoir supprimé au
+    // préalable la checklist et les documents liés (checklist a une FK RESTRICT
+    // sur marche_id qui bloquerait sinon la suppression).
+    async remove(id_marche) {
+        const [result] = await pool.execute(
+            `DELETE FROM marches WHERE id_marche = ?`,
+            [id_marche]
+        );
+        return result.affectedRows > 0;
+    },
+
     async updateStatus(id_marche, statut_id) {
         const query = `
             UPDATE marches 

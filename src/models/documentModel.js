@@ -61,6 +61,33 @@ const Document = {
         return await this.getByEntity('MARCHE', id_marche);
     },
 
+    // Tous les documents, toutes entités confondues, avec le libellé de la
+    // référence (n° AO ou n° marché) — utilisé par la page "Pièces jointes".
+    async getAll() {
+        const query = `
+            SELECT d.*, r.libelle AS type_document_libelle,
+                   COALESCE(ao.numero_ao, m.numero) AS entite_numero
+            FROM documents d
+            INNER JOIN referentiels r ON d.type_document_id = r.id_ref
+            LEFT JOIN appels_offres ao ON d.type_entite = 'AO' AND d.entite_id = ao.id_ao
+            LEFT JOIN marches m ON d.type_entite = 'MARCHE' AND d.entite_id = m.id_marche
+            ORDER BY d.date_ajout DESC
+        `;
+ 
+        const [rows] = await pool.execute(query);
+        return rows;
+    },
+ 
+    // Supprime toutes les lignes documents rattachées à une entité (AO ou MARCHE).
+    // Ne touche pas aux fichiers physiques : à faire côté controller avant l'appel.
+    async deleteByEntity(type_entite, entite_id) {
+        const [result] = await pool.execute(
+            `DELETE FROM documents WHERE type_entite = ? AND entite_id = ?`,
+            [type_entite, entite_id]
+        );
+        return result.affectedRows;
+    },
+    
     async archive(id_document, archiveObservation) {
         const query = `
             UPDATE documents 

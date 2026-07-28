@@ -82,6 +82,17 @@ const Checklist = {
         return result.affectedRows > 0;
     },
 
+    // Supprime toutes les lignes de checklist rattachées à un marché.
+    // Utilisé par marcheController.remove() avant la suppression physique du marché
+    // (la contrainte FK checklist_ibfk_1 empêcherait sinon la suppression).
+    async deleteByMarche(id_marche) {
+        const [result] = await pool.execute(
+            `DELETE FROM checklist WHERE marche_id = ?`,
+            [id_marche]
+        );
+        return result.affectedRows;
+    },
+
     async initForEntity(type_entite, entite_id, etapeTypeRef, defaultStatutId) {
         const querySteps = `
             SELECT id_ref 
