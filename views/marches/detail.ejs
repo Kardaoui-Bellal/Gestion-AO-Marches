@@ -195,12 +195,22 @@
               <ul class="checklist">
                 <% checklist.forEach(function(item) { %>
                   <li class="checklist-item">
-                    <span class="badge sm <%= checklistBadgeClass(item.statut_code) %>"><%= item.statut_libelle %></span>
                     <div class="checklist-body">
                       <div class="checklist-label"><%= item.etape_libelle %></div>
-                      <% if (item.date_validation) { %><div class="checklist-date">Validé le <%= fmtDate(item.date_validation) %></div><% } %>
-                      <% if (item.observation) { %><div class="checklist-obs"><%= item.observation %></div><% } %>
-                    </div>
+                        <% if (item.date_validation) { %>
+                         <div class="checklist-date">
+                          Validé le <%= fmtDate(item.date_validation) %>
+                         </div>
+                        <% } %>
+                        <% if (item.observation) { %>
+                         <div class="checklist-obs">
+                           <%= item.observation %>
+                         </div>
+                        <% } %>
+                      </div>
+                     <span class="badge sm <%= checklistBadgeClass(item.statut_code) %>">
+                      <%= item.statut_libelle %>
+                     </span>
                   </li>
                 <% }); %>
               </ul>
