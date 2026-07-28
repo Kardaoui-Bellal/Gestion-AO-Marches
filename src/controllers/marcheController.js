@@ -55,12 +55,13 @@ const marcheController = {
         Checklist.getByMarche(id_marche),
         Document.getByMarche(id_marche),
       ]);
-
+      const statuts = await Referentiel.getByType("STATUT_MARCHE");
       res.render("marches/detail", {
         title: marche.numero,
         marche,
         checklist,
         documents,
+        statuts,
       });
     } catch (err) {
       console.error(err);
