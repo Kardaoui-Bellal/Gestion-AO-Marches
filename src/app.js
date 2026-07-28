@@ -5,6 +5,7 @@ const sessionMiddleware = require("../config/session");
 const authRoutes = require("./routes/authRoutes");
 const { isAuthenticated } = require("./middlewares/authMiddleware");
 const multerErrorHandler = require("./middlewares/errorHandler");
+const dashboardController = require("./controllers/dashboardController");
 
 const app = express();
 
@@ -31,10 +32,6 @@ app.get("/", (req, res) => {
 app.use("/auth", authRoutes);
 
 app.get("/dashboard", isAuthenticated, (req, res) => {
-    res.render("dashboard/index", {
-        user: req.session.user,
-        title: "Tableau de bord",
-    });
 });
 
 app.use("/referentiels", require("./routes/referentielRoutes"));
