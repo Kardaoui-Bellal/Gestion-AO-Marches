@@ -47,7 +47,7 @@ const documentController = {
                 entite_id,
                 entite,
                 typesDocument,
-                error: null,
+                error: req.query.error || null,
             });
         } catch (err) {
             console.error(err);
