@@ -26,8 +26,8 @@
 
       // req.session.user (défini dans authController.js) a la forme
       // { id_utilisateur, nom, email, role_code, role_libelle } — pas
-      // { name, role, initials }. On gère les deux formes ici, comme dans
-      // navbar.ejs, pour rester compatible sans toucher au contrôleur d'auth.
+      // { name, role, initials }. On gère les deux formes ici pour rester
+      // compatible sans devoir toucher au contrôleur d'auth.
       const rawUser = typeof locals.currentUser !== 'undefined' && locals.currentUser ? locals.currentUser : null;
       const currentUser = {
       name: rawUser ? (rawUser.name || rawUser.nom || 'Utilisateur') : 'Utilisateur',
@@ -37,6 +37,11 @@
       : (rawUser ? (rawUser.name || rawUser.nom || '') : '')
       .split(' ').filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join('') || 'BI',
       };
+
+      // --- AJOUT : détection du rôle admin pour afficher le menu Administration ---
+      // role_code vient de authController.js -> req.session.user.role_code
+      // ('ADMIN' | 'GESTIONNAIRE' | 'CONSULTANT'), défini via referentiels ROLE.
+      const isAdmin = !!(rawUser && rawUser.role_code === 'ADMIN');
 
       const icons = {
       dashboard: `
@@ -76,7 +81,15 @@
       <circle cx="12" cy="12" r="3" />
       <path
         d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-      `
+      `,
+      // --- AJOUT : icônes pour Utilisateurs et Référentiels ---
+      utilisateurs: `
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 21v-1a8 8 0 0 1 16 0v1" />`,
+      referentiels: `
+      <ellipse cx="12" cy="5" rx="9" ry="3" />
+      <path d="M3 5v6c0 1.66 4.03 3 9 3s9-1.34 9-3V5" />
+      <path d="M3 11v6c0 1.66 4.03 3 9 3s9-1.34 9-3v-6" />`
       };
 
       const menuGroups = [
@@ -102,14 +115,30 @@
       'danger' },
       { id: 'historique', href: '/historique', label: "Historique", icon: icons.historique }
       ]
-      },
-      {
+      }
+      ];
+
+      // --- AJOUT : groupe "Administration", visible uniquement si role_code === 'ADMIN' ---
+      // Les routes /utilisateurs et /referentiels sont déjà protégées côté
+      // backend par requireRole("ADMIN") (voir utilisateurRoutes.js et
+      // referentielRoutes.js) : ce test côté vue n'est qu'un masquage UI,
+      // la vraie sécurité reste le middleware serveur.
+      if (isAdmin) {
+      menuGroups.push({
+      label: 'Administration',
+      items: [
+      { id: 'utilisateurs', href: '/utilisateurs', label: "Utilisateurs", icon: icons.utilisateurs },
+      { id: 'referentiels', href: '/referentiels', label: "Référentiels", icon: icons.referentiels }
+      ]
+      });
+      }
+
+      menuGroups.push({
       label: 'Système',
       items: [
       { id: 'parametres', href: '/parametres', label: "Paramètres", icon: icons.parametres }
       ]
-      }
-      ];
+      });
       %>
 
       <aside class="sidebar" id="sidebar">
