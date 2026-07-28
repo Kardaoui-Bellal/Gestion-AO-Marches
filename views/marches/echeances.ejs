@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= typeof title !== 'undefined' ? title : "Échéances — ORMVA/SM" %></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="/css/Layout/sidebar.css" />
+  <link rel="stylesheet" href="/css/Layout/navbar.css" />
+  <link rel="stylesheet" href="/css/Layout/footer.css" />
+  <link rel="stylesheet" href="/css/marches.css" />
+</head>
+
+<body>
+  <%
+    const liste = typeof echeances !== 'undefined' && echeances ? echeances : [];
+    const jours = typeof daysAhead !== 'undefined' && daysAhead ? daysAhead : 30;
+
+    function fmtDate(v) {
+      if (!v) return '—';
+      const d = new Date(v);
+      if (isNaN(d)) return '—';
+      return d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+    function fmtMoney(v) {
+      if (v === null || v === undefined || v === '') return '—';
+      return Number(v).toLocaleString('fr-FR') + ' DH';
+    }
+    function joursRestants(v) {
+      if (!v) return null;
+      const d = new Date(v);
+      if (isNaN(d)) return null;
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      d.setHours(0, 0, 0, 0);
+      return Math.round((d - today) / 86400000);
+    }
+    function urgenceClass(n) {
+      if (n === null) return 'neutral';
+      if (n <= 7) return 'danger';
+      if (n <= 15) return 'warning';
+      return 'info';
+    }
+  %>
+
+  <div class="app-shell">
+    <%- include('../layouts/partials/sidebar', { currentPage: 'marches', counts: { appelsOffres: 0, alertes:
+      liste.length }, currentUser: currentUser }) %>
+
+      <main class="app-content">
+        <%- include('../layouts/partials/navbar', { title: "Échéances à venir" , currentUser: currentUser }) %>
+
+          <div class="wrap">
+            <div class="topbar">
+              <div class="title-block">
+                <div class="eyebrow">ORMVA/SM — Bureau Informatique</div>
+                <h1 class="page-title">Échéances à venir</h1>
+              </div>
+              <div class="actions-top">
+                <button class="btn btn-ghost" id="printBtn" type="button">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <polyline points="6 9 6 2 18 2 18 9" />
+                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                    <rect x="6" y="14" width="12" height="8" />
+                  </svg>
+                  Imprimer
+                </button>
+                <a class="btn btn-ghost" href="/marches">Tous les marchés</a>
+              </div>
+            </div>
+
+            <div class="toolbar">
+              <form method="GET" action="/marches/echeances" style="display:flex;gap:10px;align-items:center">
+                <label for="jours" style="font-size:13px">Horizon</label>
+                <select id="jours" name="jours" onchange="this.form.submit()">
+                  <% [7, 15, 30, 60, 90].forEach(function(j) { %>
+                    <option value="<%= j %>" <%= Number(jours) === j ? 'selected' : '' %>><%= j %> jours</option>
+                  <% }); %>
+                </select>
+                <noscript><button class="btn btn-ghost btn-sm" type="submit">Filtrer</button></noscript>
+              </form>
+
+              <div class="divider"></div>
+
+              <div class="search-box">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="7" />
+                  <path d="m21 21-4.3-4.3" />
+                </svg>
+                <input type="text" id="searchInput" placeholder="Rechercher par numéro, objet, fournisseur…" />
+              </div>
+            </div>
+
+            <div class="result-count" id="resultCount">
+              <%= liste.length %> marché(s) avec une échéance dans les <%= jours %> prochains jours
+            </div>
+
+            <div class="table-card">
+              <table>
+                <thead>
+                  <tr>
+                    <th style="width:70px">ID</th>
+                    <th>N° du marché</th>
+                    <th>Objet</th>
+                    <th>Fournisseur</th>
+                    <th>Type</th>
+                    <th>Montant</th>
+                    <th>Prochaine échéance</th>
+                    <th style="width:120px">Délai</th>
+                    <th style="width:80px">Fiche</th>
+                  </tr>
+                </thead>
+                <tbody id="tableBody">
+                  <% liste.forEach(function(m) { var n = joursRestants(m.date_prochaine_echeance); %>
+                    <tr data-row
+                      data-search="<%= ((m.numero || '') + ' ' + (m.objet || '') + ' ' + (m.fournisseur_nom || '')).toLowerCase() %>">
+                      <td class="id-mono">#<%= m.id_marche %></td>
+                      <td class="ice-mono"><%= m.numero %></td>
+                      <td>
+                        <div class="raison-title"><%= m.objet %></div>
+                        <div class="raison-contact"><%= m.statut_libelle || '—' %></div>
+                      </td>
+                      <td><%= m.fournisseur_nom || '—' %></td>
+                      <td><span class="type-tag"><%= m.type_marche_libelle || '—' %></span></td>
+                      <td class="ice-mono"><%= fmtMoney(m.montant) %></td>
+                      <td><%= fmtDate(m.date_prochaine_echeance) %></td>
+                      <td>
+                        <span class="badge <%= urgenceClass(n) %>">
+                          <%= n === null ? '—' : (n === 0 ? "Aujourd'hui" : 'J-' + n) %>
+                        </span>
+                      </td>
+                      <td>
+                        <div class="actions">
+                          <a class="icon-btn" href="/marches/<%= m.id_marche %>" title="Détails">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                              stroke-linecap="round" stroke-linejoin="round">
+                              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                              <circle cx="12" cy="12" r="3" />
+                            </svg>
+                          </a>
+                        </div>
+                      </td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+
+              <div class="empty-state" id="emptyState" <%= liste.length ? 'style="display:none"' : '' %>>
+                <h3>Aucune échéance à venir</h3>
+                <p>Aucun marché n'arrive à échéance dans les <%= jours %> prochains jours.</p>
+                <a class="btn btn-primary" href="/marches">Voir tous les marchés</a>
+              </div>
+            </div>
+          </div>
+
+          <%- include('../layouts/partials/footer') %>
+      </main>
+  </div>
+
+  <script>
+    (function () {
+      const search = document.getElementById('searchInput');
+      const rows = Array.from(document.querySelectorAll('[data-row]'));
+      const empty = document.getElementById('emptyState');
+
+      function apply() {
+        const q = (search.value || '').trim().toLowerCase();
+        let visible = 0;
+        rows.forEach(function (r) {
+          const ok = !q || (r.dataset.search || '').includes(q);
+          r.style.display = ok ? '' : 'none';
+          if (ok) visible++;
+        });
+        if (empty) empty.style.display = visible ? 'none' : '';
+      }
+
+      if (search) search.addEventListener('input', apply);
+      const print = document.getElementById('printBtn');
+      if (print) print.addEventListener('click', function () { window.print(); });
+    })();
+  </script>
+</body>
+
+</html>

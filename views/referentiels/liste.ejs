@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= typeof title !== 'undefined' ? title : "Référentiels — ORMVA/SM" %></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="/css/Layout/sidebar.css" />
+  <link rel="stylesheet" href="/css/Layout/navbar.css" />
+  <link rel="stylesheet" href="/css/Layout/footer.css" />
+  <link rel="stylesheet" href="/css/fournisseurs.css" />
+</head>
+
+<body>
+  <%
+    const groupes = typeof grouped !== 'undefined' && grouped ? grouped : {};
+    const types = Object.keys(groupes).sort();
+    const total = types.reduce(function (n, t) { return n + groupes[t].length; }, 0);
+    function humanType(t) {
+      return String(t).replace(/_/g, ' ').toLowerCase().replace(/^./, function (c) { return c.toUpperCase(); });
+    }
+  %>
+
+  <div class="app-shell">
+    <%- include('../layouts/partials/sidebar', { currentPage: 'parametres', counts: { appelsOffres: 0, alertes: 0 },
+      currentUser: currentUser }) %>
+
+      <main class="app-content">
+        <%- include('../layouts/partials/navbar', { title: "Référentiels" , currentUser: currentUser }) %>
+
+          <div class="wrap">
+            <div class="topbar">
+              <div class="brand-text">
+                <div class="eyebrow">ORMVA/SM — Bureau Informatique</div>
+                <h1>Référentiels</h1>
+              </div>
+              <div class="topbar-actions">
+                <button class="btn btn-ghost" id="printBtn" type="button">Imprimer</button>
+                <a class="btn btn-primary" href="/referentiels/new">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                    <path d="M12 5v14M5 12h14" />
+                  </svg>
+                  Nouveau référentiel
+                </a>
+              </div>
+            </div>
+
+            <div class="toolbar">
+              <div class="search-box">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="7" />
+                  <path d="m21 21-4.3-4.3" />
+                </svg>
+                <input type="text" id="searchInput" placeholder="Rechercher par code ou libellé…" />
+              </div>
+
+              <select id="filterType">
+                <option value="">Tous les types</option>
+                <% types.forEach(function(t) { %>
+                  <option value="<%= t %>"><%= humanType(t) %></option>
+                <% }); %>
+              </select>
+
+              <div class="divider"></div>
+              <button class="btn btn-ghost btn-sm" id="resetBtn" type="button">Réinitialiser</button>
+            </div>
+
+            <div class="result-count" id="resultCount"><%= total %> valeur(s)</div>
+
+            <% types.forEach(function(t) { %>
+              <div class="table-card" data-group data-type="<%= t %>" style="margin-bottom:18px">
+                <div style="padding:14px 18px 0">
+                  <span class="type-tag"><%= humanType(t) %></span>
+                </div>
+                <table>
+                  <thead>
+                    <tr>
+                      <th style="width:70px">ID</th>
+                      <th>Code</th>
+                      <th>Libellé</th>
+                      <th style="width:110px">Ordre</th>
+                      <th style="width:110px">Statut</th>
+                      <th style="width:120px">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% groupes[t].forEach(function(r) { %>
+                      <tr data-row data-type="<%= t %>"
+                        data-search="<%= ((r.code || '') + ' ' + (r.libelle || '')).toLowerCase() %>">
+                        <td class="id-mono">#<%= r.id_ref %></td>
+                        <td class="ice-mono"><%= r.code %></td>
+                        <td>
+                          <div class="raison-title"><%= r.libelle %></div>
+                        </td>
+                        <td><%= (r.ordre_affichage !== null && r.ordre_affichage !== undefined) ? r.ordre_affichage : '—' %></td>
+                        <td>
+                          <% if (r.actif) { %>
+                            <span class="badge success">Actif</span>
+                          <% } else { %>
+                            <span class="badge neutral">Inactif</span>
+                          <% } %>
+                        </td>
+                        <td>
+                          <div class="actions">
+                            <a class="icon-btn" href="/referentiels/<%= r.id_ref %>/edit" title="Modifier">
+                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                              </svg>
+                            </a>
+                            <form method="POST" action="/referentiels/<%= r.id_ref %>/toggle" style="display:inline">
+                              <button type="submit" class="icon-btn danger"
+                                title="<%= r.actif ? 'Désactiver' : 'Réactiver' %>">
+                                <% if (r.actif) { %>
+                                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M3 6h18" />
+                                    <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                                  </svg>
+                                <% } else { %>
+                                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="1 4 1 10 7 10" />
+                                    <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
+                                  </svg>
+                                <% } %>
+                              </button>
+                            </form>
+                          </div>
+                        </td>
+                      </tr>
+                    <% }); %>
+                  </tbody>
+                </table>
+              </div>
+            <% }); %>
+
+            <div class="table-card">
+              <div class="empty-state" id="emptyState" <%= total ? 'style="display:none"' : '' %>>
+                <h3>Aucun référentiel trouvé</h3>
+                <p>Ajustez vos critères de recherche ou ajoutez une nouvelle valeur.</p>
+                <a class="btn btn-primary" href="/referentiels/new">Nouveau référentiel</a>
+              </div>
+            </div>
+          </div>
+
+          <%- include('../layouts/partials/footer') %>
+      </main>
+  </div>
+
+  <script>
+    (function () {
+      const search = document.getElementById('searchInput');
+      const filterType = document.getElementById('filterType');
+      const rows = Array.from(document.querySelectorAll('[data-row]'));
+      const groups = Array.from(document.querySelectorAll('[data-group]'));
+      const empty = document.getElementById('emptyState');
+      const count = document.getElementById('resultCount');
+
+      function apply() {
+        const q = (search.value || '').trim().toLowerCase();
+        const t = filterType.value;
+        let visible = 0;
+
+        rows.forEach(function (r) {
+          const ok = (!q || (r.dataset.search || '').includes(q)) && (!t || r.dataset.type === t);
+          r.style.display = ok ? '' : 'none';
+          if (ok) visible++;
+        });
+
+        groups.forEach(function (g) {
+          const any = Array.from(g.querySelectorAll('[data-row]')).some(function (r) { return r.style.display !== 'none'; });
+          g.style.display = any ? '' : 'none';
+        });
+
+        if (empty) empty.style.display = visible ? 'none' : '';
+        if (count) count.textContent = visible + ' valeur(s)';
+      }
+
+      if (search) search.addEventListener('input', apply);
+      if (filterType) filterType.addEventListener('change', apply);
+      const reset = document.getElementById('resetBtn');
+      if (reset) reset.addEventListener('click', function () {
+        search.value = ''; filterType.value = ''; apply();
+      });
+      const print = document.getElementById('printBtn');
+      if (print) print.addEventListener('click', function () { window.print(); });
+    })();
+  </script>
+</body>
+
+</html>

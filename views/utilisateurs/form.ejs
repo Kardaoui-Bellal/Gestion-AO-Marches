@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= typeof title !== 'undefined' ? title : "Utilisateur — ORMVA/SM" %></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="/css/Layout/sidebar.css" />
+  <link rel="stylesheet" href="/css/Layout/navbar.css" />
+  <link rel="stylesheet" href="/css/Layout/footer.css" />
+  <link rel="stylesheet" href="/css/appels-offres-form.css" />
+</head>
+
+<body>
+  <%
+    const u = typeof utilisateur !== 'undefined' && utilisateur ? utilisateur : {};
+    const isEdit = !!u.id_utilisateur;
+    const listeRoles = typeof roles !== 'undefined' && roles ? roles : [];
+  %>
+
+  <div class="app-shell">
+    <%- include('../layouts/partials/sidebar', { currentPage: 'parametres', currentUser: currentUser }) %>
+
+      <main class="app-content">
+        <%- include('../layouts/partials/navbar', { title: "Gestion des Utilisateurs" , currentUser: currentUser }) %>
+
+          <div class="wrap">
+            <div class="topbar">
+              <div class="brand">
+                <div class="brand-mark">US</div>
+                <div class="brand-text">
+                  <div class="eyebrow">ORMVA/SM — Bureau Informatique</div>
+                  <h1><%= isEdit ? "Modifier l'utilisateur" : "Nouvel utilisateur" %></h1>
+                </div>
+              </div>
+              <a class="btn btn-ghost" href="/utilisateurs">Annuler</a>
+            </div>
+
+            <% if (typeof error !== 'undefined' && error) { %>
+              <div class="alert-error"><%= error %></div>
+            <% } %>
+
+            <form id="userForm" class="form-card" method="POST"
+              action="<%= isEdit ? ('/utilisateurs/' + u.id_utilisateur) : '/utilisateurs' %>" novalidate>
+              <div class="form-grid">
+                <div class="field">
+                  <label for="nom">Nom complet <span class="req">*</span></label>
+                  <input type="text" id="nom" name="nom" placeholder="ex : Bellal Kardaoui"
+                    value="<%= u.nom || '' %>" required />
+                  <span class="err">Le nom est requis.</span>
+                </div>
+
+                <div class="field">
+                  <label for="email">Email <span class="req">*</span></label>
+                  <input type="email" id="email" name="email" placeholder="ex : prenom.nom@ormvasm.ma"
+                    value="<%= u.email || '' %>" <%= isEdit ? 'disabled' : 'required' %> />
+                  <span class="err">Indiquez un email valide.</span>
+                  <% if (isEdit) { %>
+                    <span class="hint">L'email ne peut pas être modifié.</span>
+                  <% } %>
+                </div>
+
+                <div class="field">
+                  <label for="profil_id">Rôle <span class="req">*</span></label>
+                  <select id="profil_id" name="profil_id" required>
+                    <option value="">Sélectionner…</option>
+                    <% listeRoles.forEach(function(r) { %>
+                      <option value="<%= r.id_ref %>" <%= String(u.profil_id) === String(r.id_ref) ? 'selected' : '' %>>
+                        <%= r.libelle %>
+                      </option>
+                    <% }); %>
+                  </select>
+                  <span class="err">Choisissez un rôle.</span>
+                </div>
+
+                <% if (isEdit) { %>
+                  <div class="field">
+                    <label for="actif">Statut du compte</label>
+                    <select id="actif" name="actif">
+                      <option value="1" <%= u.actif ? 'selected' : '' %>>Actif</option>
+                      <option value="" <%= !u.actif ? 'selected' : '' %>>Inactif</option>
+                    </select>
+                    <span class="hint">Un compte inactif ne peut plus se connecter.</span>
+                  </div>
+                <% } else { %>
+                  <div class="field">
+                    <label for="mot_de_passe">Mot de passe <span class="req">*</span></label>
+                    <input type="password" id="mot_de_passe" name="mot_de_passe" placeholder="8 caractères minimum"
+                      minlength="8" required />
+                    <span class="err">8 caractères minimum.</span>
+                  </div>
+
+                  <div class="field">
+                    <label for="mot_de_passe_confirm">Confirmer le mot de passe <span class="req">*</span></label>
+                    <input type="password" id="mot_de_passe_confirm" name="mot_de_passe_confirm"
+                      placeholder="Ressaisir le mot de passe" minlength="8" required />
+                    <span class="err">Les mots de passe doivent correspondre.</span>
+                  </div>
+                <% } %>
+              </div>
+
+              <div class="form-footer">
+                <% if (isEdit) { %>
+                  <a class="btn btn-ghost" href="/utilisateurs/<%= u.id_utilisateur %>/password">
+                    Changer le mot de passe
+                  </a>
+                <% } %>
+                <a class="btn btn-ghost" href="/utilisateurs">Annuler</a>
+                <button type="submit" class="btn btn-primary">
+                  <%= isEdit ? 'Enregistrer les modifications' : "Créer l'utilisateur" %>
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <%- include('../layouts/partials/footer') %>
+      </main>
+  </div>
+
+  <script>
+    (function () {
+      const form = document.getElementById('userForm');
+      if (!form) return;
+      form.addEventListener('submit', function (e) {
+        let ok = true;
+        form.querySelectorAll('[required]').forEach(function (el) {
+          const field = el.closest('.field');
+          const valid = el.disabled || (el.value && String(el.value).trim() !== '' && el.checkValidity());
+          if (field) field.classList.toggle('invalid', !valid);
+          if (!valid) ok = false;
+        });
+
+        const pwd = document.getElementById('mot_de_passe');
+        const confirm = document.getElementById('mot_de_passe_confirm');
+        if (pwd && confirm && pwd.value !== confirm.value) {
+          confirm.closest('.field').classList.add('invalid');
+          ok = false;
+        }
+        if (!ok) e.preventDefault();
+      });
+    })();
+  </script>
+</body>
+
+</html>

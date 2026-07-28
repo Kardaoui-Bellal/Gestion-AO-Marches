@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= typeof title !== 'undefined' ? title : "Offre — ORMVA/SM" %></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="/css/Layout/sidebar.css" />
+  <link rel="stylesheet" href="/css/Layout/navbar.css" />
+  <link rel="stylesheet" href="/css/Layout/footer.css" />
+  <link rel="stylesheet" href="/css/appels-offres-form.css" />
+</head>
+
+<body>
+  <%
+    const o = typeof offre !== 'undefined' && offre ? offre : {};
+    const isEdit = !!o.id_offre;
+    const ao = typeof appelOffre !== 'undefined' && appelOffre ? appelOffre : {};
+    const listeFournisseurs = typeof fournisseurs !== 'undefined' && fournisseurs ? fournisseurs : [];
+    const listeStatuts = typeof statuts !== 'undefined' && statuts ? statuts : [];
+
+    function toDateInputValue(v) {
+      if (!v) return '';
+      if (typeof v === 'string') return v.slice(0, 10);
+      const d = new Date(v);
+      if (isNaN(d)) return '';
+      return d.toISOString().slice(0, 10);
+    }
+
+    const cancelHref = ao.id_ao ? ('/appels-offres/' + ao.id_ao) : '/appels-offres';
+    const formAction = isEdit ? ('/offres/' + o.id_offre) : ('/appels-offres/' + ao.id_ao + '/offres');
+  %>
+
+  <div class="app-shell">
+    <%- include('../layouts/partials/sidebar', { currentPage: 'appels-offres', currentUser: currentUser }) %>
+
+      <main class="app-content">
+        <%- include('../layouts/partials/navbar', { title: "Gestion des Offres" , currentUser: currentUser }) %>
+
+          <div class="wrap">
+            <div class="topbar">
+              <div class="brand">
+                <div class="brand-mark">OF</div>
+                <div class="brand-text">
+                  <div class="eyebrow">ORMVA/SM — Bureau Informatique</div>
+                  <h1><%= isEdit ? "Modifier l'offre" : "Nouvelle offre" %></h1>
+                </div>
+              </div>
+              <a class="btn btn-ghost" href="<%= cancelHref %>">Annuler</a>
+            </div>
+
+            <% if (typeof error !== 'undefined' && error) { %>
+              <div class="alert-error"><%= error %></div>
+            <% } %>
+
+            <form id="offreForm" class="form-card" method="POST" action="<%= formAction %>" novalidate>
+              <div class="form-grid">
+                <div class="field full">
+                  <label>Appel d'offres</label>
+                  <input type="text" value="<%= (ao.numero_ao || '') + (ao.objet ? ' — ' + ao.objet : '') %>" disabled />
+                  <span class="hint">L'offre est rattachée à cet appel d'offres.</span>
+                </div>
+
+                <div class="field">
+                  <label for="fournisseur_id">Fournisseur <span class="req">*</span></label>
+                  <select id="fournisseur_id" name="fournisseur_id" required <%= isEdit ? 'disabled' : '' %>>
+                    <option value="">Sélectionner…</option>
+                    <% listeFournisseurs.forEach(function(f) { %>
+                      <option value="<%= f.id_fournisseur %>"
+                        <%= String(o.fournisseur_id) === String(f.id_fournisseur) ? 'selected' : '' %>>
+                        <%= f.raison_sociale %>
+                      </option>
+                    <% }); %>
+                  </select>
+                  <span class="err">Choisissez un fournisseur.</span>
+                  <% if (isEdit) { %>
+                    <span class="hint">Le fournisseur ne peut pas être modifié après création.</span>
+                  <% } %>
+                </div>
+
+                <div class="field">
+                  <label for="montant_propose">Montant proposé (DH) <span class="req">*</span></label>
+                  <input type="number" id="montant_propose" name="montant_propose" min="0" step="0.01"
+                    placeholder="0.00"
+                    value="<%= (o.montant_propose !== undefined && o.montant_propose !== null) ? o.montant_propose : '' %>"
+                    required />
+                  <span class="err">Indiquez un montant valide (≥ 0).</span>
+                </div>
+
+                <div class="field">
+                  <label for="date_soumission">Date de soumission</label>
+                  <input type="date" id="date_soumission" name="date_soumission"
+                    value="<%= toDateInputValue(o.date_soumission) %>" />
+                </div>
+
+                <div class="field">
+                  <label for="statut_id">Statut de l'offre <span class="req">*</span></label>
+                  <select id="statut_id" name="statut_id" required>
+                    <option value="">Sélectionner…</option>
+                    <% listeStatuts.forEach(function(s) { %>
+                      <option value="<%= s.id_ref %>" <%= String(o.statut_id) === String(s.id_ref) ? 'selected' : '' %>>
+                        <%= s.libelle %>
+                      </option>
+                    <% }); %>
+                  </select>
+                  <span class="err">Choisissez un statut.</span>
+                </div>
+              </div>
+
+              <div class="form-footer">
+                <a class="btn btn-ghost" href="<%= cancelHref %>">Annuler</a>
+                <button type="submit" class="btn btn-primary" id="submitBtn">
+                  <%= isEdit ? 'Enregistrer les modifications' : "Enregistrer l'offre" %>
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <%- include('../layouts/partials/footer') %>
+      </main>
+  </div>
+
+  <script>
+    (function () {
+      const form = document.getElementById('offreForm');
+      if (!form) return;
+      form.addEventListener('submit', function (e) {
+        let ok = true;
+        form.querySelectorAll('[required]').forEach(function (el) {
+          const field = el.closest('.field');
+          const valid = el.disabled || (el.value && String(el.value).trim() !== '');
+          if (field) field.classList.toggle('invalid', !valid);
+          if (!valid) ok = false;
+        });
+        if (!ok) e.preventDefault();
+      });
+    })();
+  </script>
+</body>
+
+</html>
