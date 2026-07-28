@@ -10,6 +10,9 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/css/Layout/sidebar.css" />
+    <link rel="stylesheet" href="/css/Layout/sidebar.css" />
+    <link rel="stylesheet" href="/css/Layout/navbar.css" />
+    <link rel="stylesheet" href="/css/Layout/footer.css" />
     <link rel="stylesheet" href="/css/appels-offres-form.css" />
   </head>
   <body>
@@ -36,6 +39,10 @@
       }) %>
 
       <main class="app-content">
+        <%- include('../layouts/partials/navbar', {
+          title: "Gestion des Appels d'Offres",
+          currentUser: currentUser
+        }) %>
     <div class="wrap">
       <div class="topbar">
         <div class="brand">
