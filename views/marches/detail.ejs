@@ -10,6 +10,8 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/css/Layout/sidebar.css" />
+    <link rel="stylesheet" href="/css/Layout/navbar.css" />
+    <link rel="stylesheet" href="/css/Layout/footer.css" />
     <link rel="stylesheet" href="/css/marches.css" />
   </head>
   <body>
@@ -61,6 +63,8 @@
       }) %>
 
       <main class="app-content">
+        <%- include('../layouts/partials/navbar', { title: "Échéances à venir" , currentUser: currentUser }) %>
+
     <div class="wrap">
       <a class="back-link" href="/marches">&larr; Retour à la liste</a>
 
@@ -222,6 +226,7 @@
         </div>
       </div>
     </div>
+        <%- include('../layouts/partials/footer') %>
       </main>
     </div>
 

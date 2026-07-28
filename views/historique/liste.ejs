@@ -10,6 +10,8 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/css/Layout/sidebar.css" />
+    <link rel="stylesheet" href="/css/Layout/navbar.css" />
+    <link rel="stylesheet" href="/css/Layout/footer.css" />
     <link rel="stylesheet" href="/css/marches.css" />
     <style>
       .action-badge.INSERT, .action-badge.LOGIN { background: var(--success-soft); color: var(--success); }
@@ -42,6 +44,8 @@
       }) %>
 
       <main class="app-content">
+        <%- include('../layouts/partials/navbar', { title: "Échéances à venir" , currentUser: currentUser }) %>
+
         <div class="wrap">
           <div class="topbar">
             <div class="title-block">
@@ -114,6 +118,7 @@
             <% } %>
           </div>
         </div>
+        <%- include('../layouts/partials/footer') %>
       </main>
     </div>
   </body>
