@@ -197,6 +197,8 @@ const marcheController = {
         fournisseurs,
         types,
         statuts,
+        appelsOffres,      // ADD
+        typesDocument,     // ADD
         error:
           "Numéro, objet, type, statut, fournisseur et montant sont obligatoires.",
       });
@@ -254,6 +256,16 @@ const marcheController = {
       const fournisseurs = await Fournisseur.getAll();
       const types = await Referentiel.getByType("TYPE_MARCHE");
       const statuts = await Referentiel.getByType("STATUT_MARCHE");
+
+      // --- ADD ---
+      const etats = await Referentiel.getByType("ETAT_AO");
+      const etatAttribue = etats.find((e) => e.code === "ATTRIBUE");
+      const appelsOffres = etatAttribue
+        ? await AppelOffre.getByFilters({ etat_id: etatAttribue.id_ref })
+        : [];
+      const typesDocument = await Referentiel.getByType("TYPE_DOCUMENT");
+      // --- END ADD ---
+
       res.render("marches/form", {
         title: "Nouveau marché",
         marche: req.body,
@@ -261,6 +273,8 @@ const marcheController = {
         fournisseurs,
         types,
         statuts,
+        appelsOffres,      // ADD
+        typesDocument,     // ADD
         error,
       });
     }
