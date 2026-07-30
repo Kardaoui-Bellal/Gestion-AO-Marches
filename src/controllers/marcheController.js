@@ -228,12 +228,7 @@ const marcheController = {
       const todoStatut = todoStatuts.find((s) => s.code === "TODO");
 
       if (todoStatut) {
-        await Checklist.initForEntity(
-          "MARCHE",
-          id_marche,
-          "ETAPE_CHECKLIST",
-          todoStatut.id_ref,
-        );
+        await Checklist.initForEntity("MARCHE", id_marche, "ETAPE_CHECKLIST_MARCHE", todoStatut.id_ref);
       }
 
       await Historique.log({

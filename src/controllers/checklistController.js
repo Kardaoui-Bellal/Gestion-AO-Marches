@@ -15,12 +15,14 @@ const checklistController = {
             }
 
             const checklist = await Checklist.getByEntity(type_entite, id);
+              const statuts = await Referentiel.getByType("STATUT_CHECKLIST"); 
 
             res.render("checklist/detail", {
                 title: "Checklist",
                 type_entite,
                 entite_id: id,
                 checklist,
+                statuts,
             });
         } catch (err) {
             console.error(err);

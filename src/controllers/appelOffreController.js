@@ -142,7 +142,7 @@ const appelOffreController = {
             const todoStatut = todoStatuts.find(s => s.code === "TODO");
 
             if (todoStatut) {
-                await Checklist.initForEntity("AO", id_ao, "ETAPE_CHECKLIST", todoStatut.id_ref);
+                await Checklist.initForEntity("AO", id_ao, "ETAPE_CHECKLIST_AO", todoStatut.id_ref);
             }
 
             await Historique.log({

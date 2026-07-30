@@ -66,21 +66,21 @@ VALUES
 -- =====================================================
 -- ETAPE_CHECKLIST
 -- =====================================================
-('ETAPE_CHECKLIST','EXPR_BESOIN','Expression du besoin',1,TRUE),
-('ETAPE_CHECKLIST','VALID_TECH','Validation technique du besoin',2,TRUE),
-('ETAPE_CHECKLIST','VALID_CPS','Validation du CPS',3,TRUE),
-('ETAPE_CHECKLIST','VALID_RC','Validation du RC',4,TRUE),
-('ETAPE_CHECKLIST','VALID_BP','Validation du Bordereau des prix',5,TRUE),
-('ETAPE_CHECKLIST','PUB_AVIS','Publication de l''avis',6,TRUE),
-('ETAPE_CHECKLIST','PV_OUVERTURE','Établissement du PV d''ouverture',7,TRUE),
-('ETAPE_CHECKLIST','REC_OFFRES','Réception des offres',8,TRUE),
-('ETAPE_CHECKLIST','ANALYSE_TECH','Analyse technique',9,TRUE),
-('ETAPE_CHECKLIST','T_RECAP_AT','Tableau récapitulatif d''analyse technique',10,TRUE),
-('ETAPE_CHECKLIST','ATTRIBUTION','Décision d''attribution',11,TRUE),
-('ETAPE_CHECKLIST','NOTIF','Notification du marché',12,TRUE),
-('ETAPE_CHECKLIST','OS_DEBUT','Ordre de service de démarrage',13,TRUE),
-('ETAPE_CHECKLIST','RECEPT_PROV','Réception provisoire',14,TRUE),
-('ETAPE_CHECKLIST','RECEPT_DEF','Réception définitive',15,TRUE),
+('ETAPE_CHECKLIST_AO','EXPR_BESOIN','Expression du besoin',1,TRUE),
+('ETAPE_CHECKLIST_AO','VALID_TECH','Validation technique du besoin',2,TRUE),
+('ETAPE_CHECKLIST_AO','VALID_CPS','Validation du CPS',3,TRUE),
+('ETAPE_CHECKLIST_AO','VALID_RC','Validation du RC',4,TRUE),
+('ETAPE_CHECKLIST_AO','VALID_BP','Validation du Bordereau des prix',5,TRUE),
+('ETAPE_CHECKLIST_AO','PUB_AVIS','Publication de l''avis',6,TRUE),
+('ETAPE_CHECKLIST_AO','PV_OUVERTURE','Établissement du PV d''ouverture',7,TRUE),
+('ETAPE_CHECKLIST_AO','REC_OFFRES','Réception des offres',8,TRUE),
+('ETAPE_CHECKLIST_AO','ANALYSE_TECH','Analyse technique',9,TRUE),
+('ETAPE_CHECKLIST_AO','T_RECAP_AT','Tableau récapitulatif d''analyse technique',10,TRUE),
+('ETAPE_CHECKLIST_AO','ATTRIBUTION','Décision d''attribution',11,TRUE),
+('ETAPE_CHECKLIST_MARCHE','NOTIF','Notification du marché',12,TRUE),
+('ETAPE_CHECKLIST_MARCHE','OS_DEBUT','Ordre de service de démarrage',13,TRUE),
+('ETAPE_CHECKLIST_MARCHE','RECEPT_PROV','Réception provisoire',14,TRUE),
+('ETAPE_CHECKLIST_MARCHE','RECEPT_DEF','Réception définitive',15,TRUE),
 
 -- =====================================================
 -- STATUT_CHECKLIST
