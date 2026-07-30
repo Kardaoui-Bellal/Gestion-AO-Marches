@@ -154,6 +154,8 @@ document.querySelectorAll('.archive-form').forEach((form) => {
     let firstBadTab = null;
 
     form.querySelectorAll('[required]').forEach((input) => {
+      if (input.closest('.inline-upload-form')) return;
+      
       const invalid = !input.value || !input.value.trim();
       setInvalid(input, invalid);
       if (invalid) {
