@@ -4,7 +4,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title><%= typeof title !== 'undefined' ? title : "Référentiel — ORMVA/SM" %></title>
+  <title>
+    <%= typeof title !=='undefined' ? title : "Référentiel — ORMVA/SM" %>
+  </title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link
     href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
@@ -16,121 +18,120 @@
 </head>
 
 <body>
-  <%
-    const r = typeof referentiel !== 'undefined' && referentiel ? referentiel : {};
-    const isEdit = !!r.id_ref;
-    const typesConnus = [
-      'ROLE', 'DOMAINE_ACTIVITE', 'CATEGORIE_AO','ETAT_AO','STATUT_OFFRE',
-      'TYPE_MARCHE','STATUT_MARCHE','ETAPE_CHECKLIST','STATUT_CHECKLIST','TYPE_DOCUMENT'
-    ];
-    const typeCourant = r.type_referentiel || '';
-    const types = typeCourant && typesConnus.indexOf(typeCourant) === -1
-      ? typesConnus.concat([typeCourant])
-      : typesConnus;
-  %>
+  <% const r=typeof referentiel !=='undefined' && referentiel ? referentiel : {}; const isEdit=!!r.id_ref; const
+    typesConnus=[ 'ROLE' , 'DOMAINE_ACTIVITE' , 'CATEGORIE_AO' , 'ETAT_AO' , 'STATUT_OFFRE' , 'TYPE_MARCHE'
+    , 'STATUT_MARCHE' , 'ETAPE_CHECKLIST_AO' , 'ETAPE_CHECKLIST_MARCHE' , 'STATUT_CHECKLIST' , 'TYPE_DOCUMENT_AO'
+    , 'TYPE_DOCUMENT_MARCHE' ]; const typeCourant=r.type_referentiel || '' ; const types=typeCourant &&
+    typesConnus.indexOf(typeCourant)===-1 ? typesConnus.concat([typeCourant]) : typesConnus; %>
 
-  <div class="app-shell">
-    <%- include('../layouts/partials/sidebar', { currentPage: 'parametres', currentUser: currentUser }) %>
+    <div class="app-shell">
+      <%- include('../layouts/partials/sidebar', { currentPage: 'parametres' , currentUser: currentUser }) %>
 
-      <main class="app-content">
-        <%- include('../layouts/partials/navbar', { title: "Référentiels" , currentUser: currentUser }) %>
+        <main class="app-content">
+          <%- include('../layouts/partials/navbar', { title: "Référentiels" , currentUser: currentUser }) %>
 
-          <div class="wrap">
-            <div class="topbar">
-              <div class="brand">
-                <div class="brand-mark">RF</div>
-                <div class="brand-text">
-                  <div class="eyebrow">ORMVA/SM — Bureau Informatique</div>
-                  <h1><%= isEdit ? 'Modifier le référentiel' : 'Nouveau référentiel' %></h1>
+            <div class="wrap">
+              <div class="topbar">
+                <div class="brand">
+                  <div class="brand-mark">RF</div>
+                  <div class="brand-text">
+                    <div class="eyebrow">ORMVA/SM — Bureau Informatique</div>
+                    <h1>
+                      <%= isEdit ? 'Modifier le référentiel' : 'Nouveau référentiel' %>
+                    </h1>
+                  </div>
                 </div>
+                <a class="btn btn-ghost" href="/referentiels">Annuler</a>
               </div>
-              <a class="btn btn-ghost" href="/referentiels">Annuler</a>
+
+              <% if (typeof error !=='undefined' && error) { %>
+                <div class="alert-error">
+                  <%= error %>
+                </div>
+                <% } %>
+
+                  <form id="refForm" class="form-card" method="POST"
+                    action="<%= isEdit ? ('/referentiels/' + r.id_ref) : '/referentiels' %>" novalidate>
+                    <div class="form-grid">
+                      <div class="field">
+                        <label for="type_referentiel">Type de référentiel <span class="req">*</span></label>
+                        <select id="type_referentiel" name="type_referentiel" required <%=isEdit ? 'disabled' : '' %>>
+                          <option value="">Sélectionner…</option>
+                          <% types.forEach(function(t) { %>
+                            <option value="<%= t %>" <%=String(typeCourant)===String(t) ? 'selected' : '' %>><%= t %>
+                            </option>
+                            <% }); %>
+                        </select>
+                        <span class="err">Choisissez un type.</span>
+                        <% if (isEdit) { %>
+                          <input type="hidden" name="type_referentiel" value="<%= typeCourant %>" />
+                          <span class="hint">Le type ne peut pas être modifié après création.</span>
+                          <% } %>
+                      </div>
+
+                      <div class="field">
+                        <label for="code">Code <span class="req">*</span></label>
+                        <input type="text" id="code" name="code" placeholder="ex : EN_COURS" value="<%= r.code || '' %>"
+                          required />
+                        <span class="err">Le code est requis.</span>
+                        <span class="hint">Majuscules et underscores, unique par type.</span>
+                      </div>
+
+                      <div class="field full">
+                        <label for="libelle">Libellé <span class="req">*</span></label>
+                        <input type="text" id="libelle" name="libelle" placeholder="ex : En cours d'exécution"
+                          value="<%= r.libelle || '' %>" required />
+                        <span class="err">Le libellé est requis.</span>
+                      </div>
+
+                      <div class="field">
+                        <label for="ordre_affichage">Ordre d'affichage</label>
+                        <input type="number" id="ordre_affichage" name="ordre_affichage" min="0" step="1"
+                          placeholder="0"
+                          value="<%= (r.ordre_affichage !== undefined && r.ordre_affichage !== null) ? r.ordre_affichage : '' %>" />
+                        <span class="hint">Contrôle l'ordre dans les listes déroulantes.</span>
+                      </div>
+
+                      <% if (isEdit) { %>
+                        <div class="field">
+                          <label for="actif">Statut</label>
+                          <select id="actif" name="actif">
+                            <option value="1" <%=r.actif ? 'selected' : '' %>>Actif</option>
+                            <option value="0" <%=!r.actif ? 'selected' : '' %>>Inactif</option>
+                          </select>
+                        </div>
+                        <% } %>
+                    </div>
+
+                    <div class="form-footer">
+                      <a class="btn btn-ghost" href="/referentiels">Annuler</a>
+                      <button type="submit" class="btn btn-primary">
+                        <%= isEdit ? 'Enregistrer les modifications' : 'Créer le référentiel' %>
+                      </button>
+                    </div>
+                  </form>
             </div>
 
-            <% if (typeof error !== 'undefined' && error) { %>
-              <div class="alert-error"><%= error %></div>
-            <% } %>
+            <%- include('../layouts/partials/footer') %>
+        </main>
+    </div>
 
-            <form id="refForm" class="form-card" method="POST"
-              action="<%= isEdit ? ('/referentiels/' + r.id_ref) : '/referentiels' %>" novalidate>
-              <div class="form-grid">
-                <div class="field">
-                  <label for="type_referentiel">Type de référentiel <span class="req">*</span></label>
-                  <select id="type_referentiel" name="type_referentiel" required <%= isEdit ? 'disabled' : '' %>>
-                    <option value="">Sélectionner…</option>
-                    <% types.forEach(function(t) { %>
-                      <option value="<%= t %>" <%= String(typeCourant) === String(t) ? 'selected' : '' %>><%= t %></option>
-                    <% }); %>
-                  </select>
-                  <span class="err">Choisissez un type.</span>
-                  <% if (isEdit) { %>
-                    <input type="hidden" name="type_referentiel" value="<%= typeCourant %>" />
-                    <span class="hint">Le type ne peut pas être modifié après création.</span>
-                  <% } %>
-                </div>
-
-                <div class="field">
-                  <label for="code">Code <span class="req">*</span></label>
-                  <input type="text" id="code" name="code" placeholder="ex : EN_COURS"
-                    value="<%= r.code || '' %>" required />
-                  <span class="err">Le code est requis.</span>
-                  <span class="hint">Majuscules et underscores, unique par type.</span>
-                </div>
-
-                <div class="field full">
-                  <label for="libelle">Libellé <span class="req">*</span></label>
-                  <input type="text" id="libelle" name="libelle" placeholder="ex : En cours d'exécution"
-                    value="<%= r.libelle || '' %>" required />
-                  <span class="err">Le libellé est requis.</span>
-                </div>
-
-                <div class="field">
-                  <label for="ordre_affichage">Ordre d'affichage</label>
-                  <input type="number" id="ordre_affichage" name="ordre_affichage" min="0" step="1" placeholder="0"
-                    value="<%= (r.ordre_affichage !== undefined && r.ordre_affichage !== null) ? r.ordre_affichage : '' %>" />
-                  <span class="hint">Contrôle l'ordre dans les listes déroulantes.</span>
-                </div>
-
-                <% if (isEdit) { %>
-                  <div class="field">
-                    <label for="actif">Statut</label>
-                    <select id="actif" name="actif">
-                      <option value="1" <%= r.actif ? 'selected' : '' %>>Actif</option>
-                      <option value="0" <%= !r.actif ? 'selected' : '' %>>Inactif</option>
-                    </select>
-                  </div>
-                <% } %>
-              </div>
-
-              <div class="form-footer">
-                <a class="btn btn-ghost" href="/referentiels">Annuler</a>
-                <button type="submit" class="btn btn-primary">
-                  <%= isEdit ? 'Enregistrer les modifications' : 'Créer le référentiel' %>
-                </button>
-              </div>
-            </form>
-          </div>
-
-          <%- include('../layouts/partials/footer') %>
-      </main>
-  </div>
-
-  <script>
-    (function () {
-      const form = document.getElementById('refForm');
-      if (!form) return;
-      form.addEventListener('submit', function (e) {
-        let ok = true;
-        form.querySelectorAll('[required]').forEach(function (el) {
-          const field = el.closest('.field');
-          const valid = el.disabled || (el.value && String(el.value).trim() !== '');
-          if (field) field.classList.toggle('invalid', !valid);
-          if (!valid) ok = false;
+    <script>
+      (function () {
+        const form = document.getElementById('refForm');
+        if (!form) return;
+        form.addEventListener('submit', function (e) {
+          let ok = true;
+          form.querySelectorAll('[required]').forEach(function (el) {
+            const field = el.closest('.field');
+            const valid = el.disabled || (el.value && String(el.value).trim() !== '');
+            if (field) field.classList.toggle('invalid', !valid);
+            if (!valid) ok = false;
+          });
+          if (!ok) e.preventDefault();
         });
-        if (!ok) e.preventDefault();
-      });
-    })();
-  </script>
+      })();
+    </script>
 </body>
 
 </html>

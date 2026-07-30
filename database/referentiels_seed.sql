@@ -94,19 +94,21 @@ VALUES
 -- =====================================================
 -- TYPE_DOCUMENT
 -- =====================================================
-('TYPE_DOCUMENT','CPS','Cahier des Prescriptions Spéciales',1,TRUE),
-('TYPE_DOCUMENT','RC','Règlement de Consultation',2,TRUE),
-('TYPE_DOCUMENT','BORDEREAU_PRIX','Bordereau des prix',3,TRUE),
-('TYPE_DOCUMENT','PV','Procès-Verbal',4,TRUE),
-('TYPE_DOCUMENT','CONTRAT','Contrat signé',5,TRUE),
-('TYPE_DOCUMENT','OS','Ordre de service',6,TRUE),
-('TYPE_DOCUMENT','FACTURE','Facture',7,TRUE),
-('TYPE_DOCUMENT','BON_LIVRAISON','Bon de livraison',8,TRUE),
-('TYPE_DOCUMENT','ATTESTATION','Attestations administratives',9,TRUE),
-('TYPE_DOCUMENT','CORRESPONDANCE','Correspondances diverses',10,TRUE),
-('TYPE_DOCUMENT','AVIS_AO','Avis d''appel d''offres',11,TRUE),
-('TYPE_DOCUMENT','ATT_GARANTIE','Attestation de garantie',12,TRUE),
-('TYPE_DOCUMENT','DECOMPTE','Décompte',13,TRUE),
-('TYPE_DOCUMENT','PV_RP','PV de réception provisoire',14,TRUE),
-('TYPE_DOCUMENT','PV_RD','PV de réception définitive',15,TRUE),
-('TYPE_DOCUMENT','AUTRE','Autre document',16,TRUE);
+('TYPE_DOCUMENT_AO','CPS','Cahier des Prescriptions Spéciales',1,TRUE),
+('TYPE_DOCUMENT_AO','RC','Règlement de Consultation',2,TRUE),
+('TYPE_DOCUMENT_AO','BORDEREAU_PRIX','Bordereau des prix',3,TRUE),
+('TYPE_DOCUMENT_AO','PV','Procès-Verbal',4,TRUE),
+('TYPE_DOCUMENT_MARCHE','CONTRAT','Contrat signé',5,TRUE),
+('TYPE_DOCUMENT_MARCHE','OS','Ordre de service',6,TRUE),
+('TYPE_DOCUMENT_MARCHE','FACTURE','Facture',7,TRUE),
+('TYPE_DOCUMENT_MARCHE','BON_LIVRAISON','Bon de livraison',8,TRUE),
+('TYPE_DOCUMENT_AO','ATTESTATION','Attestations administratives',9,TRUE),
+('TYPE_DOCUMENT_MARCHE','CORRESPONDANCE','Correspondances diverses',10,TRUE),
+('TYPE_DOCUMENT_AO','CORRESPONDANCE','Correspondances diverses',10,TRUE),
+('TYPE_DOCUMENT_AO','AVIS_AO','Avis d''appel d''offres',11,TRUE),
+('TYPE_DOCUMENT_MARCHE','ATT_GARANTIE','Attestation de garantie',12,TRUE),
+('TYPE_DOCUMENT_MARCHE','DECOMPTE','Décompte',13,TRUE),
+('TYPE_DOCUMENT_MARCHE','PV_RP','PV de réception provisoire',14,TRUE),
+('TYPE_DOCUMENT_MARCHE','PV_RD','PV de réception définitive',15,TRUE),
+('TYPE_DOCUMENT_AO','AUTRE','Autre document',16,TRUE);
+('TYPE_DOCUMENT_MARCHE','AUTRE','Autre document',16,TRUE);

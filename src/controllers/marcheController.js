@@ -91,8 +91,7 @@ const marcheController = {
       const appelsOffres = etatAttribue
         ? await AppelOffre.getByFilters({ etat_id: etatAttribue.id_ref })
         : [];
-      const typesDocument = await Referentiel.getByType("TYPE_DOCUMENT");
-      // --- END ADDED ---
+      const typesDocument = await Referentiel.getByType("TYPE_DOCUMENT_MARCHE"); // --- END ADDED ---
 
       res.render("marches/form", {
         title: "Nouveau marché",
@@ -131,7 +130,7 @@ const marcheController = {
       const appelsOffres = etatAttribue
         ? await AppelOffre.getByFilters({ etat_id: etatAttribue.id_ref })
         : [];
-      const typesDocument = await Referentiel.getByType("TYPE_DOCUMENT");
+      const typesDocument = await Referentiel.getByType("TYPE_DOCUMENT_MARCHE");
       const documents = await Document.getByMarche(req.params.id);
       // --- END ADDED ---
 
@@ -189,7 +188,7 @@ const marcheController = {
       const appelsOffres = etatAttribue
         ? await AppelOffre.getByFilters({ etat_id: etatAttribue.id_ref })
         : [];
-      const typesDocument = await Referentiel.getByType("TYPE_DOCUMENT");
+      const typesDocument = await Referentiel.getByType("TYPE_DOCUMENT_MARCHE");
       return res.render("marches/form", {
         title: "Nouveau marché",
         marche: req.body,
@@ -197,8 +196,8 @@ const marcheController = {
         fournisseurs,
         types,
         statuts,
-        appelsOffres,      // ADD
-        typesDocument,     // ADD
+        appelsOffres, // ADD
+        typesDocument, // ADD
         error:
           "Numéro, objet, type, statut, fournisseur et montant sont obligatoires.",
       });
@@ -228,7 +227,12 @@ const marcheController = {
       const todoStatut = todoStatuts.find((s) => s.code === "TODO");
 
       if (todoStatut) {
-        await Checklist.initForEntity("MARCHE", id_marche, "ETAPE_CHECKLIST_MARCHE", todoStatut.id_ref);
+        await Checklist.initForEntity(
+          "MARCHE",
+          id_marche,
+          "ETAPE_CHECKLIST_MARCHE",
+          todoStatut.id_ref,
+        );
       }
 
       await Historique.log({
@@ -268,8 +272,8 @@ const marcheController = {
         fournisseurs,
         types,
         statuts,
-        appelsOffres,      // ADD
-        typesDocument,     // ADD
+        appelsOffres, // ADD
+        typesDocument, // ADD
         error,
       });
     }
