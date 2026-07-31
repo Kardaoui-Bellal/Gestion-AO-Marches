@@ -47,14 +47,14 @@ const Utilisateur = {
     },
 
     async update(id_utilisateur, updateData) {
-        const { nom, profil_id, actif } = updateData;
+        const { nom, email , profil_id, actif } = updateData;
         const query = `
             UPDATE utilisateurs 
-            SET nom = ?, profil_id = ?, actif = ?, date_modification = NOW() 
+            SET nom = ?, email = ? , profil_id = ?, actif = ?, date_modification = NOW() 
             WHERE id_utilisateur = ?
         `;
         
-        const [result] = await pool.execute(query, [nom, profil_id, actif, id_utilisateur]);
+        const [result] = await pool.execute(query, [nom, email , profil_id, actif, id_utilisateur]);
         return result.affectedRows > 0;
     },
 
