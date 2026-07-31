@@ -201,14 +201,20 @@ const appelOffreController = {
                 observation,
             });
 
+            const diff = buildDiff(before, req.body, [
+              "numero_ao", "objet", "categorie_id", "etat_id", "montant_estimatif",
+              "date_lancement", "date_limite_depot", "date_ouverture_plis", "observation",
+            ]);
+
             await Historique.log({
                 utilisateur_id: req.session.user.id_utilisateur,
                 action: "UPDATE",
                 entite_type: "APPEL_OFFRE",
                 entite_id: id_ao,
-                champ_modifie: "multiple",
-                ancienne_valeur: JSON.stringify(before),
-                nouvelle_valeur: JSON.stringify(req.body),
+                champ_modifie: diff ? diff.champ_modifie : null,
+                ancienne_valeur: diff ? diff.ancienne_valeur : null,
+                nouvelle_valeur: diff ? diff.nouvelle_valeur : null,
+                details: diff ? null : "Aucune modification de champ détectée.",
             });
 
             res.redirect(`/appels-offres/${id_ao}`);

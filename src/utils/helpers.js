@@ -49,10 +49,45 @@ function statutBadgeClass(code) {
     return map[code] || "bg-secondary";
 }
 
+// normalizes a value for comparison — dates become YYYY-MM-DD, null/undefined become ""
+function normalizeForDiff(val) {
+    if (val instanceof Date) return val.toISOString().slice(0, 10);
+    if (val === null || val === undefined) return "";
+    return String(val);
+}
+
+// compares `before` (a DB row) against `after` (req.body) across a given list of
+// fields, and returns only what actually changed — for readable historique entries.
+// Returns null if nothing changed (so the caller can skip logging a no-op "update").
+function buildDiff(before, after, fields) {
+    const changedFields = [];
+    const avantParts = [];
+    const apresParts = [];
+
+    for (const field of fields) {
+        const oldVal = normalizeForDiff(before[field]);
+        const newVal = normalizeForDiff(after[field]);
+        if (oldVal !== newVal) {
+            changedFields.push(field);
+            avantParts.push(`${field}: ${oldVal || "—"}`);
+            apresParts.push(`${field}: ${newVal || "—"}`);
+        }
+    }
+
+    if (changedFields.length === 0) return null;
+
+    return {
+        champ_modifie: changedFields.join(", "),
+        ancienne_valeur: avantParts.join(" | "),
+        nouvelle_valeur: apresParts.join(" | "),
+    };
+}
+
 module.exports = {
     formatDate,
     formatMontant,
     truncate,
     checklistBadgeClass,
     statutBadgeClass,
+    buildDiff,
 };

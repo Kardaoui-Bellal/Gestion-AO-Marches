@@ -1,3 +1,4 @@
+const { buildDiff } = require("../utils/helpers");
 const path = require("path");
 const fs = require("fs");
 const Marche = require("../models/marcheModel");
@@ -326,14 +327,22 @@ const marcheController = {
         observation,
       });
 
+      const diff = buildDiff(before, req.body, [
+        "numero", "objet", "type_marche_id", "fournisseur_id", "appel_offre_id",
+        "montant", "date_notification", "date_debut", "date_fin",
+        "delai_execution_jours", "date_reception_provisoire",
+        "date_reception_definitive", "date_prochaine_echeance", "observation",
+      ]);
+
       await Historique.log({
         utilisateur_id: req.session.user.id_utilisateur,
         action: "UPDATE",
         entite_type: "MARCHE",
         entite_id: id_marche,
-        champ_modifie: "multiple",
-        ancienne_valeur: JSON.stringify(before),
-        nouvelle_valeur: JSON.stringify(req.body),
+        champ_modifie: diff ? diff.champ_modifie : null,
+        ancienne_valeur: diff ? diff.ancienne_valeur : null,
+        nouvelle_valeur: diff ? diff.nouvelle_valeur : null,
+        details: diff ? null : "Aucune modification de champ détectée.",
       });
 
       res.redirect(`/marches/${id_marche}`);
