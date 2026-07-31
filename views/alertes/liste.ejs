@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="/css/Layout/navbar.css" />
     <link rel="stylesheet" href="/css/Layout/footer.css" />
     <link rel="stylesheet" href="/css/dashboard.css" />
+    <link rel="stylesheet" href="/css/alerte.css" />
   </head>
 
   <body>
@@ -59,6 +60,14 @@
                 <small>Action requise</small>
               </div>
             </div>
+           <div class="range-filter">
+            <div class="range-header">
+             <h3>Afficher les marchés expirant dans moins de</h3>
+                <span id="rangeLabel">45 jours</span>
+            </div>
+            <input type="range"  id="daysRange" min="0" max="365" value="45" step="1">
+           </div>
+
             <div class="table-responsive">
               <table class="dashboard-table">
                 <thead>
@@ -136,5 +145,55 @@
         <%- include('../layouts/partials/footer') %>
       </main>
     </div>
+
+  <script>
+    const range = document.getElementById("daysRange");
+const label = document.getElementById("rangeLabel");
+
+const rows = document.querySelectorAll("tbody tr");
+
+function filtrer() {
+
+    const limite = parseInt(range.value);
+
+    label.textContent = limite + " jours";
+
+    const aujourdhui = new Date();
+
+    rows.forEach(row => {
+
+        const dateFin = row.dataset.dateFin;
+
+        if (!dateFin) return;
+
+        const fin = new Date(dateFin);
+
+        const jours = Math.ceil(
+            (fin - aujourdhui) / (1000 * 60 * 60 * 24)
+        );
+
+        if (jours < 0) {
+
+            // Toujours afficher les marchés expirés
+            row.style.display = "";
+
+        } else if (jours <= limite) {
+
+            row.style.display = "";
+
+        } else {
+
+            row.style.display = "none";
+
+        }
+
+    });
+
+}
+
+range.addEventListener("input", filtrer);
+
+filtrer();
+  </script>
   </body>
 </html>
