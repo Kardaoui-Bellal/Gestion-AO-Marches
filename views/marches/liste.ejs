@@ -105,6 +105,7 @@
               <th>Fournisseur</th>
               <th>Montant TTC</th>
               <th>Statut</th>
+              <th>Échéance</th>
               <th style="width:150px">Actions</th>
             </tr>
           </thead>
@@ -122,6 +123,7 @@
                 <td><%= m.fournisseur_nom %></td>
                 <td class="montant-cell"><%= fmtMoney(m.montant) %></td>
                 <td><span class="badge <%= statutBadgeClass(m.statut_code) %>"><%= m.statut_libelle %></span></td>
+                <td><span class="badge-echeance" data-date="<%= m.date_fin %>"></span></td>
                 <td>
                   <div class="actions">
                     <a class="icon-btn" href="/marches/<%= m.id_marche %>" title="Détails">
