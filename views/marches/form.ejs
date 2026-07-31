@@ -191,13 +191,13 @@
 
               <div class="field">
                 <label for="date_reception_provisoire">Date de réception provisoire</label>
-                <input type="date" id="date_reception_provisoire" name="date_reception_provisoire" value="<%= dv(m.date_reception_provisoire) %>" <%= isEdit ? '' : 'disabled' %> />
+                <input type="date" id="date_reception_provisoire" name="date_reception_provisoire" value="<%= dv(m.date_reception_provisoire) %>" />
                 <% if (!isEdit) { %><span class="hint">Renseignable après création du marché.</span><% } %>
               </div>
 
               <div class="field">
                 <label for="date_reception_definitive">Date de réception définitive</label>
-                <input type="date" id="date_reception_definitive" name="date_reception_definitive" value="<%= dv(m.date_reception_definitive) %>" <%= isEdit ? '' : 'disabled' %> />
+                <input type="date" id="date_reception_definitive" name="date_reception_definitive" value="<%= dv(m.date_reception_definitive) %>"/>
                 <% if (!isEdit) { %><span class="hint">Renseignable après création du marché.</span><% } %>
               </div>
 
