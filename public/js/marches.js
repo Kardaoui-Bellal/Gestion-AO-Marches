@@ -236,17 +236,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (diff < 0) {
 
-            badge.textContent = "🔴 Expiré";
+            badge.textContent = "Expiré";
             badge.classList.add("expire");
 
         } else if (diff <= 30) {
 
-            badge.textContent = "🟠 Échéance proche";
+            badge.textContent = "Échéance proche";
             badge.classList.add("proche");
 
         } else {
 
-            badge.textContent = "🟢 Valide";
+            badge.textContent = "Valide";
             badge.classList.add("valide");
 
         }
