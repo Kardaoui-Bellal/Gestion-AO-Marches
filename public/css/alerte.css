@@ -1,0 +1,33 @@
+.range-filter{
+    background:#fff;
+    border-radius:16px;
+    padding:20px 24px;
+    margin-bottom:25px;
+    box-shadow:0 8px 20px rgba(0,0,0,.06);
+}
+.range-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:15px;
+}
+.range-header h3{
+    margin:0;
+    font-size:16px;
+    color:#243746;
+}
+#rangeLabel{
+    background:#2D8CFF;
+    color:#fff;
+    padding:6px 15px;
+    border-radius:999px;
+    font-weight:700;
+    min-width:85px;
+    text-align:center;
+}
+#daysRange{
+    width:100%;
+    height:7px;
+    cursor:pointer;
+    accent-color:#2D8CFF;
+}
