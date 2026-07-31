@@ -117,14 +117,19 @@ const referentielController = {
                 actif: actif ? 1 : 0, // checkbox sends 'on' or nothing
             });
 
+            const diff = buildDiff(before, { code, libelle, ordre_affichage, actif: actif ? 1 : 0 }, [
+                "code", "libelle", "ordre_affichage", "actif",
+            ]);
+
             await Historique.log({
                 utilisateur_id: req.session.user.id_utilisateur,
                 action: "UPDATE",
                 entite_type: "REFERENTIEL",
                 entite_id: id_ref,
-                champ_modifie: "multiple",
-                ancienne_valeur: JSON.stringify(before),
-                nouvelle_valeur: JSON.stringify({ code, libelle, ordre_affichage, actif: !!actif }),
+                champ_modifie: diff ? diff.champ_modifie : null,
+                ancienne_valeur: diff ? diff.ancienne_valeur : null,
+                nouvelle_valeur: diff ? diff.nouvelle_valeur : null,
+                details: diff ? null : "Aucune modification de champ détectée.",
             });
 
             res.redirect("/referentiels");

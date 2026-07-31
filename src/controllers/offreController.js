@@ -1,3 +1,4 @@
+const { buildDiff } = require("../utils/helpers");
 const Offre = require("../models/offreModel");
 const AppelOffre = require("../models/appelOffreModel");
 const Fournisseur = require("../models/fournisseurModel");
@@ -131,18 +132,19 @@ const offreController = {
 
             await Offre.update(id_offre, { montant_propose, date_soumission, statut_id });
 
+            const diff = buildDiff(before, { montant_propose, date_soumission, statut_id }, [
+                "montant_propose", "date_soumission", "statut_id",
+            ]);
+
             await Historique.log({
                 utilisateur_id: req.session.user.id_utilisateur,
                 action: "UPDATE",
                 entite_type: "OFFRE",
                 entite_id: id_offre,
-                champ_modifie: "multiple",
-                ancienne_valeur: JSON.stringify({
-                    montant_propose: before.montant_propose,
-                    date_soumission: before.date_soumission,
-                    statut_id: before.statut_id,
-                }),
-                nouvelle_valeur: JSON.stringify({ montant_propose, date_soumission, statut_id }),
+                champ_modifie: diff ? diff.champ_modifie : null,
+                ancienne_valeur: diff ? diff.ancienne_valeur : null,
+                nouvelle_valeur: diff ? diff.nouvelle_valeur : null,
+                details: diff ? null : "Aucune modification de champ détectée.",
             });
 
             res.redirect(`/appels-offres/${before.appel_offre_id}`);
