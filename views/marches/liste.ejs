@@ -26,7 +26,7 @@
         if (v === null || v === undefined || v === '') return '—';
         return Number(v).toLocaleString('fr-FR') + ' DH';
       }
-      function statutBadgeClass(code) {
+      function statutClass(code) {
         switch (code) {
           case 'NOTIFIE': return 'info';
           case 'EN_COURS': return 'warning';
@@ -128,7 +128,7 @@
                   <div class="actions">
                     <a class="icon-btn" href="/marches/<%= m.id_marche %>" title="Détails">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" />
                       </svg>
                     </a>
                     <a class="icon-btn" href="/marches/<%= m.id_marche %>/edit" title="Modifier">
