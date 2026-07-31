@@ -210,3 +210,47 @@ document.querySelectorAll('.inline-upload-form').forEach((form) => {
     }
   });
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const badges = document.querySelectorAll(".badge-echeance");
+
+    const aujourdhui = new Date();
+
+    badges.forEach(badge => {
+
+        const valeur = badge.dataset.date;
+
+        if (!valeur) {
+
+            badge.textContent = "—";
+            return;
+
+        }
+
+        const dateFin = new Date(valeur);
+
+        const diff = Math.ceil(
+            (dateFin - aujourdhui) / (1000 * 60 * 60 * 24)
+        );
+
+        if (diff < 0) {
+
+            badge.textContent = "🔴 Expiré";
+            badge.classList.add("expire");
+
+        } else if (diff <= 30) {
+
+            badge.textContent = "🟠 Échéance proche";
+            badge.classList.add("proche");
+
+        } else {
+
+            badge.textContent = "🟢 Valide";
+            badge.classList.add("valide");
+
+        }
+
+    });
+
+});

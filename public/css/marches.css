@@ -392,3 +392,39 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent-ambe
   .table-card, .card, .fiche-sheet { border: none; box-shadow: none; }
   thead th, tbody td { border: 1px solid #ccc; color: #000; background: #fff; }
 }
+
+/* ==========================
+   État d'échéance
+========================== */
+
+.badge-echeance {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid transparent;
+}
+
+/* Vert : marché valide */
+.badge-echeance.valide {
+    background: #E8F7EC;
+    color: #1E7E34;
+    border-color: #B7E4C7;
+}
+
+/* Orange : échéance proche */
+.badge-echeance.proche {
+    background: #FFF4E5;
+    color: #C97A00;
+    border-color: #FFD8A8;
+}
+
+/* Rouge : expiré */
+.badge-echeance.expire {
+    background: #FDECEC;
+    color: #C92A2A;
+    border-color: #F5C2C7;
+}
