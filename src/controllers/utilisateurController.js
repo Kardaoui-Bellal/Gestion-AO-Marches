@@ -152,50 +152,76 @@ const utilisateurController = {
         }
     },
 
-    // POST /utilisateurs/:id — edit nom/profil_id/actif (not password — see changePassword below)
-    async update(req, res) {
-        const id_utilisateur = req.params.id;
-        const { nom, profil_id, actif } = req.body;
+    // POST /utilisateurs/:id — edit nom/email/profil_id/actif
+async update(req, res) {
+    const id_utilisateur = req.params.id;
+    const { nom, email, profil_id, actif } = req.body;
 
-        try {
-            const before = await Utilisateur.findById(id_utilisateur);
-            if (!before) {
-                return res.status(404).render("404", { title: "Utilisateur introuvable" });
-            }
+    try {
+        const before = await Utilisateur.findById(id_utilisateur);
+        if (!before) {
+            return res.status(404).render("404", { title: "Utilisateur introuvable" });
+        }
 
-            // safety: prevent an admin from deactivating their own account by mistake
-            if (String(id_utilisateur) === String(req.session.user.id_utilisateur) && !actif) {
+        // safety: prevent an admin from deactivating their own account by mistake
+        if (String(id_utilisateur) === String(req.session.user.id_utilisateur) && !actif) {
+            const roles = await Referentiel.getByType("ROLE");
+            return res.render("utilisateurs/form", {
+                title: "Modifier l'utilisateur",
+                utilisateur: { ...before, nom, email, profil_id, actif },
+                roles,
+                error: "Vous ne pouvez pas désactiver votre propre compte.",
+            });
+        }
+
+        // empêcher de changer vers un email déjà utilisé par un AUTRE compte
+        if (email && email !== before.email) {
+            const existing = await Utilisateur.findByEmail(email);
+            if (existing && String(existing.id_utilisateur) !== String(id_utilisateur)) {
                 const roles = await Referentiel.getByType("ROLE");
                 return res.render("utilisateurs/form", {
                     title: "Modifier l'utilisateur",
-                    utilisateur: { ...before, nom, profil_id, actif },
+                    utilisateur: { ...before, nom, email, profil_id, actif },
                     roles,
-                    error: "Vous ne pouvez pas désactiver votre propre compte.",
+                    error: "Un utilisateur avec cet email existe déjà.",
                 });
             }
-
-            await Utilisateur.update(id_utilisateur, {
-                nom,
-                profil_id,
-                actif: actif ? 1 : 0,
-            });
-
-            await Historique.log({
-                utilisateur_id: req.session.user.id_utilisateur,
-                action: "UPDATE",
-                entite_type: "UTILISATEUR",
-                entite_id: id_utilisateur,
-                champ_modifie: "multiple",
-                ancienne_valeur: JSON.stringify({ nom: before.nom, profil_id: before.profil_id, actif: before.actif }),
-                nouvelle_valeur: JSON.stringify({ nom, profil_id, actif: !!actif }),
-            });
-
-            res.redirect("/utilisateurs");
-        } catch (err) {
-            console.error(err);
-            res.status(500).render("errors/500", { message: "Erreur lors de la modification de l'utilisateur." });
         }
-    },
+
+        await Utilisateur.update(id_utilisateur, {
+            nom,
+            email,
+            profil_id,
+            actif: actif ? 1 : 0,
+        });
+
+        await Historique.log({
+            utilisateur_id: req.session.user.id_utilisateur,
+            action: "UPDATE",
+            entite_type: "UTILISATEUR",
+            entite_id: id_utilisateur,
+            champ_modifie: "multiple",
+            ancienne_valeur: JSON.stringify({ nom: before.nom, email: before.email, profil_id: before.profil_id, actif: before.actif }),
+            nouvelle_valeur: JSON.stringify({ nom, email, profil_id, actif: !!actif }),
+        });
+
+        res.redirect("/utilisateurs");
+    } catch (err) {
+        console.error(err);
+
+        const error = err.code === "ER_DUP_ENTRY"
+            ? "Un utilisateur avec cet email existe déjà."
+            : "Erreur lors de la modification de l'utilisateur.";
+
+        const roles = await Referentiel.getByType("ROLE");
+        res.render("utilisateurs/form", {
+            title: "Modifier l'utilisateur",
+            utilisateur: { id_utilisateur, nom, email, profil_id, actif },
+            roles,
+            error,
+        });
+    }
+},
 
     // GET /utilisateurs/:id/password — dedicated password change form
     async showChangePasswordForm(req, res) {
