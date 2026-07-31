@@ -195,15 +195,18 @@ async update(req, res) {
             actif: actif ? 1 : 0,
         });
 
-        await Historique.log({
-            utilisateur_id: req.session.user.id_utilisateur,
-            action: "UPDATE",
-            entite_type: "UTILISATEUR",
-            entite_id: id_utilisateur,
-            champ_modifie: "multiple",
-            ancienne_valeur: JSON.stringify({ nom: before.nom, email: before.email, profil_id: before.profil_id, actif: before.actif }),
-            nouvelle_valeur: JSON.stringify({ nom, email, profil_id, actif: !!actif }),
-        });
+        const diff = buildDiff(before, { nom, profil_id, actif: actif ? 1 : 0 }, ["nom", "profil_id", "actif"]);
+
+            await Historique.log({
+                utilisateur_id: req.session.user.id_utilisateur,
+                action: "UPDATE",
+                entite_type: "UTILISATEUR",
+                entite_id: id_utilisateur,
+                champ_modifie: diff ? diff.champ_modifie : null,
+                ancienne_valeur: diff ? diff.ancienne_valeur : null,
+                nouvelle_valeur: diff ? diff.nouvelle_valeur : null,
+                details: diff ? null : "Aucune modification de champ détectée.",
+            });
 
         res.redirect("/utilisateurs");
     } catch (err) {
