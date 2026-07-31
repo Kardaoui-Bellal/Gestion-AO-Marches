@@ -98,9 +98,6 @@ function render(){
             <a class="icon-btn" title="Modifier" href="/appels-offres/${r.id}/edit">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
             </a>
-            <button class="icon-btn danger" title="Supprimer" data-action="delete" data-id="${r.id}" data-ref="${r.reference}">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16"/><path d="M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>
-            </button>
           </div>
         </td>`;
       tableBody.appendChild(tr);
@@ -164,26 +161,6 @@ document.querySelectorAll('thead th[data-key]').forEach(th=>{
   });
 });
 
-// NOTE : il n'existe actuellement aucune route DELETE dans
-// appelOffreRoutes.js. Ce bouton reste câblé (et le sera nativement
-// le jour où la route sera ajoutée côté backend), mais pour l'instant
-// le fetch échouera avec un 404 — c'est un choix volontaire pour ne
-// pas modifier les routes/contrôleur sans ta validation.
-tableBody.addEventListener('click', e=>{
-  const btn = e.target.closest('button[data-action="delete"]');
-  if(!btn) return;
-  const id = btn.dataset.id;
-  const ref = btn.dataset.ref;
-  if(confirm(`Confirmer la suppression de l'appel d'offres ${ref} ?`)){
-    fetch(`/appels-offres/${encodeURIComponent(id)}`, { method: 'DELETE' })
-      .then(res => {
-        if(!res.ok) throw new Error('Échec de la suppression');
-        const idx = appelsOffres.findIndex(a=>a.id===Number(id));
-        if(idx !== -1){ appelsOffres.splice(idx,1); render(); showToast(`${ref} supprimé.`); }
-      })
-      .catch(() => showToast(`Erreur lors de la suppression de ${ref}. (Route DELETE à ajouter côté backend)`));
-  }
-});
 
 // Rendu initial : la table est vide au chargement du DOM tant que
 // render() n'a pas tourné une première fois (contrairement au commentaire
