@@ -93,24 +93,5 @@ const Fournisseur = {
         return result.affectedRows > 0;
     }
 };
-// Récupérer l'historique des marchés d'un fournisseur
-static async getMarches(idFournisseur) {
-    const [rows] = await db.query(`
-        SELECT
-            m.id_marche,
-            m.numero,
-            m.objet,
-            m.montant,
-            m.date_debut,
-            r.libelle AS statut
-        FROM marches m
-        LEFT JOIN referentiels r
-            ON r.id_ref = m.statut_id
-        WHERE m.fournisseur_id = ?
-        ORDER BY m.date_publication DESC
-    `, [idFournisseur]);
-
-    return rows;
-}
 
 module.exports = Fournisseur;
