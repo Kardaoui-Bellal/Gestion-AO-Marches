@@ -40,10 +40,13 @@ const fournisseurController = {
           .status(404)
           .render("404", { title: "Fournisseur introuvable" });
       }
+// Récupérer l'historique des marchés du fournisseur
+     const marches = await Fournisseur.getMarches(req.params.id);
 
       res.render("fournisseurs/detail", {
         title: fournisseur.raison_sociale,
         fournisseur,
+        marches,
       });
     } catch (err) {
       console.error(err);

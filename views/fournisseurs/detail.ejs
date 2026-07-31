@@ -104,6 +104,54 @@
           </div>
         </aside>
       </div>
+
+     <div class="history-card"> 
+      <div class="history-header">
+        <h2>Historique des marchés</h2>
+      </div>
+       <% if (!marches || marches.length === 0) { %>
+        <div class="empty-history">
+            Aucun marché n'est associé à ce fournisseur.
+        </div>
+       <% } else { %>
+        <div class="history-table">
+         <table>
+            <thead>
+                <tr>
+                    <th>N° Marché</th>
+                    <th>Objet</th>
+                    <th>Date</th>
+                    <th>Statut</th>
+                    <th>Montant</th>
+                </tr>
+            </thead>
+           <tbody>
+              <% marches.forEach(m => { %>
+                <tr>
+                    <td class="mono">
+                        <%= m.numero_marche %>
+                    </td>
+                    <td>
+                        <%= m.objet %>
+                    </td>
+                    <td>
+                        <%= m.date_publication ? new Date(m.date_publication).toLocaleDateString('fr-FR') : '—' %>
+                    </td>
+                    <td>
+                        <span class="badge neutral">
+                            <%= m.statut || '—' %>
+                        </span>
+                    </td>
+                    <td>
+                        <%= Number(m.montant_estime || 0).toLocaleString('fr-FR') %> DH
+                    </td>
+                </tr>
+              <% }) %>
+           </tbody>
+          </table>
+        </div>
+       <% } %>
+      </div>
     </div>
 
         <%- include('../layouts/partials/footer') %>
