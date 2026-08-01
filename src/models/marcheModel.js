@@ -49,11 +49,13 @@ const Marche = {
             SELECT m.id_marche, m.numero, m.objet, m.montant, m.date_debut, m.date_fin,
                    f.raison_sociale AS fournisseur_nom,
                    r_type.libelle AS type_marche_libelle,
-                   r_statut.libelle AS statut_libelle
+                   r_statut.libelle AS statut_libelle,
+                   ao.numero_ao AS numero_ao
             FROM marches m
             INNER JOIN fournisseurs f ON m.fournisseur_id = f.id_fournisseur
             INNER JOIN referentiels r_type ON m.type_marche_id = r_type.id_ref
             INNER JOIN referentiels r_statut ON m.statut_id = r_statut.id_ref
+            LEFT JOIN appels_offres ao ON m.appel_offre_id = ao.id_ao
             ORDER BY m.date_creation DESC
         `;
 
@@ -81,11 +83,13 @@ const Marche = {
             SELECT m.id_marche, m.numero, m.objet, m.montant, m.date_debut, m.date_fin,
                    f.raison_sociale AS fournisseur_nom,
                    r_type.libelle AS type_marche_libelle,
-                   r_statut.libelle AS statut_libelle
+                   r_statut.libelle AS statut_libelle,
+                   ao.numero_ao AS numero_ao
             FROM marches m
             INNER JOIN fournisseurs f ON m.fournisseur_id = f.id_fournisseur
             INNER JOIN referentiels r_type ON m.type_marche_id = r_type.id_ref
             INNER JOIN referentiels r_statut ON m.statut_id = r_statut.id_ref
+            LEFT JOIN appels_offres ao ON m.appel_offre_id = ao.id_ao
             WHERE 1=1
         `;
         
