@@ -1,7 +1,7 @@
 # Gestion-AO-Marchés
 
 **Application interne de gestion des appels d'offres et des marchés publics**
-*ORMVA/SM — Office Régional de Mise en Valeur Agricole du Souss-Massa · Bureau Informatique*
+_ORMVA/SM — Office Régional de Mise en Valeur Agricole du Souss-Massa · Bureau Informatique_
 
 ![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?logo=node.js&logoColor=white)
 ![Express](https://img.shields.io/badge/Express-4.x-000000?logo=express&logoColor=white)
@@ -26,15 +26,17 @@
 
 ## 🏛 À propos
 
-<div style="display: flex; gap: 15px; overflow-x: auto; white-space: nowrap; padding: 10px; border: 1px solid #30363d; border-radius: 6px;">
-  <img src="docs/SCREENSHOTS/dashbord.png" alt="Screen 1" height="300">
-<!-- 
-    <img src="docs/SCREENSHOTS/ao_info.png" alt="Screen 2" height="300">
-    <img src="docs/SCREENSHOTS/m_repertoir.png" alt="Screen 3" height="300"> 
--->
-
+<div style="display: flex; overflow-x: auto; gap: 10px; width: 100%; scroll-snap-type: x mandatory;">
+  <div style="display: flex; gap: 15px; overflow-x: auto; white-space: nowrap; padding: 10px; border: 1px solid #30363d; border-radius: 6px;">
+    <img src="docs/SCREENSHOTS/dashbord.png" alt="dashboard" style="width: 100%; object-fit: contain;">
+  </div>
+  <div style="flex: 0 0 100%; scroll-snap-align: start;">
+    <img src="docs/SCREENSHOTS/ao_info.png" alt="Screen 2" style="width: 100%; object-fit: contain;">
+  </div>
+  <div style="flex: 0 0 100%; scroll-snap-align: start;">
+    <img src="docs/SCREENSHOTS/m_repertoir.png" alt="Screen 3" style="width: 100%; object-fit: contain;">
+  </div>
 </div>
-
 
 **Gestion-AO-Marchés** est une application web interne développée pour digitaliser et centraliser le suivi du cycle de vie complet des marchés publics informatiques au sein du Bureau Informatique de l'ORMVA/SM — depuis le lancement d'un **appel d'offres** jusqu'à la **réception définitive** du marché correspondant.
 
@@ -42,27 +44,27 @@ Le projet couvre l'ensemble du workflow métier : appels d'offres, offres des fo
 
 > Développé dans le cadre d'un stage d'ingénierie logicielle, en réponse à un cahier des charges (CDC) couvrant les exigences fonctionnelles **F01 à F12**.
 
-
 ## ✨ Fonctionnalités
 
-| Module | Description |
-|---|---|
-| 📢 **Appels d'offres** | Cycle de vie complet — brouillon → publication → ouverture des plis → évaluation → attribution / infructueux / annulé |
-| 📨 **Offres** | Réception et évaluation des offres fournisseurs par appel d'offres, avec statuts (reçue, admissible, rejetée, retenue) |
-| 📄 **Marchés** | Suivi contractuel — notification, exécution, réceptions provisoire/définitive, renouvellement, résiliation |
-| 🏢 **Fournisseurs** | Répertoire des fournisseurs par domaine d'activité, avec activation/désactivation |
-| ✅ **Checklists** | Suivi administratif étape par étape, généré automatiquement à la création — étapes distinctes pour les AO et pour les marchés |
-| 📎 **Pièces jointes** | Dépôt sécurisé de documents (PDF, Word, Excel, images), typés selon le contexte AO ou marché |
-| 🔔 **Alertes** | Marchés expirés, échéances proches (30 jours) et échéances à venir, avec code couleur par urgence |
-| 📊 **Tableau de bord** | Vue d'ensemble en temps réel — montants engagés, répartition par statut, budget annuel, derniers AO |
-| 🕓 **Historique** | Journal d'audit complet — qui a fait quoi, quand, avec le détail champ par champ (ancienne → nouvelle valeur) |
-| ⚙️ **Référentiels** | Gestion centralisée de toutes les listes déroulantes du système (statuts, types, étapes...) sans toucher au code |
-| 👤 **Utilisateurs** | Gestion des comptes et des rôles (réservée aux administrateurs) |
-| 📤 **Export** | Génération de fiches PDF et d'exports Excel |
+| Module                 | Description                                                                                                                   |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| 📢 **Appels d'offres** | Cycle de vie complet — brouillon → publication → ouverture des plis → évaluation → attribution / infructueux / annulé         |
+| 📨 **Offres**          | Réception et évaluation des offres fournisseurs par appel d'offres, avec statuts (reçue, admissible, rejetée, retenue)        |
+| 📄 **Marchés**         | Suivi contractuel — notification, exécution, réceptions provisoire/définitive, renouvellement, résiliation                    |
+| 🏢 **Fournisseurs**    | Répertoire des fournisseurs par domaine d'activité, avec activation/désactivation                                             |
+| ✅ **Checklists**      | Suivi administratif étape par étape, généré automatiquement à la création — étapes distinctes pour les AO et pour les marchés |
+| 📎 **Pièces jointes**  | Dépôt sécurisé de documents (PDF, Word, Excel, images), typés selon le contexte AO ou marché                                  |
+| 🔔 **Alertes**         | Marchés expirés, échéances proches (30 jours) et échéances à venir, avec code couleur par urgence                             |
+| 📊 **Tableau de bord** | Vue d'ensemble en temps réel — montants engagés, répartition par statut, budget annuel, derniers AO                           |
+| 🕓 **Historique**      | Journal d'audit complet — qui a fait quoi, quand, avec le détail champ par champ (ancienne → nouvelle valeur)                 |
+| ⚙️ **Référentiels**    | Gestion centralisée de toutes les listes déroulantes du système (statuts, types, étapes...) sans toucher au code              |
+| 👤 **Utilisateurs**    | Gestion des comptes et des rôles (réservée aux administrateurs)                                                               |
+| 📤 **Export**          | Génération de fiches PDF et d'exports Excel                                                                                   |
 
 ## 🛠 Stack technique
 
 **Backend**
+
 - [Node.js](https://nodejs.org/) & [Express](https://expressjs.com/) — serveur et routage (architecture MVC)
 - [MySQL](https://www.mysql.com/) via [`mysql2`](https://www.npmjs.com/package/mysql2) — base de données relationnelle
 - [`express-session`](https://www.npmjs.com/package/express-session) + [`express-mysql-session`](https://www.npmjs.com/package/express-mysql-session) — sessions persistées en base (survit aux redémarrages du serveur)
@@ -71,6 +73,7 @@ Le projet couvre l'ensemble du workflow métier : appels d'offres, offres des fo
 - [`pdfkit`](https://www.npmjs.com/package/pdfkit) / [`exceljs`](https://www.npmjs.com/package/exceljs) — génération d'exports PDF / Excel
 
 **Frontend**
+
 - [EJS](https://ejs.co/) — templating serveur
 - [Bootstrap 5](https://getbootstrap.com/) & [Bootstrap Icons](https://icons.getbootstrap.com/)
 - [ECharts](https://echarts.apache.org/) — graphiques du tableau de bord
@@ -87,11 +90,11 @@ Route  →  Middleware (auth / rôle / audit)  →  Contrôleur  →  Modèle (S
 
 ## 🔐 Rôles & accès
 
-| Rôle | Accès |
-|---|---|
-| **ADMIN** | Accès complet — y compris gestion des utilisateurs et des référentiels |
-| **GESTIONNAIRE** | Création et gestion des AO, marchés, fournisseurs, offres, documents |
-| **CONSULTANT** | Consultation seule, sans droit de modification |
+| Rôle             | Accès                                                                  |
+| ---------------- | ---------------------------------------------------------------------- |
+| **ADMIN**        | Accès complet — y compris gestion des utilisateurs et des référentiels |
+| **GESTIONNAIRE** | Création et gestion des AO, marchés, fournisseurs, offres, documents   |
+| **CONSULTANT**   | Consultation seule, sans droit de modification                         |
 
 > Note : la suppression définitive des appels d'offres et des marchés est volontairement **désactivée pour tous les rôles**, y compris ADMIN — la traçabilité réglementaire des marchés publics l'exige. Le changement de statut (`Annulé`, `Résilié`, `Expiré`...) fait office d'archivage.
 
@@ -149,13 +152,13 @@ Gestion-AO-Marches/
 
 Une documentation technique plus détaillée est disponible dans le dossier [`docs/`](docs/) :
 
-| Document | Description |
-|---|---|
-| [`INSTALL.md`](docs/INSTALL.md) | Guide d'installation détaillé |
-| [`DATABASE.md`](docs/DATABASE.md) | Schéma de base de données et choix de conception |
+| Document                                  | Description                                                   |
+| ----------------------------------------- | ------------------------------------------------------------- |
+| [`INSTALL.md`](docs/INSTALL.md)           | Guide d'installation détaillé                                 |
+| [`DATABASE.md`](docs/DATABASE.md)         | Schéma de base de données et choix de conception              |
 | [`ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Architecture MVC, organisation du projet, référentiels, rôles |
-| [`SEED_DATA.md`](docs/SEED_DATA.md) | Scripts de seed et jeu de données de démonstration |
-| [`API.md`](docs/API.md) | Référence complète des routes |
+| [`SEED_DATA.md`](docs/SEED_DATA.md)       | Scripts de seed et jeu de données de démonstration            |
+| [`API.md`](docs/API.md)                   | Référence complète des routes                                 |
 
 Autres ressources utiles :
 
