@@ -28,8 +28,8 @@
 
 <div style="display: flex; gap: 15px; overflow-x: auto; white-space: nowrap; padding: 10px; border: 1px solid #30363d; border-radius: 6px;">
   <img src="docs/SCREENSHOTS/dashbord.png" alt="Screen 1" height="300">
-  <img src="docs/SCREENSHOTS/ao_info" alt="Screen 2" height="300">
-  <img src="docs/SCREENSHOTS/m_repertoire" alt="Screen 3" height="300">
+  <img src="docs/SCREENSHOTS/ao_info.png" alt="Screen 2" height="300">
+  <img src="docs/SCREENSHOTS/m_repertoire.png" alt="Screen 3" height="300">
 </div>
 
 
