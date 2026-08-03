@@ -161,7 +161,7 @@ Autres ressources utiles :
 
 - [`database/database.sql`](database/database.sql) — schéma de base de données complet
 - [`database/referentiels_seed.sql`](database/referentiels_seed.sql) — données de référence
-- Rapport de stage (`rapport.pdf`) — analyse fonctionnelle, conception, réalisation et documentation utilisateur
+- Rapport de stage [`rapport.pdf`](docs/main.pdf) — analyse fonctionnelle, conception, réalisation et documentation utilisateur
 
 ---
 
