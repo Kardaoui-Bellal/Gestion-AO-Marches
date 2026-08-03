@@ -1,6 +1,6 @@
 # Gestion-AO-Marchés
 
-**Application interne de gestion des appels d'offres et des marchés publics**
+**Application interne de gestion des appels d'offres et des marchés publics informatiques**
 _ORMVA/SM — Office Régional de Mise en Valeur Agricole du Souss-Massa · Bureau Informatique_
 
 ![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?logo=node.js&logoColor=white)
