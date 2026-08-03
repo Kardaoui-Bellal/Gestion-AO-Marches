@@ -26,6 +26,13 @@
 
 ## 🏛 À propos
 
+<div style="display: flex; gap: 15px; overflow-x: auto; white-space: nowrap; padding: 10px; border: 1px solid #30363d; border-radius: 6px;">
+  <img src="docs/SCREENSHOTS/dashbord.png" alt="Screen 1" height="300">
+  <img src="docs/SCREENSHOTS/ao_info" alt="Screen 2" height="300">
+  <img src="docs/SCREENSHOTS/m_repertoire" alt="Screen 3" height="300">
+</div>
+
+
 **Gestion-AO-Marchés** est une application web interne développée pour digitaliser et centraliser le suivi du cycle de vie complet des marchés publics informatiques au sein du Bureau Informatique de l'ORMVA/SM — depuis le lancement d'un **appel d'offres** jusqu'à la **réception définitive** du marché correspondant.
 
 Le projet couvre l'ensemble du workflow métier : appels d'offres, offres des fournisseurs, attribution, marchés, checklists de suivi administratif, gestion documentaire, et traçabilité complète des actions via un journal d'audit.
