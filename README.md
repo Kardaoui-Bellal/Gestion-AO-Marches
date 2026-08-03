@@ -26,17 +26,14 @@ _ORMVA/SM — Office Régional de Mise en Valeur Agricole du Souss-Massa · Bure
 
 ## 🏛 À propos
 
-<div style="display: flex; overflow-x: auto; gap: 10px; width: 100%; scroll-snap-type: x mandatory;">
-  <div style="display: flex; gap: 15px; overflow-x: auto; white-space: nowrap; padding: 10px; border: 1px solid #30363d; border-radius: 6px;">
-    <img src="docs/SCREENSHOTS/dashbord.png" alt="dashboard" style="width: 100%; object-fit: contain;">
-  </div>
-  <div style="flex: 0 0 100%; scroll-snap-align: start;">
-    <img src="docs/SCREENSHOTS/ao_info.png" alt="Screen 2" style="width: 100%; object-fit: contain;">
-  </div>
-  <div style="flex: 0 0 100%; scroll-snap-align: start;">
-    <img src="docs/SCREENSHOTS/m_repertoir.png" alt="Screen 3" style="width: 100%; object-fit: contain;">
-  </div>
-</div>
+<table>
+  <tr>
+    <td><img src="docs/SCREENSHOTS/dashbord.png" alt="dashboard" width="400"></td>
+    <td><img src="docs/SCREENSHOTS/ao_info.png" alt="Screen 2" width="400"></td>
+    <td><img src="docs/SCREENSHOTS/m_repertoir.png" alt="Screen 3" width="400"></td>
+  </tr>
+</table>
+
 
 **Gestion-AO-Marchés** est une application web interne développée pour digitaliser et centraliser le suivi du cycle de vie complet des marchés publics informatiques au sein du Bureau Informatique de l'ORMVA/SM — depuis le lancement d'un **appel d'offres** jusqu'à la **réception définitive** du marché correspondant.
 
