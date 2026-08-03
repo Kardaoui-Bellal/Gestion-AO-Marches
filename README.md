@@ -122,7 +122,7 @@ npm start     # production
 
 L'application est accessible sur **http://localhost:3000**.
 
-📖 Guide détaillé, dépannage, et variables d'environnement : [`docs/INSTALL.md`](docs/INSTALL.md)
+📖 Guide détaillé, dépannage, et variables d'environnement : [`docs/INSTALL.md`](docs/INSTALL.md)  
 🌱 Détail des scripts de seed et identifiants de démonstration : [`docs/SEED_DATA.md`](docs/SEED_DATA.md)
 
 ## 📁 Structure du projet
