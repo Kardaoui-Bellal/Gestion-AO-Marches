@@ -32,11 +32,6 @@ Le projet couvre l'ensemble du workflow métier : appels d'offres, offres des fo
 
 > Développé dans le cadre d'un stage d'ingénierie logicielle, en réponse à un cahier des charges (CDC) couvrant les exigences fonctionnelles **F01 à F12**.
 
-<p align="center">
-  <img src="docs/SCREENSHOTS/dashboard.png"
-       alt="Tableau de bord"
-       width="900">
-</p>
 
 ## ✨ Fonctionnalités
 
