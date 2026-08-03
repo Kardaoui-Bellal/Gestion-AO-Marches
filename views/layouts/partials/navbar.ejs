@@ -40,9 +40,9 @@ const displayInitials = rawUser && rawUser.initials
 
   <div class="nb-right">
 
-    <button class="nb-icon-btn" id="nbNotifBtn" title="Notifications">
+    <!-- Bouton Notifications -> redirige vers /alertes -->
+    <button type="button" class="nb-icon-btn" id="nbNotifBtn" title="Notifications">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" style="display:none" />
         <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 0 1-3.46 0" />
       </svg>
       <span class="nb-dot"></span>
@@ -50,15 +50,18 @@ const displayInitials = rawUser && rawUser.initials
 
     <div class="nb-divider"></div>
 
-    <div class="nb-user" id="nbUserMenu">
+    <!-- Menu utilisateur -> redirige vers /parametres, sauf sur le chevron (ouvre le dropdown Déconnexion) -->
+    <div class="nb-user" id="nbUserMenu" title="Paramètres">
       <div class="nb-avatar"><%= displayInitials %></div>
       <div class="nb-user-text">
         <div class="nb-user-name"><%= displayName %></div>
         <div class="nb-user-role"><%= displayRole %></div>
       </div>
-      <svg class="nb-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="6 9 12 15 18 9" />
-      </svg>
+      <button type="button" class="nb-chevron-btn" id="nbChevronBtn" title="Plus d'options">
+        <svg class="nb-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+      </button>
 
       <div class="nb-dropdown" id="nbDropdown">
         <a href="/parametres" class="nb-dropdown-item">Paramètres</a>
@@ -73,25 +76,42 @@ const displayInitials = rawUser && rawUser.initials
 
 <script>
   (function () {
-    const menu = document.getElementById('nbUserMenu');
-    const dropdown = document.getElementById('nbDropdown');
-    if (!menu || !dropdown) return;
-    menu.addEventListener('click', function (e) {
-      e.stopPropagation();
-      dropdown.classList.toggle('open');
-    });
-    document.addEventListener('click', function () {
-      dropdown.classList.remove('open');
-    });
-    })();
-    document.getElementById("nbNotifBtn").addEventListener("click", function () {
-          window.location.href = "/views/alertes/liste.ejs";
-        });
-  const menu = document.getElementById('nbUserMenu');
-  const dropdown = document.getElementById('nbDropdown');
+    // --- Bouton Notifications ---
+    const notifBtn = document.getElementById('nbNotifBtn');
+    if (notifBtn) {
+      notifBtn.addEventListener('click', function () {
+        window.location.href = '/alertes';
+      });
+    }
 
-    menu.addEventListener('click', function (e) {
-     e.stopPropagation();
-     dropdown.classList.toggle('open');
-    });
+    // --- Menu utilisateur ---
+    const userMenu = document.getElementById('nbUserMenu');
+    const chevronBtn = document.getElementById('nbChevronBtn');
+    const dropdown = document.getElementById('nbDropdown');
+
+    if (userMenu) {
+      // Clic sur la zone utilisateur (avatar/nom/rôle) -> va vers /parametres
+      userMenu.addEventListener('click', function () {
+        window.location.href = '/parametres';
+      });
+    }
+
+    if (chevronBtn && dropdown) {
+      // Clic sur le chevron -> ouvre/ferme le dropdown (Déconnexion) sans naviguer
+      chevronBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        dropdown.classList.toggle('open');
+      });
+
+      // Empêche la navigation vers /parametres quand on clique à l'intérieur du dropdown
+      dropdown.addEventListener('click', function (e) {
+        e.stopPropagation();
+      });
+
+      // Ferme le dropdown si on clique ailleurs sur la page
+      document.addEventListener('click', function () {
+        dropdown.classList.remove('open');
+      });
+    }
+  })();
 </script>
