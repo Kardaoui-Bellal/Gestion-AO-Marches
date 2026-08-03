@@ -39,12 +39,12 @@ const displayInitials = rawUser && rawUser.initials
   </div>
 
   <div class="nb-right">
-    <div class="nb-search">
+    <form class="nb-search" action="/recherche" methode="GET">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" />
       </svg>
       <input type="text" placeholder="Rechercher…" />
-    </div>
+    </form>
 
     <button class="nb-icon-btn" id="nbNotifBtn" href="/views/alertes/liste.ejs" title="Notifications">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -89,5 +89,15 @@ const displayInitials = rawUser && rawUser.initials
     document.addEventListener('click', function () {
       dropdown.classList.remove('open');
     });
-  })();
+    })();
+    document.getElementById("nbNotifBtn").addEventListener("click", function () {
+          window.location.href = "/alertes";
+        });
+  const menu = document.getElementById('nbUserMenu');
+  const dropdown = document.getElementById('nbDropdown');
+
+    menu.addEventListener('click', function (e) {
+     e.stopPropagation();
+     dropdown.classList.toggle('open');
+    });
 </script>
