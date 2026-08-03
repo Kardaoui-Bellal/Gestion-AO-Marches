@@ -18,9 +18,7 @@
 - [Stack technique](#-stack-technique)
 - [Architecture](#-architecture)
 - [Rôles & accès](#-rôles--accès)
-- [Installation](#-installation)
-- [Peupler la base de données](#-peupler-la-base-de-données)
-- [Démarrer l'application](#-démarrer-lapplication)
+- [Démarrage rapide](#-démarrage-rapide)
 - [Structure du projet](#-structure-du-projet)
 - [Documentation](#-documentation)
 
@@ -33,6 +31,12 @@
 Le projet couvre l'ensemble du workflow métier : appels d'offres, offres des fournisseurs, attribution, marchés, checklists de suivi administratif, gestion documentaire, et traçabilité complète des actions via un journal d'audit.
 
 > Développé dans le cadre d'un stage d'ingénierie logicielle, en réponse à un cahier des charges (CDC) couvrant les exigences fonctionnelles **F01 à F12**.
+
+<p align="center">
+  <img src="docs/SCREENSHOTS/dashboard.png"
+       alt="Tableau de bord"
+       width="900">
+</p>
 
 ## ✨ Fonctionnalités
 
@@ -86,109 +90,35 @@ Route  →  Middleware (auth / rôle / audit)  →  Contrôleur  →  Modèle (S
 
 > Note : la suppression définitive des appels d'offres et des marchés est volontairement **désactivée pour tous les rôles**, y compris ADMIN — la traçabilité réglementaire des marchés publics l'exige. Le changement de statut (`Annulé`, `Résilié`, `Expiré`...) fait office d'archivage.
 
-## ⚙️ Installation
-
-### Prérequis
-
-- [Node.js](https://nodejs.org/) 18 ou supérieur
-- [MySQL](https://www.mysql.com/) 8.x (ou MariaDB équivalent)
-- npm
-
-### Étapes
+## 🚀 Démarrage rapide
 
 ```bash
-# 1. Cloner le dépôt
+# 1. Cloner et installer
 git clone https://github.com/Kardaoui-Bellal/Gestion-AO-Marches.git
 cd Gestion-AO-Marches
-
-# 2. Installer les dépendances
 npm install
 
-# 3. Configurer l'environnement
+# 2. Configurer l'environnement
 cp .env.example .env
-```
+# → éditez .env avec vos identifiants MySQL
 
-Éditez ensuite `.env` avec vos propres identifiants :
-
-```env
-# --- Base de données MySQL ---
-DB_HOST=localhost
-DB_PORT=3306
-DB_USER=root
-DB_PASSWORD=votre_mot_de_passe
-DB_NAME=ormvasm_ao_marches
-
-# --- Serveur ---
-PORT=3000
-
-# --- Session ---
-SESSION_SECRET=change_this_secret_en_production
-
-# --- Compte admin de test (utilisé par database/seed.js) ---
-ADMIN_LOGIN=admin
-ADMIN_PASSWORD=Admin@2026
-ADMIN_NOM=Administrateur Bureau Informatique
-```
-
-```bash
-# 4. Créer la base de données
+# 3. Créer la base et importer le schéma
 mysql -u root -p -e "CREATE DATABASE ormvasm_ao_marches CHARACTER SET utf8mb4;"
-
-# 5. Créer les tables (structure du schéma)
 mysql -u root -p ormvasm_ao_marches < database/database.sql
-```
-
-## 🌱 Peupler la base de données
-
-Le schéma repose entièrement sur la table `referentiels` pour ses listes déroulantes — **elle doit être peuplée avant tout autre usage de l'application.**
-
-### 1. Référentiels (obligatoire)
-
-```bash
 mysql -u root -p ormvasm_ao_marches < database/referentiels_seed.sql
-```
 
-Charge l'ensemble des valeurs de référence du système : rôles, domaines d'activité, catégories d'AO, états, statuts, étapes de checklist (distinctes pour AO et marchés), types de document (distincts pour AO et marchés).
-
-### 2. Compte administrateur seul
-
-Pour un déploiement propre sans données de démonstration :
-
-```bash
-npm run seed
-```
-
-Crée uniquement le compte administrateur défini dans `.env` (`ADMIN_LOGIN` / `ADMIN_PASSWORD`).
-
-### 3. Jeu de données de démonstration (recommandé pour tester l'application)
-
-```bash
+# 4. Peupler avec des données de démonstration (optionnel mais recommandé)
 node database/seedDemo.js
+
+# 5. Démarrer
+npm run dev   # développement
+npm start     # production
 ```
 
-Réinitialise entièrement les données transactionnelles et génère un jeu de données riche et cohérent pour explorer toutes les fonctionnalités : un compte par rôle, une dizaine de fournisseurs, d'appels d'offres (dans tous les états possibles) et de marchés (avec échéances réparties sur différentes plages de temps — urgentes, proches, lointaines — pour tester le système d'alertes), ainsi que leurs checklists et offres associées.
+L'application est accessible sur **http://localhost:3000**.
 
-> ⚠️ Ce script **supprime toutes les données existantes** (utilisateurs, fournisseurs, AO, marchés, offres, documents, historique) avant de reseeder — à ne jamais lancer sur une base de production. Les référentiels ne sont jamais touchés.
-
-Comptes créés :
-
-| Rôle | Email | Mot de passe |
-|---|---|---|
-| ADMIN | `admin@ormvasm.ma` | `admin123` |
-| GESTIONNAIRE | `gestionnaire@ormvasm.ma` | `gestion123` |
-| CONSULTANT | `consultant@ormvasm.ma` | `consult123` |
-
-## 🚀 Démarrer l'application
-
-```bash
-# Mode développement (rechargement automatique)
-npm run dev
-
-# Mode production
-npm start
-```
-
-L'application est accessible sur **http://localhost:3000** (ou le port défini dans `.env`).
+📖 Guide détaillé, dépannage, et variables d'environnement : [`docs/INSTALL.md`](docs/INSTALL.md)
+🌱 Détail des scripts de seed et identifiants de démonstration : [`docs/SEED_DATA.md`](docs/SEED_DATA.md)
 
 ## 📁 Structure du projet
 
@@ -196,6 +126,7 @@ L'application est accessible sur **http://localhost:3000** (ou le port défini d
 Gestion-AO-Marches/
 ├── config/                  # Connexion DB, session, upload (multer)
 ├── database/                # Schéma SQL, seeds, script de démo
+├── docs/                    # Documentation technique détaillée
 ├── public/                  # Assets statiques (CSS, JS, images)
 ├── src/
 │   ├── controllers/         # Logique métier par entité
@@ -211,9 +142,21 @@ Gestion-AO-Marches/
 
 ## 📚 Documentation
 
-- **CDC (Cahier des Charges)** — exigences fonctionnelles F01–F12 couvertes par le projet
-- **`database/database.sql`** — schéma relationnel complet, commenté
-- **`database/referentiels_seed.sql`** — dictionnaire de toutes les valeurs de référence du système
+Une documentation technique plus détaillée est disponible dans le dossier [`docs/`](docs/) :
+
+| Document | Description |
+|---|---|
+| [`INSTALL.md`](docs/INSTALL.md) | Guide d'installation détaillé |
+| [`DATABASE.md`](docs/DATABASE.md) | Schéma de base de données et choix de conception |
+| [`ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Architecture MVC, organisation du projet, référentiels, rôles |
+| [`SEED_DATA.md`](docs/SEED_DATA.md) | Scripts de seed et jeu de données de démonstration |
+| [`API.md`](docs/API.md) | Référence complète des routes |
+
+Autres ressources utiles :
+
+- [`database/database.sql`](database/database.sql) — schéma de base de données complet
+- [`database/referentiels_seed.sql`](database/referentiels_seed.sql) — données de référence
+- Rapport de stage (`rapport.pdf`) — analyse fonctionnelle, conception, réalisation et documentation utilisateur
 
 ---
 
