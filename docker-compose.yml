@@ -1,37 +1,42 @@
+version: "3.8"
+
 services:
   app:
     build: .
-    container_name: gestion-ao-app
+    container_name: ormvasm-ao-marches
     ports:
       - "3000:3000"
+    environment:
+      - DB_HOST: db
+      - DB_PORT: 3306
+      - DB_USER: root
+      - DB_PASSWORD: rootpass
+      - DB_NAME: ormvasm_ao_marches
+      - PORT: 3000
     depends_on:
-      mysql:
+      db:
         condition: service_healthy
-    environment:
-      DB_HOST: mysql
-      DB_PORT: 3306
-      DB_USER: root
-      DB_PASSWORD: root
-      DB_NAME: ormvasm_ao_marches
-      PORT: 3000
-    restart: on-failure
+      volumes:
+        - ./:/app
+        - /app/node_modules
+    restart: unless-stopped
 
-  mysql:
-    image: mysql:8.4
-    container_name: gestion-ao-mysql
-    restart: always
+  db:
+    image: mysql:8.0
+    container_name: gestion-ao-marches-db
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: ormvasm_ao_marches
+      - MYSQL_ROOT_PASSWORD=rootpass
+      - MYSQL_DATABASE=gestion_ao_marches
     ports:
       - "3306:3306"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - db_data:/var/lib/mysql
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 5s
       timeout: 5s
       retries: 10
 
 volumes:
-  mysql_data:
+  db_data:
