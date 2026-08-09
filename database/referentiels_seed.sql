@@ -110,5 +110,5 @@ VALUES
 ('TYPE_DOCUMENT_MARCHE','DECOMPTE','Décompte',13,TRUE),
 ('TYPE_DOCUMENT_MARCHE','PV_RP','PV de réception provisoire',14,TRUE),
 ('TYPE_DOCUMENT_MARCHE','PV_RD','PV de réception définitive',15,TRUE),
-('TYPE_DOCUMENT_AO','AUTRE','Autre document',16,TRUE);
+('TYPE_DOCUMENT_AO','AUTRE','Autre document',16,TRUE),
 ('TYPE_DOCUMENT_MARCHE','AUTRE','Autre document',16,TRUE);
